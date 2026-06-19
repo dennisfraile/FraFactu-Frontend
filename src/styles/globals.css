@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/*
+  FraFactu — semilla de tokens del design system ("Tinta y Sello").
+  El design system completo (primitivos, dark mode, escala) se define en F4.
+  Ver DESIGN-SYSTEM.md.
+*/
+@theme {
+  --color-ink: #0f1c18;
+  --color-paper: #fafaf8;
+  --color-sello: #1f6b4f;
+  --color-sello-bright: #2e9e74;
+  --color-ambar: #e08a3c;
+  --color-rojo: #c2453b;
+  --color-slate: #5b6b66;
+  --color-hairline: #e3e6e2;
+
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+}
