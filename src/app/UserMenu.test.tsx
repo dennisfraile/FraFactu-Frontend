@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { UserMenu } from './UserMenu'
 import { useAuthStore } from './auth-store'
 import { authApi } from '@/features/auth/api'
@@ -18,5 +18,20 @@ describe('UserMenu', () => {
     await userEvent.click(screen.getByRole('menuitem', { name: /cerrar sesión/i }))
     expect(apiSpy).toHaveBeenCalled()
     expect(useAuthStore.getState().status).toBe('anon')
+  })
+
+  it('navega a /login después de cerrar sesión', async () => {
+    vi.spyOn(authApi, 'logout').mockResolvedValue()
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route path="/" element={<UserMenu />} />
+          <Route path="/login" element={<div>Login</div>} />
+        </Routes>
+      </MemoryRouter>
+    )
+    await userEvent.click(screen.getByRole('button', { name: /ana/i }))
+    await userEvent.click(screen.getByRole('menuitem', { name: /cerrar sesión/i }))
+    expect(await screen.findByText('Login')).toBeInTheDocument()
   })
 })
