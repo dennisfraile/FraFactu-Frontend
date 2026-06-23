@@ -25,3 +25,8 @@ dist-ssr
 
 # Visual companion de brainstorming (no versionar)
 .superpowers/
+
+# Variables de entorno locales (no versionar; usar .env.example como plantilla)
+.env
+.env.local
+.env.*.local
