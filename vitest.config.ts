@@ -17,5 +17,11 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
+    // Los tests no dependen de un .env local (que está gitignored): la API se
+    // mockea con MSW, pero env.ts exige VITE_API_URL al importarse. Lo fijamos
+    // aquí para que la suite corra igual en CI y en local sin .env.
+    env: {
+      VITE_API_URL: 'http://localhost:8080',
+    },
   },
 })
