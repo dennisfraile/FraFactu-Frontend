@@ -36,7 +36,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   setSession: (r) => {
     const user = toUser(r)
     const status: Status = r.requiereCambioPwd ? 'restricted' : 'authenticated'
-    localStorage.setItem(KEY, JSON.stringify({ token: r.token, user }))
+    if (status === 'authenticated') {
+      localStorage.setItem(KEY, JSON.stringify({ token: r.token, user }))
+    } else {
+      localStorage.removeItem(KEY)
+    }
     set({ token: r.token, user, status })
   },
   logout: () => {

@@ -58,4 +58,18 @@ describe('auth-store', () => {
     expect(useAuthStore.getState().status).toBe('anon')
     expect(localStorage.getItem('frafactu-session')).toBeNull()
   })
+
+  it('setSession con requiereCambioPwd=true NO persiste en localStorage y status es restricted', () => {
+    useAuthStore.getState().setSession(makeLogin({ requiereCambioPwd: true }))
+    expect(useAuthStore.getState().status).toBe('restricted')
+    expect(localStorage.getItem('frafactu-session')).toBeNull()
+  })
+
+  it('hydrate tras sesión restricted deja status anon (nada restaurado)', () => {
+    useAuthStore.getState().setSession(makeLogin({ requiereCambioPwd: true }))
+    // Simular recarga: resetear el estado en memoria
+    useAuthStore.setState({ token: null, user: null, status: 'anon' })
+    useAuthStore.getState().hydrate()
+    expect(useAuthStore.getState().status).toBe('anon')
+  })
 })

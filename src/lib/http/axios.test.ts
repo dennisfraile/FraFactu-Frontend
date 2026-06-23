@@ -5,11 +5,14 @@ import { useAuthStore } from '@/app/auth-store'
 
 // axios-mock-adapter intercepta la instancia sin tocar la red.
 let mock: MockAdapter
+let originalLocation: PropertyDescriptor | undefined
 beforeEach(() => {
   mock = new MockAdapter(api)
   useAuthStore.setState({ token: 'tkn-123', user: null, status: 'authenticated' })
   // Silenciar ruido jsdom: reemplazar window.location con un mock
+  originalLocation = Object.getOwnPropertyDescriptor(window, 'location')
   Object.defineProperty(window, 'location', {
+    configurable: true,
     writable: true,
     value: { pathname: '/dashboard', assign: vi.fn() },
   })
@@ -17,6 +20,7 @@ beforeEach(() => {
 
 afterEach(() => {
   mock.restore()
+  if (originalLocation) Object.defineProperty(window, 'location', originalLocation)
 })
 
 describe('api interceptors', () => {
