@@ -1,32 +1,53 @@
 @import "tailwindcss";
 
-/*
-  FraFactu — semilla de tokens del design system ("Tinta y Sello").
-  El design system completo (primitivos, dark mode, escala) se define en F4.
-  Ver DESIGN-SYSTEM.md.
-*/
+@import "@fontsource/space-grotesk/400.css";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+/* Dark mode por clase (.dark en <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-ink: #0f1c18;
-  --color-paper: #fafaf8;
+  --color-canvas: #f6f3ec;
+  --color-surface: #fffdf9;
+  --color-ink: #16241f;
   --color-sello: #1f6b4f;
   --color-sello-bright: #2e9e74;
   --color-ambar: #e08a3c;
+  --color-ambar-ink: #b5681e;
   --color-rojo: #c2453b;
   --color-slate: #5b6b66;
-  --color-hairline: #e3e6e2;
+  --color-hairline: #e7e3da;
 
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
 }
 
-html,
-body,
-#root {
-  height: 100%;
-}
-
+/* Tokens que cambian con el tema (se leen vía clases bg-canvas, etc. no aplican;
+   usamos utilidades dark: en los componentes. Aquí solo el lienzo base). */
+html, body, #root { height: 100%; }
 body {
   margin: 0;
   font-family: var(--font-sans);
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+}
+.dark body {
+  background-color: #0f1c18;
+  color: #fafaf8;
+}
+.tabular { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
