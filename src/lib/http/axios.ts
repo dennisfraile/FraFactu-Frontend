@@ -13,11 +13,15 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+const PUBLIC_AUTH_PATHS = ['/auth/login', '/auth/google', '/auth/forgot-password', '/auth/reset-password']
+
 api.interceptors.response.use(
   (res) => res,
   (error) => {
     const status = error?.response?.status
-    if (status === 401 || status === 403) {
+    const url: string = error?.config?.url ?? ''
+    const isPublicAuth = PUBLIC_AUTH_PATHS.some((p) => url.startsWith(p))
+    if ((status === 401 || status === 403) && !isPublicAuth) {
       useAuthStore.getState().logout()
       // Respaldo duro fuera del árbol de React Router.
       try {

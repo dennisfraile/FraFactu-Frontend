@@ -41,4 +41,18 @@ describe('api interceptors', () => {
     await expect(api.get('/protegido')).rejects.toBeTruthy()
     expect(logoutSpy).toHaveBeenCalled()
   })
+
+  it('un 401 desde /auth/login NO llama a logout (endpoint público)', async () => {
+    const logoutSpy = vi.spyOn(useAuthStore.getState(), 'logout')
+    mock.onPost('/auth/login').reply(401)
+    await expect(api.post('/auth/login', {})).rejects.toBeTruthy()
+    expect(logoutSpy).not.toHaveBeenCalled()
+  })
+
+  it('un 401 desde /auth/google NO llama a logout (endpoint público)', async () => {
+    const logoutSpy = vi.spyOn(useAuthStore.getState(), 'logout')
+    mock.onPost('/auth/google').reply(401)
+    await expect(api.post('/auth/google', {})).rejects.toBeTruthy()
+    expect(logoutSpy).not.toHaveBeenCalled()
+  })
 })
