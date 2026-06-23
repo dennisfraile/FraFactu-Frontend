@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- el provider y su hook viven juntos a propósito */
 import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react'
 
 type Tone = 'sello' | 'rojo' | 'ambar'

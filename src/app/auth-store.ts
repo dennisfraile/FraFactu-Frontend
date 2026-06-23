@@ -15,8 +15,18 @@ interface AuthState {
 }
 
 function toUser(r: LoginResponse): AuthUser {
-  const { token: _t, tokenType: _tt, expiresIn: _e, requiereCambioPwd: _r, ...rest } = r
-  return rest
+  return {
+    userId: r.userId,
+    nombreCompleto: r.nombreCompleto,
+    email: r.email,
+    rolId: r.rolId,
+    rolNombre: r.rolNombre,
+    emisorId: r.emisorId,
+    emisorNombre: r.emisorNombre,
+    accesoTodasSucursales: r.accesoTodasSucursales,
+    sucursalIds: r.sucursalIds,
+    permisos: r.permisos,
+  }
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
