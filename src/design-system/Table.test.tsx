@@ -15,3 +15,22 @@ describe('Table', () => {
     expect(screen.getByText('Item 6')).toBeInTheDocument()
   })
 })
+
+describe('Table — paginación de servidor', () => {
+  const cols = [{ key: 'n', header: 'N' }]
+  const rows = [{ n: 1 }, { n: 2 }]
+  it('muestra la página/total recibidos y delega el cambio de página', async () => {
+    const onPageChange = vi.fn()
+    render(
+      <Table
+        columns={cols}
+        rows={rows}
+        getRowKey={(r) => r.n}
+        serverPagination={{ page: 2, totalPages: 5, onPageChange }}
+      />,
+    )
+    expect(screen.getByText('Página 2 de 5')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /siguiente/i }))
+    expect(onPageChange).toHaveBeenCalledWith(3)
+  })
+})
