@@ -15,7 +15,8 @@ describe('VistaPreviaDte', () => {
   it('muestra ítems, total y total en letras', () => {
     render(<VistaPreviaDte dto={dto} ambiente="00" />)
     expect(screen.getByText('Producto A')).toBeInTheDocument()
-    expect(screen.getAllByText('$113.00').length).toBeGreaterThan(0)
+    // $113.00 aparece 3 veces: ventaGravada (fila), totalGravada y totalPagar (resumen).
+    expect(screen.getAllByText('$113.00')).toHaveLength(3)
     expect(screen.getByText(/CIENTO TRECE/)).toBeInTheDocument()
   })
 })
