@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { calcularItemFactura01, calcularResumenFactura01, pagosCuadran } from './calc/factura01'
+import { TIPO_ITEM } from './catalogos'
 
 const itemSchema = z.object({
   productoId: z.number().optional(),
@@ -22,6 +23,7 @@ const pagoSchema = z.object({
 export const facturaFormSchema = z
   .object({
     sucursalId: z.number().int().positive('Seleccione una sucursal'),
+    cajaId: z.number().int().positive('Seleccione una caja'),
     esConsumidorFinal: z.boolean(),
     receptorId: z.number().int().nullable().optional(),
     vendedorId: z.number().int().nullable().optional(),
@@ -33,6 +35,12 @@ export const facturaFormSchema = z
     if (!v.esConsumidorFinal && !v.receptorId) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['receptorId'], message: 'Seleccione un receptor o marque Consumidor Final' })
     }
+    // Los ítems de tipo Bien (físico) requieren una bodega para descargar inventario.
+    v.items.forEach((it, idx) => {
+      if (it.tipoItem === TIPO_ITEM.BIEN && !it.bodegaId) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['items', idx, 'bodegaId'], message: 'Seleccione una bodega para el ítem' })
+      }
+    })
     const calc = v.items.map((it) =>
       calcularItemFactura01({ cantidad: it.cantidad, precioUni: it.precioUni, montoDescuento: it.montoDescuento, tipoImpuesto: it.tipoImpuesto }),
     )

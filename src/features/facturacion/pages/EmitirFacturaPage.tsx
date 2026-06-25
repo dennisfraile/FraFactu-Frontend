@@ -27,8 +27,7 @@ export function EmitirFacturaPage() {
 
   const [paso, setPaso] = useState<'captura' | 'preview'>('captura')
   const [sucursalId, setSucursalId] = useState<number>(user?.sucursalIds?.[0] ?? 1)
-  // cajaId: lo cablea el selector de Caja (F5.1b-T4). Stub para compilar.
-  const [cajaId] = useState<number | null>(null)
+  const [cajaId, setCajaId] = useState<number | null>(null)
   const [esConsumidorFinal, setEsConsumidorFinal] = useState(true)
   const [receptor, setReceptor] = useState<ReceptorListItem | null>(null)
   const [vendedorId, setVendedorId] = useState<number | null>(null)
@@ -85,6 +84,7 @@ export function EmitirFacturaPage() {
         <h1 className="text-xl font-semibold text-ink">Emitir Factura (01)</h1>
         <DatosGeneralesSection
           sucursalId={sucursalId} onSucursalId={setSucursalId}
+          cajaId={cajaId} onCajaId={setCajaId}
           esConsumidorFinal={esConsumidorFinal} onEsConsumidorFinal={setEsConsumidorFinal}
           receptor={receptor} onReceptor={setReceptor}
           vendedorId={vendedorId} onVendedorId={setVendedorId}

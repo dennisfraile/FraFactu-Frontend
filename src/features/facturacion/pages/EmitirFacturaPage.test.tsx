@@ -34,8 +34,15 @@ describe('EmitirFacturaPage', () => {
 
   it('captura un ítem, revisa la vista previa y emite navegando al detalle', async () => {
     setup()
-    // Agregar ítem manual
+    // Selecciona la caja (requerida para emitir Factura 01); espera a que cargue del backend.
+    const cajaSelect = await screen.findByLabelText(/caja/i)
+    await screen.findByRole('option', { name: 'Caja Principal' })
+    await userEvent.selectOptions(cajaSelect, '1')
+    // Agregar ítem manual (Bien) → aparece el selector de Bodega; se selecciona.
     await userEvent.click(await screen.findByRole('button', { name: /agregar ítem/i }))
+    const bodegaSelect = await screen.findByLabelText(/bodega/i)
+    await screen.findByRole('option', { name: 'Bodega Principal' })
+    await userEvent.selectOptions(bodegaSelect, '1')
     await userEvent.type(screen.getByLabelText(/descripción/i), 'Producto A')
     await userEvent.clear(screen.getByLabelText(/cantidad/i)); await userEvent.type(screen.getByLabelText(/cantidad/i), '2')
     await userEvent.clear(screen.getByLabelText(/precio/i)); await userEvent.type(screen.getByLabelText(/precio/i), '56.5')
@@ -47,5 +54,7 @@ describe('EmitirFacturaPage', () => {
     // Emitir
     await userEvent.click(screen.getByRole('button', { name: /emitir dte/i }))
     expect(await screen.findByText('Detalle DTE')).toBeInTheDocument()
-  })
+    // Flujo de integración pesado (caja/bodega/catálogos async + emisión + navegación):
+    // timeout amplio para evitar flakiness bajo carga paralela de la suite.
+  }, 15000)
 })

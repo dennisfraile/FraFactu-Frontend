@@ -1,12 +1,15 @@
 // src/features/facturacion/components/DatosGeneralesSection.tsx
+import { useEffect } from 'react'
 import { FormField } from '@/design-system'
 import { ReceptorPicker } from './ReceptorPicker'
-import { useSucursales, useVendedores, useCatalogo } from '../hooks'
-import type { Sucursal, Vendedor, ReceptorListItem } from '../types'
+import { useSucursales, useVendedores, useCatalogo, useCajas } from '../hooks'
+import type { Sucursal, Vendedor, ReceptorListItem, CajaDto } from '../types'
 
 interface Props {
   sucursalId: number
   onSucursalId: (id: number) => void
+  cajaId: number | null
+  onCajaId: (id: number | null) => void
   esConsumidorFinal: boolean
   onEsConsumidorFinal: (v: boolean) => void
   receptor: ReceptorListItem | null
@@ -21,6 +24,18 @@ export function DatosGeneralesSection(p: Props) {
   const sucursales = useSucursales()
   const vendedores = useVendedores(p.sucursalId)
   const condiciones = useCatalogo('condicionesOperacion')
+  const cajas = useCajas(p.sucursalId)
+
+  // Auto-selecciona la primera caja activa de la sucursal si aún no hay ninguna elegida.
+  const cajasData = cajas.data
+  const cajaActualId = p.cajaId
+  const onCajaId = p.onCajaId
+  useEffect(() => {
+    if (cajaActualId == null && cajasData && cajasData.length > 0) {
+      onCajaId(cajasData[0].id)
+    }
+  }, [cajasData, cajaActualId, onCajaId])
+
   return (
     <section className="space-y-3">
       <h2 className="text-sm font-semibold uppercase tracking-wide text-slate">Datos generales</h2>
@@ -28,6 +43,13 @@ export function DatosGeneralesSection(p: Props) {
         <select id="sucursal" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
           value={p.sucursalId} onChange={(e) => p.onSucursalId(Number(e.target.value))}>
           {(sucursales.data ?? []).map((s: Sucursal) => <option key={s.id} value={s.id}>{s.nombre}</option>)}
+        </select>
+      </FormField>
+      <FormField label="Caja" htmlFor="caja">
+        <select id="caja" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
+          value={p.cajaId ?? ''} onChange={(e) => p.onCajaId(e.target.value ? Number(e.target.value) : null)}>
+          <option value="">Seleccione una caja</option>
+          {(cajas.data ?? []).map((c: CajaDto) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
         </select>
       </FormField>
       <label className="flex items-center gap-2 text-sm">

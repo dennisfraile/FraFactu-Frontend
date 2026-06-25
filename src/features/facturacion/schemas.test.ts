@@ -3,17 +3,29 @@ import { facturaFormSchema } from './schemas'
 
 const valido = {
   sucursalId: 1,
+  cajaId: 1,
   esConsumidorFinal: true,
   receptorId: null,
   vendedorId: null,
   condicionOperacion: 1,
-  items: [{ descripcion: 'A', cantidad: 1, precioUni: 113, uniMedida: 59, tipoItem: 1, tipoImpuesto: 1 }],
+  items: [{ descripcion: 'A', cantidad: 1, precioUni: 113, uniMedida: 39, tipoItem: 1, tipoImpuesto: 1, bodegaId: 2 }],
   pagos: [{ catFormaPagoId: 1, monto: 113 }],
 }
 
 describe('facturaFormSchema', () => {
   it('acepta un formulario válido', () => {
     expect(facturaFormSchema.safeParse(valido).success).toBe(true)
+  })
+  it('rechaza sin caja seleccionada', () => {
+    expect(facturaFormSchema.safeParse({ ...valido, cajaId: null }).success).toBe(false)
+  })
+  it('rechaza un ítem Bien sin bodega', () => {
+    const r = facturaFormSchema.safeParse({ ...valido, items: [{ ...valido.items[0], bodegaId: undefined }] })
+    expect(r.success).toBe(false)
+  })
+  it('acepta un ítem Servicio sin bodega', () => {
+    const r = facturaFormSchema.safeParse({ ...valido, items: [{ ...valido.items[0], tipoItem: 2, bodegaId: undefined }] })
+    expect(r.success).toBe(true)
   })
   it('rechaza sin ítems', () => {
     expect(facturaFormSchema.safeParse({ ...valido, items: [] }).success).toBe(false)
