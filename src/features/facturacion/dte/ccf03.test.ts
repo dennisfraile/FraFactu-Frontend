@@ -49,7 +49,7 @@ describe('ccfStrategy (03) metadatos', () => {
     expect(dto.ivaItem).toBe(13)
   })
   it('buildResumenDto incluye montoTotalOperacion y reteRenta=0', () => {
-    const calc = [ccfStrategy.calcItem({ descripcion: 'A', cantidad: 2, precioUni: 50, uniMedida: 39, tipoItem: 1, tipoImpuesto: 1 })]
+    const calc = [ccfStrategy.calcItem({ cantidad: 2, precioUni: 50, tipoImpuesto: 1 })]
     const res = ccfStrategy.calcResumen(calc)
     const dto = ccfStrategy.buildResumenDto(res, { sucursalId: 1, cajaId: 1, esConsumidorFinal: false, condicionOperacion: 1, receptorId: 7, items: [], pagos: [{ catFormaPagoId: 1, monto: 113 }] })
     expect(dto.montoTotalOperacion).toBe(113)
