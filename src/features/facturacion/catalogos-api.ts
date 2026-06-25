@@ -2,6 +2,7 @@
 import { api } from '@/lib/http/axios'
 import type {
   CatalogoItem, MunicipioItem, DistritoItem, ReceptorListItem, ProductoListItem, Vendedor, Sucursal,
+  CajaDto, BodegaItem,
 } from './types'
 
 // Mapa de nombre lógico → segmento real del endpoint /api/catalogos/*.
@@ -55,6 +56,22 @@ export const vendedoresApi = {
 export const sucursalesApi = {
   async todasActivas(): Promise<Sucursal[]> {
     const { data } = await api.get<Sucursal[]>('/sucursales/todas-activas')
+    return data
+  },
+}
+
+export const cajasApi = {
+  async porSucursal(sucursalId: number): Promise<CajaDto[]> {
+    const { data } = await api.get<CajaDto[]>('/cajas', { params: { sucursalId, soloActivos: true } })
+    return data
+  },
+}
+
+export const bodegasApi = {
+  async porSucursal(sucursalId: number): Promise<BodegaItem[]> {
+    const { data } = await api.get<BodegaItem[]>(`/bodegas/sucursal/${sucursalId}`, {
+      params: { soloActivas: true },
+    })
     return data
   },
 }

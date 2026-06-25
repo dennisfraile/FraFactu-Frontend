@@ -1,7 +1,7 @@
 // src/features/facturacion/hooks.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { facturacionApi, type ListarFacturasParams } from './api'
-import { catalogosApi, vendedoresApi, sucursalesApi, type NombreCatalogo } from './catalogos-api'
+import { catalogosApi, vendedoresApi, sucursalesApi, cajasApi, bodegasApi, type NombreCatalogo } from './catalogos-api'
 import type { CreateFacturaDto, AnularFacturaDto } from './types'
 
 const HORA_CATALOGO = 1000 * 60 * 60 // catálogos: estáticos durante la sesión
@@ -30,6 +30,22 @@ export function useSucursales() {
   return useQuery({ queryKey: ['sucursales'], queryFn: () => sucursalesApi.todasActivas(), staleTime: HORA_CATALOGO })
 }
 
+export function useCajas(sucursalId?: number) {
+  return useQuery({
+    queryKey: ['cajas', sucursalId],
+    queryFn: () => cajasApi.porSucursal(sucursalId!),
+    enabled: Number.isFinite(sucursalId),
+  })
+}
+
+export function useBodegas(sucursalId?: number) {
+  return useQuery({
+    queryKey: ['bodegas', sucursalId],
+    queryFn: () => bodegasApi.porSucursal(sucursalId!),
+    enabled: Number.isFinite(sucursalId),
+  })
+}
+
 export function useHistorial(params: ListarFacturasParams) {
   return useQuery({
     queryKey: ['facturas', params],
@@ -44,7 +60,9 @@ export function useFactura(id: number) {
 export function useEmitirFactura() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (dto: CreateFacturaDto) => facturacionApi.crear(dto),
+    // F5.1: emisión en modo PENDIENTE (sin transmisión a MH) vía guardar-pendiente.
+    // POST /facturas transmite a MH y requiere credenciales reales (se difiere a F5.4).
+    mutationFn: (dto: CreateFacturaDto) => facturacionApi.guardarPendiente(dto),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['facturas'] }),
   })
 }
