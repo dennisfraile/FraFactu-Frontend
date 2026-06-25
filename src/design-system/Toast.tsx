@@ -25,7 +25,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2" aria-live="polite">
         {items.map((t) => (
-          <div key={t.id} className={`rounded-md border bg-surface px-4 py-2 text-sm shadow-md dark:bg-[#16241f] ${toneCls[t.tone]}`}>
+          <div key={t.id} className={`rounded-md border bg-surface px-4 py-2 text-sm shadow-md dark:bg-surface-dark ${toneCls[t.tone]}`}>
             {t.msg}
           </div>
         ))}

@@ -38,15 +38,15 @@ export function DatosGeneralesSection(p: Props) {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate">Datos generales</h2>
+      <h2 className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-slate/80"><span className="h-1.5 w-1.5 rounded-full bg-oro" />Datos generales</h2>
       <FormField label="Sucursal" htmlFor="sucursal">
-        <select id="sucursal" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
+        <select id="sucursal" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-surface-dark"
           value={p.sucursalId} onChange={(e) => p.onSucursalId(Number(e.target.value))}>
           {(sucursales.data ?? []).map((s: Sucursal) => <option key={s.id} value={s.id}>{s.nombre}</option>)}
         </select>
       </FormField>
       <FormField label="Caja" htmlFor="caja">
-        <select id="caja" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
+        <select id="caja" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-surface-dark"
           value={p.cajaId ?? ''} onChange={(e) => p.onCajaId(e.target.value ? Number(e.target.value) : null)}>
           <option value="">Seleccione una caja</option>
           {(cajas.data ?? []).map((c: CajaDto) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
@@ -67,14 +67,14 @@ export function DatosGeneralesSection(p: Props) {
         </FormField>
       )}
       <FormField label="Vendedor (opcional)" htmlFor="vendedor">
-        <select id="vendedor" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
+        <select id="vendedor" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-surface-dark"
           value={p.vendedorId ?? ''} onChange={(e) => p.onVendedorId(e.target.value ? Number(e.target.value) : null)}>
           <option value="">—</option>
           {(vendedores.data ?? []).map((v: Vendedor) => <option key={v.id} value={v.id}>{v.nombre}</option>)}
         </select>
       </FormField>
       <FormField label="Condición de operación" htmlFor="condicion">
-        <select id="condicion" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
+        <select id="condicion" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-surface-dark"
           value={p.condicionOperacion} onChange={(e) => p.onCondicionOperacion(Number(e.target.value))}>
           {(condiciones.data ?? []).map((c) => <option key={c.id} value={c.id}>{c.valor}</option>)}
         </select>

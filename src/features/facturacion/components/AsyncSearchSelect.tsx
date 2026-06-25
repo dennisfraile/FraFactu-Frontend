@@ -38,7 +38,7 @@ export function AsyncSearchSelect<T>({ onSearch, getLabel, onSelect, placeholder
       <input
         role="combobox"
         aria-expanded={open}
-        className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
+        className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-surface-dark"
         placeholder={placeholder}
         value={term}
         onChange={(e) => setTerm(e.target.value)}
@@ -46,7 +46,7 @@ export function AsyncSearchSelect<T>({ onSearch, getLabel, onSelect, placeholder
         onBlur={() => setTimeout(() => setOpen(false), 150)}
       />
       {open && (
-        <ul role="listbox" className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md border border-hairline bg-surface shadow-lg dark:bg-[#16241f]">
+        <ul role="listbox" className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md border border-hairline bg-surface shadow-lg dark:bg-surface-dark">
           {cargando && <li className="px-3 py-2 text-sm text-slate">Buscando…</li>}
           {!cargando && visibles.map((item, idx) => (
             <li

@@ -24,7 +24,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="w-full max-w-md rounded-lg border border-hairline bg-surface p-5 shadow-xl outline-none dark:bg-[#16241f]"
+        className="w-full max-w-md rounded-lg border border-hairline bg-surface p-5 shadow-xl outline-none dark:bg-surface-dark"
         onClick={(e) => e.stopPropagation()}
       >
         {title && <h2 className="mb-3 font-display text-lg font-bold">{title}</h2>}

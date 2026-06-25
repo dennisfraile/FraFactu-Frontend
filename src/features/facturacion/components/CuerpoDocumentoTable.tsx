@@ -1,5 +1,5 @@
 // src/features/facturacion/components/CuerpoDocumentoTable.tsx
-import { Button, FormField, Input } from '@/design-system'
+import { Button, FormField, Input, Icon } from '@/design-system'
 import { ItemPicker } from './ItemPicker'
 import { useCatalogo, useBodegas } from '../hooks'
 import { TIPO_ITEM } from '../catalogos'
@@ -47,7 +47,7 @@ export function CuerpoDocumentoTable({ items, onChange, sucursalId }: Props) {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate">Cuerpo del documento</h2>
+      <h2 className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-slate/80"><span className="h-1.5 w-1.5 rounded-full bg-oro" />Cuerpo del documento</h2>
       {items.map((it, idx) => (
         <div key={idx} className="rounded-lg border border-hairline p-3">
           <div className="mb-2"><ItemPicker sucursalId={sucursalId} onSelect={(p) => fromProducto(idx, p)} /></div>
@@ -71,7 +71,7 @@ export function CuerpoDocumentoTable({ items, onChange, sucursalId }: Props) {
                 <select
                   id={`bodega-${idx}`}
                   aria-label="Bodega"
-                  className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
+                  className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-surface-dark"
                   value={it.bodegaId ?? ''}
                   onChange={(e) => set(idx, { bodegaId: e.target.value ? Number(e.target.value) : undefined })}
                 >
@@ -87,7 +87,7 @@ export function CuerpoDocumentoTable({ items, onChange, sucursalId }: Props) {
         </div>
       ))}
       {/* Se espera al catálogo de unidades para no crear ítems con uniMedida inválida (0). */}
-      <Button variant="ghost" onClick={agregar} disabled={!unidades.data}>+ Agregar ítem</Button>
+      <Button variant="ghost" onClick={agregar} disabled={!unidades.data}><Icon name="plus" size={16} />Agregar ítem</Button>
     </section>
   )
 }

@@ -18,7 +18,7 @@ export function Drawer({ open, onClose, side = 'left', children }: DrawerProps) 
       <aside
         role="dialog"
         aria-modal="true"
-        className={`absolute top-0 h-full w-72 max-w-[80%] bg-surface p-4 shadow-xl dark:bg-[#16241f] ${side === 'left' ? 'left-0' : 'right-0'}`}
+        className={`absolute top-0 h-full w-72 max-w-[80%] bg-surface p-4 shadow-xl dark:bg-surface-dark ${side === 'left' ? 'left-0' : 'right-0'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

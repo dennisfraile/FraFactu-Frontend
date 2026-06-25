@@ -24,7 +24,7 @@ export function ResetPasswordPage() {
     } finally { setBusy(false) }
   }
   return (
-    <div className="grid min-h-full place-items-center bg-canvas p-6 dark:bg-[#0f1c18]">
+    <div className="grid min-h-full place-items-center bg-canvas p-6 dark:bg-canvas-dark">
       <Card className="w-full max-w-sm">
         <h1 className="mb-3 font-display text-xl font-bold">Nueva contraseña</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">

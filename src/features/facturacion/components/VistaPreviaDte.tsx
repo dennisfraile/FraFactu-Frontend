@@ -1,6 +1,6 @@
 // src/features/facturacion/components/VistaPreviaDte.tsx
 import { QRCodeSVG } from 'qrcode.react'
-import { Button } from '@/design-system'
+import { Button, Icon } from '@/design-system'
 import type { CreateFacturaDto } from '../types'
 
 interface Props {
@@ -74,7 +74,7 @@ export function VistaPreviaDte({ dto, codigoGeneracion, ambiente = '00', onEmiti
       </div>
 
       <div className="flex gap-3 print:hidden">
-        <Button variant="ghost" onClick={() => window.print()}>Descargar PDF</Button>
+        <Button variant="ghost" onClick={() => window.print()}><Icon name="printer" size={16} />Descargar PDF</Button>
         {onEmitir && <Button onClick={onEmitir} disabled={emitiendo}>{emitiendo ? 'Emitiendo…' : 'Emitir DTE'}</Button>}
       </div>
     </div>

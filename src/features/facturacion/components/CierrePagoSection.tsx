@@ -1,5 +1,5 @@
 // src/features/facturacion/components/CierrePagoSection.tsx
-import { Button, FormField, Input } from '@/design-system'
+import { Button, FormField, Input, Icon } from '@/design-system'
 import { useCatalogo } from '../hooks'
 import type { FormPago } from '../mappers'
 
@@ -15,11 +15,11 @@ export function CierrePagoSection({ pagos, onChange }: Props) {
   const quitar = (idx: number) => onChange(pagos.filter((_, i) => i !== idx))
   return (
     <section className="space-y-3">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate">Cierre de pago</h2>
+      <h2 className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-slate/80"><span className="h-1.5 w-1.5 rounded-full bg-oro" />Cierre de pago</h2>
       {pagos.map((p, idx) => (
         <div key={idx} className="grid grid-cols-2 gap-2">
           <FormField label="Forma de pago" htmlFor={`fp-${idx}`}>
-            <select id={`fp-${idx}`} className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
+            <select id={`fp-${idx}`} className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-surface-dark"
               value={p.catFormaPagoId} onChange={(e) => set(idx, { catFormaPagoId: Number(e.target.value) })}>
               {(formas.data ?? []).map((f) => <option key={f.id} value={f.id}>{f.valor}</option>)}
             </select>
@@ -30,7 +30,7 @@ export function CierrePagoSection({ pagos, onChange }: Props) {
           {pagos.length > 1 && <button type="button" className="text-xs text-rojo" onClick={() => quitar(idx)}>Quitar</button>}
         </div>
       ))}
-      <Button variant="ghost" onClick={agregar}>+ Agregar pago</Button>
+      <Button variant="ghost" onClick={agregar}><Icon name="plus" size={16} />Agregar pago</Button>
     </section>
   )
 }
