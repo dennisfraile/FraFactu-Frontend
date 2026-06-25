@@ -5,7 +5,6 @@ export const navSections: NavSection[] = [
   { title: 'Facturación', items: [
     { label: 'Emitir DTE', to: '/facturacion/emitir' },
     { label: 'Historial', to: '/facturacion/historial' },
-    { label: 'Recibidos', to: '/facturacion/recibidos' },
   ] },
   { title: 'Inventario', items: [
     { label: 'Productos', to: '/inventario/productos' },
