@@ -26,4 +26,8 @@ describe('router', () => {
     setup('/dashboard')
     expect(screen.getByRole('button', { name: /iniciar sesión/i })).toBeInTheDocument()
   })
+  it('una ruta de facturación protegida redirige a login si anon', () => {
+    setup('/facturacion/emitir')
+    expect(screen.getByRole('button', { name: /iniciar sesión/i })).toBeInTheDocument()
+  })
 })

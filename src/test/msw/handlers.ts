@@ -1,4 +1,5 @@
 import { http, HttpResponse } from 'msw'
+import { facturacionHandlers } from './facturacion-handlers'
 
 const base = 'http://localhost:8080/api'
 const loginOk = {
@@ -23,4 +24,5 @@ export const handlers = [
   }),
   http.post(`${base}/auth/change-password-first-login`, () => HttpResponse.json(loginOk)),
   http.post(`${base}/auth/logout`, () => HttpResponse.json({ message: 'ok' })),
+  ...facturacionHandlers,
 ]

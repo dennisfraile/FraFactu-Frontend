@@ -7,6 +7,9 @@ import { ResetPasswordPage } from '@/features/auth/ResetPasswordPage'
 import { FirstLoginPage } from '@/features/auth/FirstLoginPage'
 import { DashboardPlaceholder } from '@/features/dashboard/DashboardPlaceholder'
 import { UiKitPage } from '@/features/ui-kit/UiKitPage'
+import { EmitirFacturaPage } from '@/features/facturacion/pages/EmitirFacturaPage'
+import { HistorialPage } from '@/features/facturacion/pages/HistorialPage'
+import { DteDetallePage } from '@/features/facturacion/pages/DteDetallePage'
 
 export function AppRoutes() {
   return (
@@ -19,6 +22,9 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPlaceholder />} />
+          <Route path="/facturacion/emitir" element={<EmitirFacturaPage />} />
+          <Route path="/facturacion/historial" element={<HistorialPage />} />
+          <Route path="/facturacion/:id" element={<DteDetallePage />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>

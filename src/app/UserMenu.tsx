@@ -41,7 +41,7 @@ export function UserMenu() {
         {user?.nombreCompleto ?? 'Usuario'}
       </button>
       {open && (
-        <div role="menu" className="absolute right-0 mt-1 w-44 rounded-md border border-hairline bg-surface p-1 shadow-lg dark:bg-[#16241f]">
+        <div role="menu" className="absolute right-0 mt-1 w-44 rounded-md border border-hairline bg-surface p-1 shadow-lg dark:bg-surface-dark">
           <button role="menuitem" onClick={cerrarSesion} className="block w-full rounded px-3 py-2 text-left text-sm hover:bg-rojo/10 text-rojo">
             Cerrar sesión
           </button>

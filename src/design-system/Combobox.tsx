@@ -22,7 +22,7 @@ export function Combobox<T>({ items, value, onChange, getLabel, placeholder, id 
         role="combobox"
         aria-expanded={open}
         aria-controls={`${id}-list`}
-        className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-[#16241f]"
+        className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-surface-dark"
         placeholder={placeholder}
         value={open ? query : value ? getLabel(value) : ''}
         onFocus={() => setOpen(true)}
@@ -30,7 +30,7 @@ export function Combobox<T>({ items, value, onChange, getLabel, placeholder, id 
         onBlur={() => setTimeout(() => setOpen(false), 120)}
       />
       {open && (
-        <ul id={`${id}-list`} role="listbox" className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md border border-hairline bg-surface shadow-lg dark:bg-[#16241f]">
+        <ul id={`${id}-list`} role="listbox" className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md border border-hairline bg-surface shadow-lg dark:bg-surface-dark">
           {filtered.map((i, idx) => (
             <li
               key={idx}
