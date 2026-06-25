@@ -1,5 +1,5 @@
 // src/features/facturacion/pages/EmitirFacturaPage.tsx
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, useToast } from '@/design-system'
 import { useAuthStore } from '@/app/auth-store'
@@ -11,7 +11,7 @@ import { VistaPreviaDte } from '../components/VistaPreviaDte'
 import { facturaFormSchema } from '../schemas'
 import { buildCreateFacturaDto, type FormItem, type FormPago, type FacturaFormValues } from '../mappers'
 import { useEmitirFactura } from '../hooks'
-import type { ReceptorListItem } from '../types'
+import type { CreateFacturaDto, ReceptorListItem } from '../types'
 
 function ahora() {
   const d = new Date()
@@ -38,15 +38,19 @@ export function EmitirFacturaPage() {
     sucursalId, esConsumidorFinal, receptorId: receptor?.id ?? null, vendedorId, condicionOperacion, items, pagos,
   }
 
-  const dtoPreview = useMemo(() => {
-    try { return buildCreateFacturaDto(values, ahora()) } catch { return null }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paso])
+  // Snapshot del DTO armado al entrar a la vista previa (no se recalcula en cada render).
+  const [dtoPreview, setDtoPreview] = useState<CreateFacturaDto | null>(null)
 
   const irAPreview = () => {
     const res = facturaFormSchema.safeParse(values)
     if (!res.success) {
       toast.show(res.error.issues[0]?.message ?? 'Revise el formulario', { tone: 'rojo' })
+      return
+    }
+    try {
+      setDtoPreview(buildCreateFacturaDto(values, ahora()))
+    } catch {
+      toast.show('No se pudo armar la vista previa', { tone: 'rojo' })
       return
     }
     setPaso('preview')
