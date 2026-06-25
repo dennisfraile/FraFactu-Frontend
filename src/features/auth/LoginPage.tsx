@@ -7,6 +7,7 @@ import { loginSchema, type LoginValues } from './schemas'
 import { authApi } from './api'
 import { GoogleButton } from './GoogleButton'
 import { useAuthStore } from '@/app/auth-store'
+import { env } from '@/lib/config/env'
 import type { LoginResponse } from './types'
 
 export function LoginPage() {
@@ -51,8 +52,14 @@ export function LoginPage() {
           </FormField>
           <Button type="submit" loading={busy} className="w-full">Iniciar sesión</Button>
         </form>
-        <div className="my-4 flex items-center gap-3 text-xs text-slate"><span className="h-px flex-1 bg-hairline" />o<span className="h-px flex-1 bg-hairline" /></div>
-        <GoogleButton onToken={onGoogle} disabled={busy} />
+        {/* Google es opcional: solo se ofrece si hay un client id configurado
+            (useGoogleLogin con client id vacío rompe en runtime). */}
+        {env.googleClientId && (
+          <>
+            <div className="my-4 flex items-center gap-3 text-xs text-slate"><span className="h-px flex-1 bg-hairline" />o<span className="h-px flex-1 bg-hairline" /></div>
+            <GoogleButton onToken={onGoogle} disabled={busy} />
+          </>
+        )}
         <div className="mt-4 text-center text-sm">
           <Link to="/forgot-password" className="text-sello hover:underline">¿Olvidaste tu contraseña?</Link>
         </div>
