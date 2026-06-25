@@ -50,10 +50,4 @@ describe('buildCreateFacturaDto', () => {
     expect(dto.receptorId).toBe(7)
     expect(dto.receptor).toBeNull()
   })
-
-  it('sin receptor (no consumidor final pero sin receptorId) cae a Consumidor Final inline', () => {
-    const dto = buildCreateFacturaDto({ ...base, esConsumidorFinal: false, receptorId: null }, { fecha: '2026-06-23', hora: '14:30:00' })
-    expect(dto.receptorId).toBeNull()
-    expect(dto.receptor).toEqual({ nombre: 'Consumidor Final' })
-  })
 })

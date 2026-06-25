@@ -75,7 +75,8 @@ export function buildCreateFacturaDto(
 
   // Consumidor Final → receptor inline (el backend rechaza receptorId y receptor ambos nulos).
   // Receptor registrado → receptorId (el backend exige receptorId XOR receptor, no ambos).
-  const esConsumidorFinal = values.esConsumidorFinal || !values.receptorId
+  // El schema garantiza receptorId presente cuando no es Consumidor Final.
+  const esConsumidorFinal = values.esConsumidorFinal
 
   return {
     identificacion: {

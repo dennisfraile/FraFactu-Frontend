@@ -4,9 +4,13 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { http, HttpResponse } from 'msw'
 import { ToastProvider } from '@/design-system'
 import { EmitirFacturaPage } from './EmitirFacturaPage'
 import { useAuthStore } from '@/app/auth-store'
+import { server } from '@/test/msw/server'
+
+const API = 'http://localhost:8080/api'
 
 function setup() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -33,6 +37,14 @@ describe('EmitirFacturaPage', () => {
   })
 
   it('captura un ítem, revisa la vista previa y emite navegando al detalle', async () => {
+    // Captura el cuerpo del POST para verificar que el contrato real llega al backend.
+    let body: { cajaId?: number; identificacion?: { version?: number }; cuerpoDocumento?: { bodegaId?: number }[] } | null = null
+    server.use(
+      http.post(`${API}/facturas/guardar-pendiente`, async ({ request }) => {
+        body = (await request.json()) as typeof body
+        return HttpResponse.json({ id: 10, numeroControl: 'DTE-01-M001P001-000000000000001' }, { status: 201 })
+      }),
+    )
     setup()
     // Selecciona la caja (requerida para emitir Factura 01); espera a que cargue del backend.
     const cajaSelect = await screen.findByLabelText(/caja/i)
@@ -54,6 +66,10 @@ describe('EmitirFacturaPage', () => {
     // Emitir
     await userEvent.click(screen.getByRole('button', { name: /emitir dte/i }))
     expect(await screen.findByText('Detalle DTE')).toBeInTheDocument()
+    // El contrato real viajó en el cuerpo del POST: caja, bodega del ítem y version 2.
+    expect(body!.cajaId).toBe(1)
+    expect(body!.cuerpoDocumento![0].bodegaId).toBe(1)
+    expect(body!.identificacion!.version).toBe(2)
     // Flujo de integración pesado (caja/bodega/catálogos async + emisión + navegación):
     // timeout amplio para evitar flakiness bajo carga paralela de la suite.
   }, 15000)

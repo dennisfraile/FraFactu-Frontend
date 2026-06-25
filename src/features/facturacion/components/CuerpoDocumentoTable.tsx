@@ -86,7 +86,8 @@ export function CuerpoDocumentoTable({ items, onChange, sucursalId }: Props) {
           </div>
         </div>
       ))}
-      <Button variant="ghost" onClick={agregar}>+ Agregar ítem</Button>
+      {/* Se espera al catálogo de unidades para no crear ítems con uniMedida inválida (0). */}
+      <Button variant="ghost" onClick={agregar} disabled={!unidades.data}>+ Agregar ítem</Button>
     </section>
   )
 }
