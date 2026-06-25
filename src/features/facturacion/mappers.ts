@@ -1,6 +1,6 @@
 import type { CreateFacturaDto, ReceptorDteDto, TipoDte } from './types'
 import { getStrategy } from './dte/registry'
-import { NUMERO_CONTROL_PLACEHOLDER, CODIGO_GENERACION_PLACEHOLDER } from './catalogos'
+import { CODIGO_GENERACION_PLACEHOLDER } from './catalogos'
 import type { FacturaFormValues } from './dte/strategy'
 
 // Re-export para compatibilidad con los componentes que importan estos tipos desde mappers.
@@ -32,11 +32,15 @@ export function buildCreateFacturaDto(
   // (por receptorId) es obligatorio y se manda como receptorId XOR receptor inline.
   const esConsumidorFinal = strategy.receptorPolicy === 'opcional' && values.esConsumidorFinal
 
+  // Placeholder derivado del tipoDte para que cumpla la regex del backend:
+  // DTE-{tipoDte}-(M|B|S|P)###P###-{15 dígitos}
+  const numeroControlPlaceholder = `DTE-${strategy.tipoDte}-M001P001-000000000000000`
+
   return {
     identificacion: {
       version: strategy.version,
       tipoDte: strategy.tipoDte,
-      numeroControl: NUMERO_CONTROL_PLACEHOLDER,
+      numeroControl: numeroControlPlaceholder,
       codigoGeneracion: CODIGO_GENERACION_PLACEHOLDER,
       tipoModelo: 1,
       tipoOperacion: 1,
