@@ -39,10 +39,17 @@ export function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-full place-items-center bg-canvas p-6 dark:bg-[#0f1c18]">
-      <Card className="w-full max-w-sm">
-        <h1 className="mb-1 font-display text-2xl font-bold tracking-tight">FraFactu</h1>
-        <p className="mb-5 text-sm text-slate">Inicia sesión para continuar.</p>
+    <div className="relative grid min-h-full place-items-center overflow-hidden bg-canvas p-6 dark:bg-canvas-dark">
+      {/* Atmósfera: resplandor sello + lacre oro, muy tenue. */}
+      <div aria-hidden className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-sello/10 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-40 -right-24 h-96 w-96 rounded-full bg-oro/10 blur-3xl" />
+      <Card className="relative w-full max-w-sm p-7! shadow-lift">
+        <div className="mb-6 flex flex-col items-center text-center">
+          <span className="grid h-12 w-12 place-items-center rounded-xl bg-sello font-display text-xl font-bold text-white shadow-soft ring-1 ring-oro/40">F</span>
+          <h1 className="mt-3 font-display text-2xl font-bold tracking-tight">FraFactu</h1>
+          <p className="text-sm text-slate">Facturación electrónica</p>
+          <span className="mt-3 h-0.5 w-10 rounded-full bg-oro" />
+        </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <FormField label="Correo" htmlFor="email" error={errors.email?.message}>
             <Input id="email" type="email" autoComplete="email" invalid={!!errors.email} {...register('email')} />

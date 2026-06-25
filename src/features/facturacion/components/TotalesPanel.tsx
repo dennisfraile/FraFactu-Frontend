@@ -13,15 +13,21 @@ export function TotalesPanel({ items }: { items: FormItem[] }) {
 
   const fmt = (n: number) => `$${n.toFixed(2)}`
   return (
-    <div className="sticky top-4 rounded-xl border border-hairline bg-surface p-4 dark:bg-[#16241f]">
-      <h3 className="mb-3 text-sm font-semibold text-ink">Resumen</h3>
-      <dl className="space-y-1 text-sm">
-        <div className="flex justify-between"><dt className="text-slate">Gravado</dt><dd>{fmt(resumen.totalGravada)}</dd></div>
-        <div className="flex justify-between"><dt className="text-slate">Exento</dt><dd>{fmt(resumen.totalExenta)}</dd></div>
-        <div className="flex justify-between"><dt className="text-slate">IVA 13%</dt><dd>{fmt(resumen.totalIva)}</dd></div>
-        <div className="mt-2 flex justify-between border-t border-hairline pt-2 text-base font-bold text-sello"><dt>Total</dt><dd>{fmt(resumen.totalPagar)}</dd></div>
+    <div className="sticky top-4 rounded-xl border border-hairline bg-surface p-5 shadow-card dark:border-white/10 dark:bg-surface-dark dark:shadow-none">
+      <p className="mb-3 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-slate/80">
+        <span className="h-1.5 w-1.5 rounded-full bg-oro" /> Resumen
+      </p>
+      <dl className="space-y-1.5 text-sm">
+        <div className="flex items-baseline justify-between"><dt className="text-slate">Gravado</dt><dd className="cifra text-ink/90 dark:text-white/85">{fmt(resumen.totalGravada)}</dd></div>
+        <div className="flex items-baseline justify-between"><dt className="text-slate">Exento</dt><dd className="cifra text-ink/90 dark:text-white/85">{fmt(resumen.totalExenta)}</dd></div>
+        <div className="flex items-baseline justify-between"><dt className="text-slate">IVA 13%</dt><dd className="cifra text-ink/90 dark:text-white/85">{fmt(resumen.totalIva)}</dd></div>
       </dl>
-      <p className="mt-2 text-xs text-slate">{numeroALetras(resumen.totalPagar)}</p>
+      {/* El total es el momento "lacre": cifra dorada, embosada. */}
+      <div className="mt-3 flex items-baseline justify-between rounded-lg bg-oro-tint/70 px-3 py-2.5 dark:bg-oro/10">
+        <span className="text-sm font-semibold text-oro-ink dark:text-oro-bright">Total a pagar</span>
+        <span className="cifra text-xl font-bold text-oro-ink dark:text-oro-bright">{fmt(resumen.totalPagar)}</span>
+      </div>
+      <p className="mt-2.5 text-xs leading-snug text-slate">{numeroALetras(resumen.totalPagar)}</p>
     </div>
   )
 }

@@ -21,43 +21,56 @@ export function VistaPreviaDte({ dto, codigoGeneracion, ambiente = '00', onEmiti
   const url = urlConsultaMh(codigoGeneracion, dto.identificacion.fechaEmision, ambiente)
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-hairline bg-surface p-6 print:border-0 dark:bg-[#16241f]">
-        <div className="flex items-start justify-between">
+      <div className="overflow-hidden rounded-xl border border-hairline bg-surface shadow-card print:border-0 print:shadow-none dark:border-white/10 dark:bg-surface-dark dark:shadow-none">
+        {/* Cabecera del documento con franja sello. */}
+        <div className="flex items-start justify-between gap-4 border-b border-hairline bg-sello-tint/50 px-6 py-4 dark:border-white/10 dark:bg-sello/10">
           <div>
-            <h2 className="text-lg font-semibold text-ink">Factura Electrónica (01)</h2>
-            <p className="text-sm text-slate">Fecha: {dto.identificacion.fechaEmision} {dto.identificacion.horaEmision}</p>
-            {codigoGeneracion && <p className="text-xs text-slate">Código generación: {codigoGeneracion}</p>}
+            <div className="flex items-center gap-2">
+              <h2 className="font-display text-lg font-semibold text-ink dark:text-white">Factura Electrónica</h2>
+              <span className="rounded-md bg-sello px-1.5 py-0.5 font-mono text-[11px] font-semibold text-white ring-1 ring-oro/40">01</span>
+            </div>
+            <p className="mt-0.5 text-sm text-slate">Fecha: <span className="cifra">{dto.identificacion.fechaEmision} {dto.identificacion.horaEmision}</span></p>
+            {codigoGeneracion && <p className="text-xs text-slate">Código generación: <span className="cifra">{codigoGeneracion}</span></p>}
           </div>
-          <div className="text-center">
-            <QRCodeSVG value={url} size={96} />
-            <p className="mt-1 text-[10px] text-slate">Válido tras transmisión a MH</p>
+          {/* Sello de recepción (QR enmarcado en oro). */}
+          <div className="shrink-0 rounded-lg border border-oro/40 bg-surface p-2 text-center dark:bg-surface-dark">
+            <QRCodeSVG value={url} size={88} />
+            <p className="mt-1 max-w-[96px] text-[9px] leading-tight text-slate">Válido tras transmisión a MH</p>
           </div>
         </div>
 
-        <table className="mt-4 w-full text-sm">
-          <thead>
-            <tr className="border-b border-hairline text-left text-slate">
-              <th className="py-1">Descripción</th><th className="py-1">Cant.</th><th className="py-1">Precio</th><th className="py-1">Gravado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dto.cuerpoDocumento.map((it) => (
-              <tr key={it.numItem} className="border-b border-hairline">
-                <td className="py-1">{it.descripcion}</td>
-                <td className="py-1">{it.cantidad}</td>
-                <td className="py-1">{fmt(it.precioUni)}</td>
-                <td className="py-1">{fmt(it.ventaGravada)}</td>
+        <div className="px-6 py-5">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-hairline text-left font-mono text-[11px] uppercase tracking-wide text-slate/80">
+                <th className="pb-2 font-medium">Descripción</th>
+                <th className="pb-2 text-right font-medium">Cant.</th>
+                <th className="pb-2 text-right font-medium">Precio</th>
+                <th className="pb-2 text-right font-medium">Gravado</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {dto.cuerpoDocumento.map((it) => (
+                <tr key={it.numItem} className="border-b border-hairline/70">
+                  <td className="py-2">{it.descripcion}</td>
+                  <td className="cifra py-2 text-right">{it.cantidad}</td>
+                  <td className="cifra py-2 text-right">{fmt(it.precioUni)}</td>
+                  <td className="cifra py-2 text-right">{fmt(it.ventaGravada)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-        <dl className="mt-4 ml-auto max-w-xs space-y-1 text-sm">
-          <div className="flex justify-between"><dt className="text-slate">Gravado</dt><dd>{fmt(dto.resumen.totalGravada)}</dd></div>
-          <div className="flex justify-between"><dt className="text-slate">IVA 13%</dt><dd>{fmt(dto.resumen.totalIva)}</dd></div>
-          <div className="flex justify-between border-t border-hairline pt-1 font-bold text-sello"><dt>Total</dt><dd>{fmt(dto.resumen.totalPagar)}</dd></div>
-        </dl>
-        <p className="mt-2 text-xs text-slate">{dto.resumen.totalLetras}</p>
+          <dl className="mt-4 ml-auto max-w-xs space-y-1.5 text-sm">
+            <div className="flex items-baseline justify-between"><dt className="text-slate">Gravado</dt><dd className="cifra text-ink/90 dark:text-white/85">{fmt(dto.resumen.totalGravada)}</dd></div>
+            <div className="flex items-baseline justify-between"><dt className="text-slate">IVA 13%</dt><dd className="cifra text-ink/90 dark:text-white/85">{fmt(dto.resumen.totalIva)}</dd></div>
+            <div className="mt-1 flex items-baseline justify-between rounded-lg bg-oro-tint/70 px-3 py-2 dark:bg-oro/10">
+              <dt className="font-semibold text-oro-ink dark:text-oro-bright">Total</dt>
+              <dd className="cifra text-lg font-bold text-oro-ink dark:text-oro-bright">{fmt(dto.resumen.totalPagar)}</dd>
+            </div>
+          </dl>
+          <p className="mt-2.5 text-xs leading-snug text-slate">{dto.resumen.totalLetras}</p>
+        </div>
       </div>
 
       <div className="flex gap-3 print:hidden">
