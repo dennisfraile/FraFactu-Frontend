@@ -52,6 +52,13 @@ const paths: Record<string, ReactNode> = {
       <path d="m18 17-5-5 5-5" />
     </>
   ),
+  menu: (
+    <>
+      <path d="M4 6h16" />
+      <path d="M4 12h16" />
+      <path d="M4 18h16" />
+    </>
+  ),
   printer: (
     <>
       <path d="M6 9V2h12v7" />

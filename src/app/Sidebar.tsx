@@ -14,7 +14,7 @@ export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle:
         aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
         className="mb-2 flex h-9 items-center justify-center rounded-md text-slate transition-colors hover:bg-sello-tint hover:text-sello-ink dark:hover:bg-white/5 dark:hover:text-white"
       >
-        <Icon name="chevrons-left" size={18} className={`transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`} />
+        <Icon name="menu" size={20} />
       </button>
 
       {navSections.map((sec, i) => (
