@@ -1,6 +1,8 @@
 import { z } from 'zod'
-import { calcularItemFactura01, calcularResumenFactura01, pagosCuadran } from './calc/factura01'
+import { pagosCuadran } from './calc/factura01'
 import { TIPO_ITEM } from './catalogos'
+import { getStrategy } from './dte/registry'
+import type { DteStrategy } from './dte/strategy'
 
 const itemSchema = z.object({
   productoId: z.number().optional(),
@@ -20,34 +22,51 @@ const pagoSchema = z.object({
   monto: z.number().positive('El monto debe ser mayor que 0'),
 })
 
-export const facturaFormSchema = z
-  .object({
-    sucursalId: z.number().int().positive('Seleccione una sucursal'),
-    cajaId: z.number().int().positive('Seleccione una caja'),
-    esConsumidorFinal: z.boolean(),
-    receptorId: z.number().int().nullable().optional(),
-    vendedorId: z.number().int().nullable().optional(),
-    condicionOperacion: z.number().int(),
-    items: z.array(itemSchema).min(1, 'Agregue al menos un ítem'),
-    pagos: z.array(pagoSchema).min(1, 'Agregue al menos una forma de pago'),
-  })
-  .superRefine((v, ctx) => {
-    if (!v.esConsumidorFinal && !v.receptorId) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['receptorId'], message: 'Seleccione un receptor o marque Consumidor Final' })
-    }
-    // Los ítems de tipo Bien (físico) requieren una bodega para descargar inventario.
-    v.items.forEach((it, idx) => {
-      if (it.tipoItem === TIPO_ITEM.BIEN && !it.bodegaId) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['items', idx, 'bodegaId'], message: 'Seleccione una bodega para el ítem' })
+export function buildFacturaSchema(strategy: DteStrategy) {
+  return z
+    .object({
+      sucursalId: z.number().int().positive('Seleccione una sucursal'),
+      cajaId: z.number().int().positive().nullable(),
+      esConsumidorFinal: z.boolean(),
+      receptorId: z.number().int().nullable().optional(),
+      vendedorId: z.number().int().nullable().optional(),
+      condicionOperacion: z.number().int(),
+      esAgenteRetencion: z.boolean().optional(),
+      items: z.array(itemSchema).min(1, 'Agregue al menos un ítem'),
+      pagos: z.array(pagoSchema).min(1, 'Agregue al menos una forma de pago'),
+    })
+    .superRefine((v, ctx) => {
+      // Caja: obligatoria solo si el tipo la requiere (01/03).
+      if (strategy.requiereCaja && !v.cajaId) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['cajaId'], message: 'Seleccione una caja' })
+      }
+      // Receptor: según la política del tipo.
+      if (strategy.receptorPolicy === 'opcional') {
+        if (!v.esConsumidorFinal && !v.receptorId) {
+          ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['receptorId'], message: 'Seleccione un receptor o marque Consumidor Final' })
+        }
+      } else if (!v.receptorId) {
+        const msg = strategy.receptorPolicy === 'sujetoExcluido' ? 'Seleccione el sujeto excluido' : 'Seleccione el receptor (contribuyente)'
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['receptorId'], message: msg })
+      }
+      // Bodega: requerida en ítems Bien solo cuando el tipo descuenta stock (01/03).
+      if (strategy.descuentaStock) {
+        v.items.forEach((it, idx) => {
+          if (it.tipoItem === TIPO_ITEM.BIEN && !it.bodegaId) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['items', idx, 'bodegaId'], message: 'Seleccione una bodega para el ítem' })
+          }
+        })
+      }
+      // Cuadre de pagos contra el total calculado por la estrategia.
+      const calc = v.items.map((it) =>
+        strategy.calcItem({ cantidad: it.cantidad, precioUni: it.precioUni, montoDescuento: it.montoDescuento, tipoImpuesto: it.tipoImpuesto }),
+      )
+      const { totalPagar } = strategy.calcResumen(calc, { esAgenteRetencion: v.esAgenteRetencion })
+      if (!pagosCuadran(v.pagos.map((p) => p.monto), totalPagar)) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['pagos'], message: `Los pagos deben sumar exactamente $${totalPagar.toFixed(2)}` })
       }
     })
-    const calc = v.items.map((it) =>
-      calcularItemFactura01({ cantidad: it.cantidad, precioUni: it.precioUni, montoDescuento: it.montoDescuento, tipoImpuesto: it.tipoImpuesto }),
-    )
-    const { totalPagar } = calcularResumenFactura01(calc)
-    if (!pagosCuadran(v.pagos.map((p) => p.monto), totalPagar)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['pagos'], message: `Los pagos deben sumar exactamente $${totalPagar.toFixed(2)}` })
-    }
-  })
+}
 
+export const facturaFormSchema = buildFacturaSchema(getStrategy('01'))
 export type FacturaFormInput = z.infer<typeof facturaFormSchema>
