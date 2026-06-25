@@ -1,10 +1,12 @@
 import type { TipoDte } from '../types'
 import type { DteStrategy } from './strategy'
 import { facturaStrategy } from './factura01'
+import { ccfStrategy } from './ccf03'
 
-// Estrategias por tipo de DTE. CCF (03) y FSE (14) se añaden en F5.2b/F5.2c.
+// Estrategias por tipo de DTE. FSE (14) se añade en F5.2c.
 export const dteRegistry: Partial<Record<TipoDte, DteStrategy>> = {
   '01': facturaStrategy,
+  '03': ccfStrategy,
 }
 
 export function getStrategySafe(tipoDte: TipoDte): DteStrategy | undefined {
