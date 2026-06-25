@@ -5,7 +5,7 @@ import { VistaPreviaDte } from './VistaPreviaDte'
 import type { CreateFacturaDto } from '../types'
 
 const dto: CreateFacturaDto = {
-  identificacion: { version: 1, tipoDte: '01', tipoModelo: 1, tipoOperacion: 1, crearEventoAutomatico: false, fechaEmision: '2026-06-23', horaEmision: '14:30:00', tipoMoneda: 'USD' },
+  identificacion: { version: 2, tipoDte: '01', numeroControl: 'DTE-01-M001P001-000000000000000', codigoGeneracion: '00000000-0000-0000-0000-000000000000', tipoModelo: 1, tipoOperacion: 1, crearEventoAutomatico: false, fechaEmision: '2026-06-23', horaEmision: '14:30:00', tipoMoneda: 'USD' },
   sucursalId: 1, receptorId: null, receptor: null, vendedorId: null,
   cuerpoDocumento: [{ numItem: 1, tipoItem: 1, cantidad: 2, uniMedida: 59, descripcion: 'Producto A', precioUni: 56.5, montoDescuento: 0, ventaGravada: 113, ventaExenta: 0, ventaNoSuj: 0, ivaItem: 13 }],
   resumen: { totalNoSuj: 0, totalExenta: 0, totalGravada: 113, subTotal: 113, totalIva: 13, totalPagar: 113, totalLetras: 'CIENTO TRECE DÓLARES CON 00/100', condicionOperacion: 1, pagos: [{ catFormaPagoId: 1, monto: 113 }] },

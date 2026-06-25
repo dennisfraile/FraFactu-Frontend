@@ -25,6 +25,10 @@ export interface PaginatedResponse<T> {
 export interface IdentificacionDto {
   version: number
   tipoDte: TipoDte
+  // numeroControl y codigoGeneracion: el validador del backend los exige (NotEmpty + formato),
+  // pero el servicio los regenera y descarta. Se envían placeholders válidos.
+  numeroControl: string
+  codigoGeneracion: string
   tipoModelo: number
   tipoOperacion: number
   crearEventoAutomatico: boolean
@@ -97,6 +101,7 @@ export interface ResumenDto {
 
 export interface CreateFacturaDto {
   identificacion: IdentificacionDto
+  cajaId?: number | null
   sucursalId: number
   receptorId?: number | null
   receptor?: ReceptorDteDto | null
@@ -179,4 +184,25 @@ export interface Vendedor {
 export interface Sucursal {
   id: number
   nombre: string
+}
+
+// Caja registradora (POS). Requerida para emitir Factura 01.
+export interface CajaDto {
+  id: number
+  sucursalId: number
+  codigo: string
+  nombre: string
+  activo: boolean
+  codPuntoVenta: string
+  codPuntoVentaMH: string
+}
+
+// Bodega (almacén). Requerida por ítem de tipo Bien (producto físico).
+export interface BodegaItem {
+  id: number
+  codigo: string
+  nombre: string
+  sucursalId: number
+  esPrincipal: boolean
+  activa: boolean
 }

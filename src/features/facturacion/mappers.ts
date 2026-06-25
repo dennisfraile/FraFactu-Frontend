@@ -1,18 +1,25 @@
-import type { CreateFacturaDto, ItemDocumentoDto } from './types'
+import type { CreateFacturaDto, ItemDocumentoDto, ReceptorDteDto } from './types'
 import type { TipoImpuesto } from './calc/types'
 import { calcularItemFactura01, calcularResumenFactura01 } from './calc/factura01'
 import { numeroALetras } from './calc/numero-letras'
-import { IDENTIFICACION_FACTURA_DEFAULT } from './catalogos'
+import {
+  IDENTIFICACION_FACTURA_DEFAULT,
+  NUMERO_CONTROL_PLACEHOLDER,
+  CODIGO_GENERACION_PLACEHOLDER,
+} from './catalogos'
+
+// Nombre del receptor genérico para ventas a Consumidor Final (sin receptor registrado).
+const RECEPTOR_CONSUMIDOR_FINAL: ReceptorDteDto = { nombre: 'Consumidor Final' }
 
 export interface FormItem {
   productoId?: number
-  bodegaId?: number
+  bodegaId?: number // Id de bodega; requerido para ítems de tipo Bien (físico).
   codigo?: string
   descripcion: string
   cantidad: number
   precioUni: number
   montoDescuento?: number
-  uniMedida: number
+  uniMedida: number // Id de catálogo cat_uni_medida (NO el código MH).
   tipoItem: number
   tipoImpuesto: TipoImpuesto
 }
@@ -24,6 +31,7 @@ export interface FormPago {
 
 export interface FacturaFormValues {
   sucursalId: number
+  cajaId: number | null // Caja (POS); obligatoria para emitir Factura 01.
   esConsumidorFinal: boolean
   receptorId?: number | null
   vendedorId?: number | null
@@ -65,15 +73,22 @@ export function buildCreateFacturaDto(
     precioIncluyeIva: true,
   }))
 
+  // Consumidor Final → receptor inline (el backend rechaza receptorId y receptor ambos nulos).
+  // Receptor registrado → receptorId (el backend exige receptorId XOR receptor, no ambos).
+  const esConsumidorFinal = values.esConsumidorFinal || !values.receptorId
+
   return {
     identificacion: {
       ...IDENTIFICACION_FACTURA_DEFAULT,
+      numeroControl: NUMERO_CONTROL_PLACEHOLDER,
+      codigoGeneracion: CODIGO_GENERACION_PLACEHOLDER,
       fechaEmision: ahora.fecha,
       horaEmision: ahora.hora,
     },
+    cajaId: values.cajaId,
     sucursalId: values.sucursalId,
-    receptorId: values.esConsumidorFinal ? null : values.receptorId ?? null,
-    receptor: null,
+    receptorId: esConsumidorFinal ? null : values.receptorId ?? null,
+    receptor: esConsumidorFinal ? RECEPTOR_CONSUMIDOR_FINAL : null,
     vendedorId: values.vendedorId ?? null,
     cuerpoDocumento,
     resumen: {

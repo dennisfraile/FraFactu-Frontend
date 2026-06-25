@@ -27,6 +27,8 @@ export function EmitirFacturaPage() {
 
   const [paso, setPaso] = useState<'captura' | 'preview'>('captura')
   const [sucursalId, setSucursalId] = useState<number>(user?.sucursalIds?.[0] ?? 1)
+  // cajaId: lo cablea el selector de Caja (F5.1b-T4). Stub para compilar.
+  const [cajaId] = useState<number | null>(null)
   const [esConsumidorFinal, setEsConsumidorFinal] = useState(true)
   const [receptor, setReceptor] = useState<ReceptorListItem | null>(null)
   const [vendedorId, setVendedorId] = useState<number | null>(null)
@@ -35,7 +37,7 @@ export function EmitirFacturaPage() {
   const [pagos, setPagos] = useState<FormPago[]>([{ catFormaPagoId: 1, monto: 0 }])
 
   const values: FacturaFormValues = {
-    sucursalId, esConsumidorFinal, receptorId: receptor?.id ?? null, vendedorId, condicionOperacion, items, pagos,
+    sucursalId, cajaId, esConsumidorFinal, receptorId: receptor?.id ?? null, vendedorId, condicionOperacion, items, pagos,
   }
 
   // Snapshot del DTO armado al entrar a la vista previa (no se recalcula en cada render).
