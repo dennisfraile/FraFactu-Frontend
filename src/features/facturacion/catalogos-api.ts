@@ -2,7 +2,7 @@
 import { api } from '@/lib/http/axios'
 import type {
   CatalogoItem, MunicipioItem, DistritoItem, ReceptorListItem, ProductoListItem, Vendedor, Sucursal,
-  CajaDto, BodegaItem,
+  CajaDto, BodegaItem, ActividadEconomicaItem, CrearReceptorDto, ReceptorDto,
 } from './types'
 
 // Mapa de nombre lógico → segmento real del endpoint /api/catalogos/*.
@@ -17,6 +17,7 @@ const CATALOGO_PATHS = {
   condicionesOperacion: 'condiciones-operacione', // sic: typo del backend
   tiposDocIdentificacion: 'tipos-documento-identificacion-receptor',
   plazos: 'plazos',
+  actividadesEconomicas: 'actividades-economicas',
 } as const
 
 export type NombreCatalogo = keyof typeof CATALOGO_PATHS
@@ -28,11 +29,16 @@ export const catalogosApi = {
   },
   municipios(): Promise<MunicipioItem[]> { return this.get<MunicipioItem>('municipios') },
   distritos(): Promise<DistritoItem[]> { return this.get<DistritoItem>('distritos') },
+  actividadesEconomicas(): Promise<ActividadEconomicaItem[]> { return this.get<ActividadEconomicaItem>('actividadesEconomicas') },
 }
 
 export const receptoresApi = {
   async search(searchTerm: string): Promise<ReceptorListItem[]> {
     const { data } = await api.get<ReceptorListItem[]>('/receptores/search', { params: { searchTerm } })
+    return data
+  },
+  async crear(dto: CrearReceptorDto): Promise<ReceptorDto> {
+    const { data } = await api.post<ReceptorDto>('/receptores', dto)
     return data
   },
 }
