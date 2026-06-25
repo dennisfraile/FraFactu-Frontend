@@ -17,7 +17,7 @@ export function AsyncSearchSelect<T>({ onSearch, getLabel, onSelect, placeholder
 
   useEffect(() => {
     if (timer.current) clearTimeout(timer.current)
-    if (term.trim().length < minChars) { setItems([]); return }
+    if (term.trim().length < minChars) return
     timer.current = setTimeout(async () => {
       setCargando(true)
       try {
@@ -30,6 +30,9 @@ export function AsyncSearchSelect<T>({ onSearch, getLabel, onSelect, placeholder
     return () => { if (timer.current) clearTimeout(timer.current) }
   }, [term, minChars, onSearch])
 
+  // No mostramos resultados obsoletos mientras el término sea más corto que el mínimo.
+  const visibles = term.trim().length >= minChars ? items : []
+
   return (
     <div className="relative">
       <input
@@ -39,13 +42,13 @@ export function AsyncSearchSelect<T>({ onSearch, getLabel, onSelect, placeholder
         placeholder={placeholder}
         value={term}
         onChange={(e) => setTerm(e.target.value)}
-        onFocus={() => items.length > 0 && setOpen(true)}
+        onFocus={() => visibles.length > 0 && setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
       />
       {open && (
         <ul role="listbox" className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md border border-hairline bg-surface shadow-lg dark:bg-[#16241f]">
           {cargando && <li className="px-3 py-2 text-sm text-slate">Buscando…</li>}
-          {!cargando && items.map((item, idx) => (
+          {!cargando && visibles.map((item, idx) => (
             <li
               key={idx}
               role="option"
@@ -55,7 +58,7 @@ export function AsyncSearchSelect<T>({ onSearch, getLabel, onSelect, placeholder
               {getLabel(item)}
             </li>
           ))}
-          {!cargando && items.length === 0 && term.trim().length >= minChars && (
+          {!cargando && visibles.length === 0 && term.trim().length >= minChars && (
             <li className="px-3 py-2 text-sm text-slate">Sin resultados</li>
           )}
         </ul>
