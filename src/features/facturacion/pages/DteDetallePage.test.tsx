@@ -7,11 +7,11 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { ToastProvider } from '@/design-system'
 import { DteDetallePage } from './DteDetallePage'
 
-function setup() {
+function setup(entrada = '/facturacion/10') {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
     <QueryClientProvider client={qc}>
-      <MemoryRouter initialEntries={['/facturacion/10']}>
+      <MemoryRouter initialEntries={[entrada]}>
         <ToastProvider>
           <Routes>
             <Route path="/facturacion/:id" element={<DteDetallePage />} />
@@ -30,5 +30,10 @@ describe('DteDetallePage', () => {
     await userEvent.type(screen.getByLabelText(/motivo/i), 'Error de digitación')
     await userEvent.click(screen.getByRole('button', { name: /confirmar anulación/i }))
     expect(await screen.findByText(/anulada/i)).toBeInTheDocument()
+  })
+
+  it('muestra un estado de error si el id de la ruta no es válido', () => {
+    setup('/facturacion/abc')
+    expect(screen.getByText(/DTE no válido/i)).toBeInTheDocument()
   })
 })

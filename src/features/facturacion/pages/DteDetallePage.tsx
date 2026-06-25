@@ -1,7 +1,7 @@
 // src/features/facturacion/pages/DteDetallePage.tsx
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Spinner, useToast } from '@/design-system'
+import { Button, Spinner, EmptyState, useToast } from '@/design-system'
 import { useFactura, useAnularFactura } from '../hooks'
 import { VistaPreviaDte } from '../components/VistaPreviaDte'
 import { AnularInvalidarModal } from '../components/AnularInvalidarModal'
@@ -11,11 +11,18 @@ export function DteDetallePage() {
   const { id } = useParams()
   const facturaId = Number(id)
   const toast = useToast()
-  const { data, isLoading } = useFactura(facturaId)
+  const idValido = Number.isFinite(facturaId)
+  const { data, isLoading, isError } = useFactura(facturaId)
   const anular = useAnularFactura()
   const [modal, setModal] = useState(false)
 
-  if (isLoading || !data) return <div className="p-6"><Spinner /></div>
+  if (!idValido) {
+    return <div className="p-6"><EmptyState title="DTE no válido" hint="El identificador del documento no es correcto." /></div>
+  }
+  if (isLoading) return <div className="p-6"><Spinner /></div>
+  if (isError || !data) {
+    return <div className="p-6"><EmptyState title="No se pudo cargar el DTE" hint="Intenta de nuevo más tarde." /></div>
+  }
 
   // La respuesta del backend cumple la forma necesaria para la vista previa.
   const dto = data as unknown as CreateFacturaDto
