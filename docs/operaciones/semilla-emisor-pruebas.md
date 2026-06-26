@@ -192,3 +192,30 @@ El DTO que arma el frontend cumple estos requisitos del backend (verificados en 
 - Si un INSERT falla por FK de catálogo, lista el catálogo y ajusta el `Codigo`:
   `SELECT "Id","Codigo","Valor" FROM cat_ambiente_destino;` (idem `cat_departamento`, `cat_municipio`,
   `cat_uni_medida`, `cat_tipo_item`, `cat_tipo_establecimiento`).
+
+---
+
+## F5.2 — Semilla y contrato real de CCF (03) y FSE (14)
+
+Validado e2e contra el backend vivo (ambos → **HTTP 201 `PENDIENTE_ENVIO`**). A diferencia de la
+Factura 01 (Consumidor Final inline), CCF y FSE **requieren un receptor registrado** (`receptorId`;
+el backend lo resuelve a bloque completo). Crear los dos receptores con el **quick-create** del
+formulario (o `POST /api/receptores`), eligiendo **departamento + municipio + DISTRITO + dirección**:
+
+1. **Receptor contribuyente (para CCF 03):** con **NRC**, tipo de documento **NIT**, actividad
+   económica, y **dirección completa con distrito**.
+2. **Sujeto excluido (para FSE 14):** sin NRC, documento DUI/otro, actividad, y **dirección completa
+   con distrito**.
+
+### Diferencias de contrato frente a la Factura 01 (verificadas en e2e, ya implementadas en el frontend)
+- **CCF (03) — IVA como tributo:** el backend valida
+  `montoTotalOperacion = subTotal + Σ(resumen.tributos.valor)`. El IVA (código **`"20"`**) va en
+  `resumen.tributos` (`[{codigo,descripcion,valor}]`) **y** cada ítem gravado lleva `tributos: ["20"]`.
+  (No basta `ivaItem`/`totalIva`.) `version = 4`.
+- **Receptor con distrito obligatorio (03 y 14):** `ValidarDireccionReceptorAsync` exige
+  departamento+municipio+**distrito**+complemento para tipos 03/04/05/06/14. Sin distrito → 400
+  "debe tener dirección completa. Falta: distrito".
+- **FSE (14) requiere caja:** el backend exige `cajaId` para todo tipo salvo 05/06 (no solo POS).
+  `version = 2`. El ítem es una **compra** (`compra`, sin IVA); **no** se envía `bodegaId` (FSE no
+  descuenta stock — confirmado: el backend lo acepta sin bodega). Retenciones: renta 10% si
+  subtotal > $100, IVA 1% si el emisor es agente de retención; `totalPagar = subtotal − retenciones`.
