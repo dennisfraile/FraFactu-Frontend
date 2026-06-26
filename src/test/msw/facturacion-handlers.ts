@@ -44,16 +44,16 @@ export const facturacionHandlers = [
   }),
   http.post(`${base}/facturas/guardar-pendiente`, () => HttpResponse.json(facturaResponse, { status: 201 })),
   http.post(`${base}/facturas`, () => HttpResponse.json(facturaResponse, { status: 201 })),
-  http.get(`${base}/facturas/:id`, () => HttpResponse.json(facturaResponse)),
-  http.get(`${base}/facturas`, () => HttpResponse.json({ items: [listItem], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 })),
-  http.post(`${base}/facturas/:id/anular`, () => HttpResponse.json({ message: 'Factura anulada exitosamente', facturaId: 10 })),
-  http.get(`${base}/facturas/:id/puede-invalidar`, () => HttpResponse.json({ puedeInvalidar: true, horasRestantes: 20, fechaLimite: '2026-06-24T23:59:59Z', mensaje: 'Puede invalidar.' })),
   http.get(`${base}/facturas/buscar-para-nc`, () => HttpResponse.json([
     { id: 8, numeroControl: 'DTE-03-...', codigoGeneracion: 'CCF-GUID-1', tipoDte: '03', tipoDocumentoNombre: 'CCF', fechaEmision: '2026-06-20', receptorNombre: 'Cliente Uno', receptorNumDocumento: '0614', montoTotalOperacion: 113, totalPagar: 113, estadoHacienda: 'PROCESADO', saldoDisponible: 113, montoAcreditado: 0, nceCount: 0 },
   ])),
   http.get(`${base}/facturas/buscar-para-nd`, () => HttpResponse.json([
     { id: 8, numeroControl: 'DTE-03-...', codigoGeneracion: 'CCF-GUID-1', tipoDte: '03', tipoDocumentoNombre: 'CCF', fechaEmision: '2026-06-20', receptorNombre: 'Cliente Uno', receptorNumDocumento: '0614', montoTotalOperacion: 113, totalPagar: 113, estadoHacienda: 'PROCESADO', saldoDisponible: 113, montoAcreditado: 0, nceCount: 0 },
   ])),
+  http.get(`${base}/facturas/:id`, () => HttpResponse.json(facturaResponse)),
+  http.get(`${base}/facturas`, () => HttpResponse.json({ items: [listItem], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 })),
+  http.post(`${base}/facturas/:id/anular`, () => HttpResponse.json({ message: 'Factura anulada exitosamente', facturaId: 10 })),
+  http.get(`${base}/facturas/:id/puede-invalidar`, () => HttpResponse.json({ puedeInvalidar: true, horasRestantes: 20, fechaLimite: '2026-06-24T23:59:59Z', mensaje: 'Puede invalidar.' })),
   http.get(`${base}/facturas/:id/detalle-para-nc`, () => HttpResponse.json({
     id: 8, numeroControl: 'DTE-03-...', codigoGeneracion: 'CCF-GUID-1', tipoDte: '03', fechaEmision: '2026-06-20', condicionOperacion: 1,
     receptorId: 7, receptorNombre: 'Cliente Uno', receptorNumDocumento: '0614', receptorNit: '0614', receptorNrc: '123-4', receptorCorreo: 'c@x.com', receptorTelefono: '2222',
