@@ -215,7 +215,34 @@ formulario (o `POST /api/receptores`), eligiendo **departamento + municipio + DI
 - **Receptor con distrito obligatorio (03 y 14):** `ValidarDireccionReceptorAsync` exige
   departamento+municipio+**distrito**+complemento para tipos 03/04/05/06/14. Sin distrito → 400
   "debe tener dirección completa. Falta: distrito".
-- **FSE (14) requiere caja:** el backend exige `cajaId` para todo tipo salvo 05/06 (no solo POS).
+- **FSE (14) requiere caja:** el backend exige `cajaId` vía `guardar-pendiente`.
   `version = 2`. El ítem es una **compra** (`compra`, sin IVA); **no** se envía `bodegaId` (FSE no
   descuenta stock — confirmado: el backend lo acepta sin bodega). Retenciones: renta 10% si
   subtotal > $100, IVA 1% si el emisor es agente de retención; `totalPagar = subtotal − retenciones`.
+
+---
+
+## F5.3 — Nota de Crédito (05) y Nota de Débito (06)
+
+NC/ND **ajustan un CCF (03)** referenciándolo como **documento relacionado**. Validado e2e contra el
+backend (emisión vía `guardar-pendiente` → **HTTP 201 `PENDIENTE_ENVIO`**; NC factura id 14, ND id 15).
+
+### Cómo probar el e2e
+1. Emitir (o reutilizar) un **CCF (03)** y tomar su `codigoGeneracion` y `fechaEmision` (`GET /api/facturas/{id}`).
+2. Construir la NC/ND con la forma del frontend y `POST /api/facturas/guardar-pendiente`.
+
+### Contrato (verificado en e2e, ya implementado en el frontend)
+- **Documento relacionado obligatorio:** `documentosRelacionados:[{ tipoDocumento:'03', tipoGeneracion:1,
+  numeroDocumento:<codigoGeneracion del CCF>, fechaEmision:<yyyy-MM-dd del CCF> }]`. `version = 4` (NC y ND).
+- **Requieren caja:** `guardar-pendiente` exige `cajaId` también para 05/06 (con `cajaId:null` → 400
+  "Caja no encontrada"; con caja → 201). *(Corrige la nota previa de FSE: la excepción 05/06 del validador
+  MH no aplica al path de `guardar-pendiente`.)*
+- **Cálculo = CCF:** IVA neto, IVA como tributo (`['20']` por ítem + `resumen.tributos`),
+  `montoTotalOperacion = subTotal + Σtributos`. **No** se envía `bodegaId` (no mueven stock).
+- **Receptor heredado** del CCF original (`receptorId`); requiere dirección completa con distrito (igual
+  que el CCF). NC precarga ítems del original (parcial); ND lleva cargos nuevos a mano.
+- **Buscador (`buscar-para-nc`/`buscar-para-nd`):** filtra `EstadoHacienda == 'PROCESADO'`, es decir solo
+  CCFs **ya aceptados por MH**. En el entorno de pruebas (sin transmisión MH, todo `PENDIENTE_ENVIO`) el
+  buscador devuelve `[]`; el flujo de búsqueda en la UI se valida completo con un CCF `PROCESADO` (F5.4, o
+  promoviendo un CCF a `PROCESADO` por SQL). La **emisión** de la NC/ND (lo crítico) sí se valida con el
+  `codigoGeneracion` de cualquier CCF.
