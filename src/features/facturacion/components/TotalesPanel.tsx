@@ -29,7 +29,7 @@ export function TotalesPanel({ items, tipoDte = '01', esAgenteRetencion }: { ite
             {(resumen.reteRenta ?? 0) > 0 && row('Retención renta 10%', -(resumen.reteRenta ?? 0))}
             {(resumen.ivaRete1 ?? 0) > 0 && row('Retención IVA 1%', -(resumen.ivaRete1 ?? 0))}
           </>
-        ) : tipoDte === '03' ? (
+        ) : tipoDte === '03' || tipoDte === '05' || tipoDte === '06' ? (
           <>
             {row('Gravado', resumen.totalGravada)}
             {row('Exento', resumen.totalExenta)}
