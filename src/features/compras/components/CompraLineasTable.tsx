@@ -57,7 +57,7 @@ export function CompraLineasTable({ productos, onProductos, gastos, onGastos, su
           {productos.map((p, idx) => {
             const calc = calcLineaProducto({ cantidad: p.cantidad, costoUnitario: p.costoUnitario, aplicaIva: p.aplicaIva, ivaManual: p.ivaManual })
             return (
-              <div key={idx} className="rounded-lg border border-hairline p-3">
+              <div key={p.uid} className="rounded-lg border border-hairline p-3">
                 <div className="mb-2"><AsyncSearchSelect<ProductoListItem> onSearch={(t) => productosApi.search(t, sucursalId ?? undefined)} getLabel={(x) => `${x.codigo} — ${x.nombre}`} onSelect={(x) => desdeProducto(idx, x)} placeholder="Buscar producto" /></div>
                 <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
                   <FormField label="Descripción" htmlFor={`d-${idx}`}><Input id={`d-${idx}`} value={p.descripcion} onChange={(e) => setProd(idx, { descripcion: e.target.value })} /></FormField>
@@ -93,7 +93,7 @@ export function CompraLineasTable({ productos, onProductos, gastos, onGastos, su
       {tab === 'gastos' && (
         <div className="space-y-3">
           {gastos.map((g, idx) => (
-            <div key={idx} className="rounded-lg border border-hairline p-3">
+            <div key={g.uid} className="rounded-lg border border-hairline p-3">
               <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
                 <FormField label="Descripción del gasto" htmlFor={`gd-${idx}`}><Input id={`gd-${idx}`} value={g.descripcion} onChange={(e) => setGasto(idx, { descripcion: e.target.value })} /></FormField>
                 <FormField label="Monto" htmlFor={`gm-${idx}`}><Input id={`gm-${idx}`} type="number" value={g.monto} onChange={(e) => setGasto(idx, { monto: Number(e.target.value) })} /></FormField>

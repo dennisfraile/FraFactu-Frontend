@@ -3,6 +3,7 @@ import { calcLineaProducto, calcTotalesCompra } from './calc/compra'
 import type { CrearCompraExternaDto, CrearCompraDetalleDto, CrearGastoDto } from './types'
 
 export interface FormProductoLinea {
+  uid: number
   productoId: number | null
   codigo?: string
   descripcion: string
@@ -15,6 +16,7 @@ export interface FormProductoLinea {
 }
 
 export interface FormGastoLinea {
+  uid: number
   descripcion: string
   monto: number
   catTipoGastoId: number | null
@@ -32,12 +34,14 @@ export interface CompraFormValues {
   gastos: FormGastoLinea[]
 }
 
+let _uidSeq = 0
+
 export function nuevaLineaProducto(): FormProductoLinea {
-  return { productoId: null, descripcion: '', bodegaId: null, cantidad: 1, costoUnitario: 0, aplicaIva: true, esParaInventario: true }
+  return { uid: ++_uidSeq, productoId: null, descripcion: '', bodegaId: null, cantidad: 1, costoUnitario: 0, aplicaIva: true, esParaInventario: true }
 }
 
 export function nuevaLineaGasto(): FormGastoLinea {
-  return { descripcion: '', monto: 0, catTipoGastoId: null, centroCosto: '', cuentaContable: '' }
+  return { uid: ++_uidSeq, descripcion: '', monto: 0, catTipoGastoId: null, centroCosto: '', cuentaContable: '' }
 }
 
 export function buildCrearCompraDto(v: CompraFormValues): CrearCompraExternaDto {
