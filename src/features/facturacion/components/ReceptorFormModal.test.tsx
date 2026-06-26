@@ -24,7 +24,7 @@ describe('ReceptorFormModal (contribuyente)', () => {
 
     // Sin datos → error de validación (empieza por el nombre).
     await user.click(screen.getByRole('button', { name: /guardar/i }))
-    expect(await screen.findByText(/nombre/i)).toBeInTheDocument()
+    expect(await screen.findByText(/razón social requerida/i)).toBeInTheDocument()
     expect(creado).toBeNull()
 
     // Completa todos los campos obligatorios del contribuyente (valores de los handlers MSW).
