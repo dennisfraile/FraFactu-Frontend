@@ -5,7 +5,7 @@ describe('ndStrategy (06) metadatos', () => {
   it('version 4, requiere documento relacionado, SIN prefill', () => {
     expect(ndStrategy.tipoDte).toBe('06')
     expect(ndStrategy.version).toBe(4)
-    expect(ndStrategy.requiereCaja).toBe(false)
+    expect(ndStrategy.requiereCaja).toBe(true)
     expect(ndStrategy.receptorPolicy).toBe('contribuyente')
     expect(ndStrategy.requiereDocumentoRelacionado).toBe(true)
     expect(ndStrategy.prefillDesdeOriginal).toBe(false)

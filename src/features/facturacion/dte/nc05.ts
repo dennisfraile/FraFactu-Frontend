@@ -11,7 +11,7 @@ export const ncStrategy: DteStrategy = {
   etiqueta: 'Nota de Crédito',
   etiquetaCorta: 'NC',
   precioIncluyeIva: false,
-  requiereCaja: false,
+  requiereCaja: true,
   descuentaStock: false,
   receptorPolicy: 'contribuyente',
   usaAgenteRetencion: false,

@@ -4,7 +4,7 @@ import { buildFacturaSchema } from '../schemas'
 import { getStrategy } from './registry'
 
 const base: FacturaFormValues = {
-  sucursalId: 1, cajaId: null, esConsumidorFinal: false, receptorId: 7, vendedorId: null, condicionOperacion: 1,
+  sucursalId: 1, cajaId: 5, esConsumidorFinal: false, receptorId: 7, vendedorId: null, condicionOperacion: 1,
   documentoRelacionado: { tipoDocumento: '03', tipoGeneracion: 1, numeroDocumento: 'ABC', fechaEmision: '2026-06-20' },
   items: [{ descripcion: 'Interés por mora', cantidad: 1, precioUni: 100, uniMedida: 39, tipoItem: 2, tipoImpuesto: 1 }],
   pagos: [{ catFormaPagoId: 1, monto: 113 }],

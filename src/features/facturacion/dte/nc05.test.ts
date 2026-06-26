@@ -2,10 +2,10 @@ import { describe, it, expect } from 'vitest'
 import { ncStrategy } from './nc05'
 
 describe('ncStrategy (05) metadatos', () => {
-  it('version 4, sin caja, requiere documento relacionado, contribuyente, prefill', () => {
+  it('version 4, requiere caja, requiere documento relacionado, contribuyente, prefill', () => {
     expect(ncStrategy.tipoDte).toBe('05')
     expect(ncStrategy.version).toBe(4)
-    expect(ncStrategy.requiereCaja).toBe(false)
+    expect(ncStrategy.requiereCaja).toBe(true)
     expect(ncStrategy.descuentaStock).toBe(false)
     expect(ncStrategy.receptorPolicy).toBe('contribuyente')
     expect(ncStrategy.requiereDocumentoRelacionado).toBe(true)

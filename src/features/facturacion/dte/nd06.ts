@@ -11,7 +11,7 @@ export const ndStrategy: DteStrategy = {
   etiqueta: 'Nota de Débito',
   etiquetaCorta: 'ND',
   precioIncluyeIva: false,
-  requiereCaja: false,
+  requiereCaja: true,
   descuentaStock: false,
   receptorPolicy: 'contribuyente',
   usaAgenteRetencion: false,
