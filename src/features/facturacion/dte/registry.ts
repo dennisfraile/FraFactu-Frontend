@@ -3,6 +3,7 @@ import type { DteStrategy } from './strategy'
 import { facturaStrategy } from './factura01'
 import { ccfStrategy } from './ccf03'
 import { ncStrategy } from './nc05'
+import { ndStrategy } from './nd06'
 import { fseStrategy } from './fse14'
 
 // Estrategias por tipo de DTE. FSE (14) se añade en F5.2c.
@@ -10,6 +11,7 @@ export const dteRegistry: Partial<Record<TipoDte, DteStrategy>> = {
   '01': facturaStrategy,
   '03': ccfStrategy,
   '05': ncStrategy,
+  '06': ndStrategy,
   '14': fseStrategy,
 }
 
