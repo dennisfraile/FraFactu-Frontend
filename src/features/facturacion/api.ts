@@ -2,7 +2,7 @@
 import { api } from '@/lib/http/axios'
 import type {
   CreateFacturaDto, FacturaResponse, FacturaListItem, PaginatedResponse,
-  AnularFacturaDto, PuedeInvalidarResult,
+  AnularFacturaDto, PuedeInvalidarResult, BuscarParaNcResultDto, DetalleParaNcDto,
 } from './types'
 
 export interface ListarFacturasParams {
@@ -48,5 +48,21 @@ export const facturacionApi = {
   async getJsonDte(id: number): Promise<string> {
     const { data } = await api.get(`/facturas/${id}/json-dte`, { responseType: 'text' })
     return data as string
+  },
+  async buscarParaNc(search: string): Promise<BuscarParaNcResultDto[]> {
+    const { data } = await api.get<BuscarParaNcResultDto[]>('/facturas/buscar-para-nc', { params: { search } })
+    return data
+  },
+  async buscarParaNd(search: string): Promise<BuscarParaNcResultDto[]> {
+    const { data } = await api.get<BuscarParaNcResultDto[]>('/facturas/buscar-para-nd', { params: { search } })
+    return data
+  },
+  async detalleParaNc(id: number): Promise<DetalleParaNcDto> {
+    const { data } = await api.get<DetalleParaNcDto>(`/facturas/${id}/detalle-para-nc`)
+    return data
+  },
+  async detalleParaNd(id: number): Promise<DetalleParaNcDto> {
+    const { data } = await api.get<DetalleParaNcDto>(`/facturas/${id}/detalle-para-nd`)
+    return data
   },
 }
