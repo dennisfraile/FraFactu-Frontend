@@ -66,13 +66,13 @@ export function DatosGeneralesSection(p: Props) {
           </select>
         </FormField>
       )}
-      {receptorOpcional && (
+      {!p.strategy.requiereDocumentoRelacionado && receptorOpcional && (
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={p.esConsumidorFinal} onChange={(e) => p.onEsConsumidorFinal(e.target.checked)} />
           Consumidor Final
         </label>
       )}
-      {(!receptorOpcional || !p.esConsumidorFinal) && (
+      {!p.strategy.requiereDocumentoRelacionado && (!receptorOpcional || !p.esConsumidorFinal) && (
         <FormField label={receptorLabel} htmlFor="receptor">
           {p.receptor ? (
             <div className="flex items-center justify-between rounded-md border border-hairline px-3 py-2 text-sm">
