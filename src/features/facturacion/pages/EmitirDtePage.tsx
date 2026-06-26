@@ -98,7 +98,7 @@ export function EmitirDtePage() {
           condicionOperacion={condicionOperacion} onCondicionOperacion={setCondicionOperacion}
           esAgenteRetencion={esAgenteRetencion} onEsAgenteRetencion={setEsAgenteRetencion}
         />
-        <CuerpoDocumentoTable items={items} onChange={setItems} sucursalId={sucursalId} />
+        <CuerpoDocumentoTable items={items} onChange={setItems} sucursalId={sucursalId} descuentaStock={strategy.descuentaStock} />
         <CierrePagoSection pagos={pagos} onChange={setPagos} />
         <Button onClick={irAPreview}>Revisar y emitir ›</Button>
       </div>
