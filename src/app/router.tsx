@@ -11,6 +11,7 @@ import { EmitirDtePage } from '@/features/facturacion/pages/EmitirDtePage'
 import { EmitirLandingPage } from '@/features/facturacion/pages/EmitirLandingPage'
 import { HistorialPage } from '@/features/facturacion/pages/HistorialPage'
 import { DteDetallePage } from '@/features/facturacion/pages/DteDetallePage'
+import { ProveedoresPage } from '@/features/compras/pages/ProveedoresPage'
 
 export function AppRoutes() {
   return (
@@ -27,6 +28,7 @@ export function AppRoutes() {
           <Route path="/facturacion/emitir/:tipo" element={<EmitirDtePage />} />
           <Route path="/facturacion/historial" element={<HistorialPage />} />
           <Route path="/facturacion/:id" element={<DteDetallePage />} />
+          <Route path="/proveedores" element={<ProveedoresPage />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
