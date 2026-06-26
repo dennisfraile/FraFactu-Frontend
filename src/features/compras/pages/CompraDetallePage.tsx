@@ -5,13 +5,7 @@ import { Button, Badge, Spinner, EmptyState, useToast } from '@/design-system'
 import { useCompra, useConfirmarCompra, useAnularCompra } from '../hooks'
 import { ConfirmarCompraModal } from '../components/ConfirmarCompraModal'
 import { AnularCompraModal } from '../components/AnularCompraModal'
-import type { EstadoCompra } from '../types'
-
-function tono(estado: EstadoCompra): 'recibido' | 'pendiente' | 'rechazado' | 'borrador' {
-  if (estado === 'CONFIRMADA') return 'recibido'
-  if (estado === 'ANULADA') return 'rechazado'
-  return 'borrador'
-}
+import { tonoCompra } from '../estado'
 
 export function CompraDetallePage() {
   const { id } = useParams()
@@ -28,11 +22,21 @@ export function CompraDetallePage() {
 
   const onConfirmar = async (observaciones: string) => {
     try { await confirmar.mutateAsync({ id: compraId, dto: { observaciones: observaciones || undefined } }); toast.show('Compra confirmada'); setModal(null) }
-    catch { toast.show('No se pudo confirmar', { tone: 'rojo' }) }
+    catch (e) {
+      const msg = (e as { response?: { data?: { error?: string; message?: string } } })?.response?.data?.error
+        ?? (e as { response?: { data?: { message?: string } } })?.response?.data?.message
+        ?? 'No se pudo confirmar'
+      toast.show(msg, { tone: 'rojo' })
+    }
   }
   const onAnular = async (motivo: string) => {
     try { await anular.mutateAsync({ id: compraId, dto: { motivo } }); toast.show('Compra anulada'); setModal(null) }
-    catch { toast.show('No se pudo anular', { tone: 'rojo' }) }
+    catch (e) {
+      const msg = (e as { response?: { data?: { error?: string; message?: string } } })?.response?.data?.error
+        ?? (e as { response?: { data?: { message?: string } } })?.response?.data?.message
+        ?? 'No se pudo anular'
+      toast.show(msg, { tone: 'rojo' })
+    }
   }
 
   const esBorrador = data.estado === 'BORRADOR'
@@ -45,7 +49,7 @@ export function CompraDetallePage() {
           <h1 className="text-xl font-semibold text-ink">{data.numeroFactura}</h1>
           <p className="text-sm text-slate"><span>{data.proveedorNombre}</span>{' · '}<span>{data.sucursalNombre}</span></p>
         </div>
-        <Badge estado={tono(data.estado)}>{data.estado}</Badge>
+        <Badge estado={tonoCompra(data.estado)}>{data.estado}</Badge>
       </div>
 
       <div className="rounded-xl border border-hairline p-4">

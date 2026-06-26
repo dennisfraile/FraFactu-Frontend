@@ -19,6 +19,10 @@ describe('calc de compra', () => {
     expect(calcLineaProducto({ cantidad: 1, costoUnitario: 100, aplicaIva: true, ivaManual: 5 })).toEqual({ subtotal: 100, iva: 5, total: 105 })
   })
 
+  it('línea producto con ivaManual: 0 honra el cero explícito (sin calcular 13%)', () => {
+    expect(calcLineaProducto({ cantidad: 1, costoUnitario: 100, aplicaIva: true, ivaManual: 0 })).toEqual({ subtotal: 100, iva: 0, total: 100 })
+  })
+
   it('totales del header: gastos suman al subtotal sin IVA', () => {
     const p = [calcLineaProducto({ cantidad: 2, costoUnitario: 50, aplicaIva: true })] // sub 100, iva 13
     const totales = calcTotalesCompra(p, [{ monto: 20 }]) // gasto 20

@@ -3,13 +3,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Table, Input, Button, Badge, Spinner, EmptyState } from '@/design-system'
 import { useCompras } from '../hooks'
-import type { CompraExternaDto, EstadoCompra } from '../types'
-
-function tono(estado: EstadoCompra): 'recibido' | 'pendiente' | 'rechazado' | 'borrador' {
-  if (estado === 'CONFIRMADA') return 'recibido'
-  if (estado === 'ANULADA') return 'rechazado'
-  return 'borrador'
-}
+import { tonoCompra } from '../estado'
+import type { CompraExternaDto } from '../types'
 
 export function ComprasListPage() {
   const navigate = useNavigate()
@@ -23,7 +18,7 @@ export function ComprasListPage() {
     { key: 'proveedorNombre', header: 'Proveedor' },
     { key: 'fechaEmision', header: 'Fecha', render: (c: CompraExternaDto) => <span className="cifra">{c.fechaEmision.slice(0, 10)}</span> },
     { key: 'total', header: 'Total', render: (c: CompraExternaDto) => <span className="cifra font-medium">${c.total.toFixed(2)}</span> },
-    { key: 'estado', header: 'Estado', render: (c: CompraExternaDto) => <Badge estado={tono(c.estado)}>{c.estado}</Badge> },
+    { key: 'estado', header: 'Estado', render: (c: CompraExternaDto) => <Badge estado={tonoCompra(c.estado)}>{c.estado}</Badge> },
     { key: 'acciones', header: '', render: (c: CompraExternaDto) => <button className="text-xs font-medium text-sello hover:text-sello-bright" onClick={() => navigate(`/compras/${c.id}`)}>Ver</button> },
   ]
 

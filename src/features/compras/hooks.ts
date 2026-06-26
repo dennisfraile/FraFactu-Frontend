@@ -2,7 +2,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { proveedoresApi } from './proveedores-api'
 import { tiposGastoApi } from './catalogos-api'
-import type { CrearProveedorDto, ActualizarProveedorDto, ListarProveedoresParams } from './types'
+import { comprasApi } from './api'
+import type {
+  CrearProveedorDto, ActualizarProveedorDto, ListarProveedoresParams,
+  CrearCompraExternaDto, ActualizarCompraExternaDto, ConfirmarCompraDto, AnularCompraDto, ListarComprasParams,
+} from './types'
 
 const HORA = 1000 * 60 * 60
 
@@ -52,11 +56,6 @@ export function useEliminarProveedor() {
 export function useTiposGasto() {
   return useQuery({ queryKey: ['tipos-gasto'], queryFn: () => tiposGastoApi.listar(), staleTime: HORA })
 }
-
-import { comprasApi } from './api'
-import type {
-  CrearCompraExternaDto, ActualizarCompraExternaDto, ConfirmarCompraDto, AnularCompraDto, ListarComprasParams,
-} from './types'
 
 export function useCompras(params: ListarComprasParams) {
   return useQuery({ queryKey: ['compras', params], queryFn: () => comprasApi.listar(params) })
