@@ -25,6 +25,7 @@ export function VistaPreviaDte({ dto, codigoGeneracion, ambiente = '00', onEmiti
   const badge = strategy?.etiquetaCorta ?? tipoDte
   const esFse = tipoDte === '14'
   const esCcf = tipoDte === '03'
+  const esNota = tipoDte === '05' || tipoDte === '06'
   const url = urlConsultaMh(codigoGeneracion, dto.identificacion.fechaEmision, ambiente)
   const r = dto.resumen
   const colMontoLabel = esFse ? 'Compra' : 'Gravado'
@@ -69,6 +70,9 @@ export function VistaPreviaDte({ dto, codigoGeneracion, ambiente = '00', onEmiti
             </tbody>
           </table>
 
+          {dto.documentosRelacionados?.[0] && (
+            <p className="text-xs text-slate">Documento relacionado: {dto.documentosRelacionados[0].tipoDocumento} · {dto.documentosRelacionados[0].numeroDocumento}</p>
+          )}
           <dl className="mt-4 ml-auto max-w-xs space-y-1.5 text-sm">
             {esFse ? (
               <>
@@ -79,7 +83,7 @@ export function VistaPreviaDte({ dto, codigoGeneracion, ambiente = '00', onEmiti
             ) : (
               <>
                 <div className="flex items-baseline justify-between"><dt className="text-slate">Gravado</dt><dd className="cifra text-ink/90 dark:text-white/85">{fmt(r.totalGravada)}</dd></div>
-                <div className="flex items-baseline justify-between"><dt className="text-slate">{esCcf ? 'IVA 13% (neto)' : 'IVA 13%'}</dt><dd className="cifra text-ink/90 dark:text-white/85">{fmt(r.totalIva)}</dd></div>
+                <div className="flex items-baseline justify-between"><dt className="text-slate">{esCcf || esNota ? 'IVA 13% (neto)' : 'IVA 13%'}</dt><dd className="cifra text-ink/90 dark:text-white/85">{fmt(r.totalIva)}</dd></div>
               </>
             )}
             <div className="mt-1 flex items-baseline justify-between rounded-lg bg-oro-tint/70 px-3 py-2 dark:bg-oro/10">

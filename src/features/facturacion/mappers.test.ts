@@ -51,3 +51,19 @@ describe('buildCreateFacturaDto', () => {
     expect(dto.receptor).toBeNull()
   })
 })
+
+describe('mapper NC (05): documentosRelacionados', () => {
+  it('incluye el documento relacionado y version 4', () => {
+    const ncBase: FacturaFormValues = {
+      sucursalId: 1, cajaId: null, esConsumidorFinal: false, receptorId: 7, vendedorId: null, condicionOperacion: 1,
+      documentoRelacionado: { tipoDocumento: '03', tipoGeneracion: 1, numeroDocumento: 'ABC-GUID', fechaEmision: '2026-06-20' },
+      items: [{ descripcion: 'X', cantidad: 2, precioUni: 50, uniMedida: 39, tipoItem: 1, tipoImpuesto: 1 }],
+      pagos: [{ catFormaPagoId: 1, monto: 113 }],
+    }
+    const dto = buildCreateFacturaDto(ncBase, { fecha: '2026-06-26', hora: '10:00:00' }, '05')
+    expect(dto.identificacion.version).toBe(4)
+    expect(dto.documentosRelacionados).toEqual([{ tipoDocumento: '03', tipoGeneracion: 1, numeroDocumento: 'ABC-GUID', fechaEmision: '2026-06-20' }])
+    expect(dto.cajaId).toBeNull()
+    expect(dto.receptorId).toBe(7)
+  })
+})

@@ -106,3 +106,11 @@ export function useCrearReceptor() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['receptores'] }),
   })
 }
+
+export function useDetalleParaNc(id: number | null, enabled: boolean) {
+  return useQuery({ queryKey: ['detalle-para-nc', id], queryFn: () => facturacionApi.detalleParaNc(id!), enabled: enabled && Number.isFinite(id) })
+}
+
+export function useDetalleParaNd(id: number | null, enabled: boolean) {
+  return useQuery({ queryKey: ['detalle-para-nd', id], queryFn: () => facturacionApi.detalleParaNd(id!), enabled: enabled && Number.isFinite(id) })
+}

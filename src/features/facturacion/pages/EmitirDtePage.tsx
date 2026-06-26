@@ -12,7 +12,8 @@ import { buildFacturaSchema } from '../schemas'
 import { buildCreateFacturaDto, type FormItem, type FormPago, type FacturaFormValues } from '../mappers'
 import { getStrategySafe } from '../dte/registry'
 import { useEmitirFactura } from '../hooks'
-import type { CreateFacturaDto, ReceptorListItem, TipoDte } from '../types'
+import { DocumentoOriginalSection } from '../components/DocumentoOriginalSection'
+import type { CreateFacturaDto, DocumentoRelacionadoDto, ReceptorListItem, TipoDte } from '../types'
 
 function ahora() {
   const d = new Date()
@@ -39,13 +40,14 @@ export function EmitirDtePage() {
   const [esAgenteRetencion, setEsAgenteRetencion] = useState(false)
   const [items, setItems] = useState<FormItem[]>([])
   const [pagos, setPagos] = useState<FormPago[]>([{ catFormaPagoId: 1, monto: 0 }])
+  const [documentoRelacionado, setDocumentoRelacionado] = useState<DocumentoRelacionadoDto | null>(null)
   const [dtoPreview, setDtoPreview] = useState<CreateFacturaDto | null>(null)
 
   // Tipo no soportado en la URL → vuelve a la landing.
   if (!strategy || !schema) return <Navigate to="/facturacion/emitir" replace />
 
   const values: FacturaFormValues = {
-    sucursalId, cajaId, esConsumidorFinal, receptorId: receptor?.id ?? null, vendedorId, condicionOperacion, esAgenteRetencion, items, pagos,
+    sucursalId, cajaId, esConsumidorFinal, receptorId: receptor?.id ?? null, vendedorId, condicionOperacion, esAgenteRetencion, items, pagos, documentoRelacionado,
   }
 
   const irAPreview = () => {
@@ -88,6 +90,17 @@ export function EmitirDtePage() {
     <div className="grid gap-6 p-6 lg:grid-cols-[1fr_320px]">
       <div className="space-y-6">
         <h1 className="text-xl font-semibold text-ink">Emitir {strategy.etiqueta} ({strategy.etiquetaCorta})</h1>
+        {strategy.requiereDocumentoRelacionado && (
+          <DocumentoOriginalSection
+            tipoDte={strategy.tipoDte}
+            prefill={strategy.prefillDesdeOriginal}
+            onSeleccion={({ documentoRelacionado, receptor, items }) => {
+              setDocumentoRelacionado(documentoRelacionado)
+              setReceptor(receptor)
+              setItems(items)
+            }}
+          />
+        )}
         <DatosGeneralesSection
           strategy={strategy}
           sucursalId={sucursalId} onSucursalId={setSucursalId}

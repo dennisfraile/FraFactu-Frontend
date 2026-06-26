@@ -32,6 +32,10 @@ export function buildFacturaSchema(strategy: DteStrategy) {
       vendedorId: z.number().int().nullable().optional(),
       condicionOperacion: z.number().int(),
       esAgenteRetencion: z.boolean().optional(),
+      documentoRelacionado: z
+        .object({ tipoDocumento: z.string(), tipoGeneracion: z.number().int(), numeroDocumento: z.string().min(1), fechaEmision: z.string().min(1) })
+        .nullable()
+        .optional(),
       items: z.array(itemSchema).min(1, 'Agregue al menos un ítem'),
       pagos: z.array(pagoSchema).min(1, 'Agregue al menos una forma de pago'),
     })
@@ -48,6 +52,10 @@ export function buildFacturaSchema(strategy: DteStrategy) {
       } else if (!v.receptorId) {
         const msg = strategy.receptorPolicy === 'sujetoExcluido' ? 'Seleccione el sujeto excluido' : 'Seleccione el receptor (contribuyente)'
         ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['receptorId'], message: msg })
+      }
+      // Documento relacionado: obligatorio para NC (05) / ND (06).
+      if (strategy.requiereDocumentoRelacionado && !v.documentoRelacionado) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['documentoRelacionado'], message: 'Seleccione el documento original (CCF) a referenciar' })
       }
       // Bodega: requerida en ítems Bien solo cuando el tipo descuenta stock (01/03).
       if (strategy.descuentaStock) {

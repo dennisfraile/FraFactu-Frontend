@@ -110,6 +110,73 @@ export interface ResumenDto {
   tributos?: ResumenTributoDto[]
 }
 
+export interface DocumentoRelacionadoDto {
+  tipoDocumento: string // '03' para CCF
+  tipoGeneracion: number // 1=Propio, 2=Externo
+  numeroDocumento: string // codigoGeneracion del original
+  fechaEmision: string // yyyy-MM-dd
+}
+
+export interface BuscarParaNcResultDto {
+  id: number
+  numeroControl: string
+  codigoGeneracion: string
+  tipoDte: string
+  tipoDocumentoNombre: string
+  fechaEmision: string
+  receptorNombre: string
+  receptorNumDocumento: string
+  montoTotalOperacion: number
+  totalPagar: number
+  estadoHacienda: string
+  saldoDisponible: number
+  montoAcreditado: number
+  nceCount: number
+}
+
+export interface DetalleItemParaNcDto {
+  numItem: number
+  tipoItem: number
+  codigo?: string | null
+  descripcion: string
+  cantidad: number
+  precioUnitario: number
+  ventaGravada: number
+  ventaExenta: number
+  ventaNoSuj: number
+  montoDescuento: number
+  ivaItem: number
+  unidadMedida?: number | null
+  numeroDocumentoRelacionado?: string | null
+}
+
+export interface DetalleParaNcDto {
+  id: number
+  numeroControl: string
+  codigoGeneracion: string
+  tipoDte: string
+  fechaEmision: string
+  condicionOperacion: number
+  receptorId?: number | null
+  receptorNombre: string
+  receptorNumDocumento: string
+  receptorNit?: string | null
+  receptorNrc?: string | null
+  receptorCorreo?: string | null
+  receptorTelefono?: string | null
+  totalGravada: number
+  totalExenta: number
+  totalNoSuj: number
+  subTotal: number
+  totalIva: number
+  montoTotalOperacion: number
+  totalPagar: number
+  saldoDisponible: number
+  montoAcreditado: number
+  nceCount: number
+  items: DetalleItemParaNcDto[]
+}
+
 export interface CreateFacturaDto {
   identificacion: IdentificacionDto
   cajaId?: number | null
@@ -120,6 +187,7 @@ export interface CreateFacturaDto {
   cuerpoDocumento: ItemDocumentoDto[]
   resumen: ResumenDto
   observaciones?: string
+  documentosRelacionados?: DocumentoRelacionadoDto[]
 }
 
 // ---- Respuestas ----

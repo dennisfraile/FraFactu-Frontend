@@ -1,24 +1,24 @@
-import { calcularItemFactura01, calcularResumenFactura01 } from '../calc/factura01'
 import { numeroALetras } from '../calc/numero-letras'
+import { calcItemIvaNeto, calcResumenIvaNeto } from '../calc/iva-neto'
 import type { ItemCalculado, ResumenNumerico } from '../calc/types'
 import type { ItemDocumentoDto, ResumenDto } from '../types'
 import type { DteStrategy, FormItem, FacturaFormValues } from './strategy'
 
-// La estrategia '01' delega en la lógica probada de calc/factura01.ts (paridad F5.1).
-export const facturaStrategy: DteStrategy = {
-  tipoDte: '01',
-  version: 2,
-  etiqueta: 'Factura Electrónica',
-  etiquetaCorta: '01',
-  precioIncluyeIva: true,
+// ND (06): ajuste al alza de un CCF (cargos nuevos). Mismo cálculo IVA-neto que el 03.
+export const ndStrategy: DteStrategy = {
+  tipoDte: '06',
+  version: 4,
+  etiqueta: 'Nota de Débito',
+  etiquetaCorta: 'ND',
+  precioIncluyeIva: false,
   requiereCaja: true,
-  descuentaStock: true,
-  receptorPolicy: 'opcional',
+  descuentaStock: false,
+  receptorPolicy: 'contribuyente',
   usaAgenteRetencion: false,
-  requiereDocumentoRelacionado: false,
+  requiereDocumentoRelacionado: true,
   prefillDesdeOriginal: false,
-  calcItem: calcularItemFactura01,
-  calcResumen: (items: ItemCalculado[]): ResumenNumerico => calcularResumenFactura01(items),
+  calcItem: calcItemIvaNeto,
+  calcResumen: (items: ItemCalculado[]): ResumenNumerico => calcResumenIvaNeto(items),
   buildItemDto(item: FormItem, calc: ItemCalculado, numItem: number): ItemDocumentoDto {
     return {
       numItem,
@@ -33,10 +33,9 @@ export const facturaStrategy: DteStrategy = {
       ventaExenta: calc.ventaExenta,
       ventaNoSuj: calc.ventaNoSuj,
       ivaItem: calc.ivaItem,
-      tributos: null,
+      tributos: calc.ventaGravada > 0 ? ['20'] : null,
       productoId: item.productoId,
-      bodegaId: item.bodegaId,
-      precioIncluyeIva: true,
+      precioIncluyeIva: false,
     }
   },
   buildResumenDto(resumen: ResumenNumerico, values: FacturaFormValues): ResumenDto {
@@ -46,6 +45,9 @@ export const facturaStrategy: DteStrategy = {
       totalGravada: resumen.totalGravada,
       subTotal: resumen.subTotal,
       totalIva: resumen.totalIva,
+      montoTotalOperacion: resumen.montoTotalOperacion,
+      reteRenta: 0,
+      tributos: resumen.totalIva > 0 ? [{ codigo: '20', descripcion: 'Impuesto al Valor Agregado 13%', valor: resumen.totalIva }] : undefined,
       totalPagar: resumen.totalPagar,
       totalLetras: numeroALetras(resumen.totalPagar),
       condicionOperacion: values.condicionOperacion,
