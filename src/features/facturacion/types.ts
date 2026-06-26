@@ -85,6 +85,12 @@ export interface PagoDto {
   periodo?: number
 }
 
+export interface ResumenTributoDto {
+  codigo: string
+  descripcion: string
+  valor: number
+}
+
 export interface ResumenDto {
   totalNoSuj: number
   totalExenta: number
@@ -101,6 +107,7 @@ export interface ResumenDto {
   totalLetras: string
   condicionOperacion: number
   pagos: PagoDto[]
+  tributos?: ResumenTributoDto[]
 }
 
 export interface CreateFacturaDto {

@@ -47,6 +47,7 @@ describe('ccfStrategy (03) metadatos', () => {
     expect(dto.precioIncluyeIva).toBe(false)
     expect(dto.ventaGravada).toBe(100)
     expect(dto.ivaItem).toBe(13)
+    expect(dto.tributos).toEqual(['20'])
   })
   it('buildResumenDto incluye montoTotalOperacion y reteRenta=0', () => {
     const calc = [ccfStrategy.calcItem({ cantidad: 2, precioUni: 50, tipoImpuesto: 1 })]
@@ -56,5 +57,6 @@ describe('ccfStrategy (03) metadatos', () => {
     expect(dto.totalIva).toBe(13)
     expect(dto.reteRenta).toBe(0)
     expect(dto.totalPagar).toBe(113)
+    expect(dto.tributos).toEqual([{ codigo: '20', descripcion: 'Impuesto al Valor Agregado 13%', valor: 13 }])
   })
 })

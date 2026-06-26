@@ -35,6 +35,7 @@ describe('ReceptorFormModal (contribuyente)', () => {
     await user.selectOptions(screen.getByLabelText(/actividad económica/i), '01111')
     await user.selectOptions(screen.getByLabelText(/^departamento/i), '1')
     await user.selectOptions(screen.getByLabelText(/^municipio/i), '10')
+    await user.selectOptions(screen.getByLabelText(/^distrito/i), '100')
     await user.type(screen.getByLabelText(/dirección/i), 'Col. Centro, calle 1')
 
     await user.click(screen.getByRole('button', { name: /guardar/i }))

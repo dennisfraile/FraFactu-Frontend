@@ -51,10 +51,10 @@ describe('calcResumenFse14 (retenciones)', () => {
 })
 
 describe('fseStrategy (14) metadatos', () => {
-  it('version 2, sin caja, sujeto excluido, no descuenta stock, usa agente retención', () => {
+  it('version 2, requiere caja, sujeto excluido, no descuenta stock, usa agente retención', () => {
     expect(fseStrategy.tipoDte).toBe('14')
     expect(fseStrategy.version).toBe(2)
-    expect(fseStrategy.requiereCaja).toBe(false)
+    expect(fseStrategy.requiereCaja).toBe(true)
     expect(fseStrategy.descuentaStock).toBe(false)
     expect(fseStrategy.receptorPolicy).toBe('sujetoExcluido')
     expect(fseStrategy.usaAgenteRetencion).toBe(true)

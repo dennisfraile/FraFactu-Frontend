@@ -55,6 +55,7 @@ export function ReceptorFormModal({ policy, onCreated, onClose }: Props) {
     if (!numeroDocumento.trim()) return 'El número de documento es obligatorio'
     if (!codigoActividad) return 'La actividad económica es obligatoria'
     if (!catDepartamentoId || !catMunicipioId) return 'Seleccione departamento y municipio'
+    if (!catDistritoId) return 'El distrito es obligatorio'
     if (direccion.trim().length < 5) return 'La dirección (complemento) es obligatoria'
     return null
   }
@@ -143,7 +144,7 @@ export function ReceptorFormModal({ policy, onCreated, onClose }: Props) {
               {municipiosFiltrados.map((m) => <option key={m.id} value={m.id}>{m.valor}</option>)}
             </select>
           </FormField>
-          <FormField label="Distrito (opcional)" htmlFor="r-dist">
+          <FormField label="Distrito" htmlFor="r-dist">
             <select id="r-dist" className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm dark:bg-surface-dark"
               value={catDistritoId ?? ''} onChange={(e) => setCatDistritoId(e.target.value ? Number(e.target.value) : null)}>
               <option value="">…</option>

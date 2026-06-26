@@ -59,7 +59,7 @@ export const ccfStrategy: DteStrategy = {
       ventaExenta: calc.ventaExenta,
       ventaNoSuj: calc.ventaNoSuj,
       ivaItem: calc.ivaItem,
-      tributos: null,
+      tributos: calc.ventaGravada > 0 ? ['20'] : null,
       productoId: item.productoId,
       bodegaId: item.bodegaId,
       precioIncluyeIva: false,
@@ -73,6 +73,9 @@ export const ccfStrategy: DteStrategy = {
       subTotal: resumen.subTotal,
       totalIva: resumen.totalIva,
       montoTotalOperacion: resumen.montoTotalOperacion,
+      tributos: resumen.totalIva > 0
+        ? [{ codigo: '20', descripcion: 'Impuesto al Valor Agregado 13%', valor: resumen.totalIva }]
+        : undefined,
       reteRenta: 0,
       totalPagar: resumen.totalPagar,
       totalLetras: numeroALetras(resumen.totalPagar),

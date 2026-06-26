@@ -28,7 +28,7 @@ export const fseStrategy: DteStrategy = {
   etiqueta: 'Factura de Sujeto Excluido',
   etiquetaCorta: 'FSE',
   precioIncluyeIva: false,
-  requiereCaja: false,
+  requiereCaja: true,
   descuentaStock: false,
   receptorPolicy: 'sujetoExcluido',
   usaAgenteRetencion: true,
