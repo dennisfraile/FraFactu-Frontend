@@ -36,6 +36,7 @@ export interface FacturaFormValues {
   esAgenteRetencion?: boolean // FSE (14): el emisor retiene IVA 1%.
   items: FormItem[]
   pagos: FormPago[]
+  documentoRelacionado?: import('../types').DocumentoRelacionadoDto | null
 }
 
 export interface DteStrategy {
@@ -48,6 +49,8 @@ export interface DteStrategy {
   descuentaStock: boolean
   receptorPolicy: ReceptorPolicy
   usaAgenteRetencion: boolean
+  requiereDocumentoRelacionado: boolean
+  prefillDesdeOriginal: boolean
   calcItem(input: ItemInput): ItemCalculado
   calcResumen(items: ItemCalculado[], opts?: ResumenOpts): ResumenNumerico
   buildItemDto(item: FormItem, calc: ItemCalculado, numItem: number): ItemDocumentoDto

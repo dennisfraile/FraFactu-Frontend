@@ -15,6 +15,8 @@ export const facturaStrategy: DteStrategy = {
   descuentaStock: true,
   receptorPolicy: 'opcional',
   usaAgenteRetencion: false,
+  requiereDocumentoRelacionado: false,
+  prefillDesdeOriginal: false,
   calcItem: calcularItemFactura01,
   calcResumen: (items: ItemCalculado[]): ResumenNumerico => calcularResumenFactura01(items),
   buildItemDto(item: FormItem, calc: ItemCalculado, numItem: number): ItemDocumentoDto {

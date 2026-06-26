@@ -32,6 +32,8 @@ export const fseStrategy: DteStrategy = {
   descuentaStock: false,
   receptorPolicy: 'sujetoExcluido',
   usaAgenteRetencion: true,
+  requiereDocumentoRelacionado: false,
+  prefillDesdeOriginal: false,
   calcItem: calcItemFse14,
   calcResumen: calcResumenFse14,
   buildItemDto(item: FormItem, calc: ItemCalculado, numItem: number): ItemDocumentoDto {

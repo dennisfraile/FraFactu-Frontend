@@ -18,6 +18,8 @@ export const ccfStrategy: DteStrategy = {
   descuentaStock: true,
   receptorPolicy: 'contribuyente',
   usaAgenteRetencion: false,
+  requiereDocumentoRelacionado: false,
+  prefillDesdeOriginal: false,
   calcItem: calcItemCcf03,
   calcResumen: (items: ItemCalculado[]): ResumenNumerico => calcResumenCcf03(items),
   buildItemDto(item: FormItem, calc: ItemCalculado, numItem: number): ItemDocumentoDto {
