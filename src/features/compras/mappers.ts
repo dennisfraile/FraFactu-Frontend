@@ -76,7 +76,7 @@ export function buildCrearCompraDto(v: CompraFormValues): CrearCompraExternaDto 
     proveedorId,
     sucursalId,
     numeroFactura: v.numeroFactura.trim(),
-    fechaEmision: v.fechaEmision,
+    fechaEmision: v.fechaEmision.includes('T') ? v.fechaEmision : `${v.fechaEmision}T00:00:00Z`,
     subtotal: totales.subtotal,
     iva: totales.iva,
     total: totales.total,

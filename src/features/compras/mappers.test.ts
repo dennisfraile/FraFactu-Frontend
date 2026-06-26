@@ -30,4 +30,14 @@ describe('buildCrearCompraDto', () => {
   it('lanza error si proveedorId es null', () => {
     expect(() => buildCrearCompraDto({ ...base, proveedorId: null })).toThrow('buildCrearCompraDto: proveedorId requerido')
   })
+
+  it('convierte fechaEmision yyyy-MM-dd a UTC ISO con sufijo Z (G-FECHA)', () => {
+    const dto = buildCrearCompraDto({ ...base, fechaEmision: '2026-06-20' })
+    expect(dto.fechaEmision).toBe('2026-06-20T00:00:00Z')
+  })
+
+  it('mantiene fechaEmision si ya incluye T (datetime completo)', () => {
+    const dto = buildCrearCompraDto({ ...base, fechaEmision: '2026-06-20T00:00:00Z' })
+    expect(dto.fechaEmision).toBe('2026-06-20T00:00:00Z')
+  })
 })
