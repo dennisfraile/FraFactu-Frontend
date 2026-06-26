@@ -12,6 +12,9 @@ import { EmitirLandingPage } from '@/features/facturacion/pages/EmitirLandingPag
 import { HistorialPage } from '@/features/facturacion/pages/HistorialPage'
 import { DteDetallePage } from '@/features/facturacion/pages/DteDetallePage'
 import { ProveedoresPage } from '@/features/compras/pages/ProveedoresPage'
+import { ComprasListPage } from '@/features/compras/pages/ComprasListPage'
+import { CompraFormPage } from '@/features/compras/pages/CompraFormPage'
+import { CompraDetallePage } from '@/features/compras/pages/CompraDetallePage'
 
 export function AppRoutes() {
   return (
@@ -29,6 +32,10 @@ export function AppRoutes() {
           <Route path="/facturacion/historial" element={<HistorialPage />} />
           <Route path="/facturacion/:id" element={<DteDetallePage />} />
           <Route path="/proveedores" element={<ProveedoresPage />} />
+          <Route path="/compras" element={<ComprasListPage />} />
+          <Route path="/compras/nueva" element={<CompraFormPage />} />
+          <Route path="/compras/:id" element={<CompraDetallePage />} />
+          <Route path="/compras/:id/editar" element={<CompraFormPage />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
