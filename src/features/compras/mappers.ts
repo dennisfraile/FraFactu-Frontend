@@ -41,10 +41,15 @@ export function nuevaLineaGasto(): FormGastoLinea {
 }
 
 export function buildCrearCompraDto(v: CompraFormValues): CrearCompraExternaDto {
+  if (!v.proveedorId) throw new Error('buildCrearCompraDto: proveedorId requerido')
+  if (!v.sucursalId) throw new Error('buildCrearCompraDto: sucursalId requerido')
+  const proveedorId = v.proveedorId
+  const sucursalId = v.sucursalId
   const detalles: CrearCompraDetalleDto[] = v.productos.map((p) => {
+    if (!p.productoId) throw new Error('buildCrearCompraDto: productoId requerido en una línea de producto')
     const c = calcLineaProducto({ cantidad: p.cantidad, costoUnitario: p.costoUnitario, aplicaIva: p.aplicaIva, ivaManual: p.ivaManual })
     return {
-      productoId: p.productoId ?? 0,
+      productoId: p.productoId,
       bodegaId: p.esParaInventario ? p.bodegaId : null,
       cantidad: p.cantidad,
       costoUnitario: p.costoUnitario,
@@ -64,8 +69,8 @@ export function buildCrearCompraDto(v: CompraFormValues): CrearCompraExternaDto 
   const calcProductos = v.productos.map((p) => calcLineaProducto({ cantidad: p.cantidad, costoUnitario: p.costoUnitario, aplicaIva: p.aplicaIva, ivaManual: p.ivaManual }))
   const totales = calcTotalesCompra(calcProductos, gastos.map((g) => ({ monto: g.monto })))
   return {
-    proveedorId: v.proveedorId ?? 0,
-    sucursalId: v.sucursalId ?? 0,
+    proveedorId,
+    sucursalId,
     numeroFactura: v.numeroFactura.trim(),
     fechaEmision: v.fechaEmision,
     subtotal: totales.subtotal,

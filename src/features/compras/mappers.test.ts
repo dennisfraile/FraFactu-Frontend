@@ -26,4 +26,8 @@ describe('buildCrearCompraDto', () => {
     expect(dto.detalles[0].bodegaId).toBeNull()
     expect(dto.detalles[0].esParaInventario).toBe(false)
   })
+
+  it('lanza error si proveedorId es null', () => {
+    expect(() => buildCrearCompraDto({ ...base, proveedorId: null })).toThrow('buildCrearCompraDto: proveedorId requerido')
+  })
 })
