@@ -2,6 +2,9 @@
 import { useEffect } from 'react'
 import { FormField } from '@/design-system'
 import { ReceptorPicker } from './ReceptorPicker'
+import { QuickCreateSelect } from './QuickCreateSelect'
+import { ReceptorFormModal } from './ReceptorFormModal'
+import { receptoresApi } from '../catalogos-api'
 import { useSucursales, useVendedores, useCatalogo, useCajas } from '../hooks'
 import type { DteStrategy } from '../dte/strategy'
 import type { Sucursal, Vendedor, ReceptorListItem, CajaDto } from '../types'
@@ -71,12 +74,29 @@ export function DatosGeneralesSection(p: Props) {
       )}
       {(!receptorOpcional || !p.esConsumidorFinal) && (
         <FormField label={receptorLabel} htmlFor="receptor">
-          {p.receptor
-            ? <div className="flex items-center justify-between rounded-md border border-hairline px-3 py-2 text-sm">
-                <span>{p.receptor.nombreRazonSocial}</span>
-                <button type="button" className="text-xs text-sello" onClick={() => p.onReceptor(null)}>Cambiar</button>
-              </div>
-            : <ReceptorPicker onSelect={p.onReceptor} />}
+          {p.receptor ? (
+            <div className="flex items-center justify-between rounded-md border border-hairline px-3 py-2 text-sm">
+              <span>{p.receptor.nombreRazonSocial}</span>
+              <button type="button" className="text-xs text-sello" onClick={() => p.onReceptor(null)}>Cambiar</button>
+            </div>
+          ) : receptorOpcional ? (
+            <ReceptorPicker onSelect={p.onReceptor} />
+          ) : (
+            <QuickCreateSelect
+              onSearch={(term) => receptoresApi.search(term)}
+              getLabel={(r) => `${r.nombreRazonSocial}${r.numeroDocumento ? ` (${r.numeroDocumento})` : ''}`}
+              onSelect={p.onReceptor}
+              placeholder="Buscar receptor por nombre o documento"
+              crearLabel={p.strategy.receptorPolicy === 'sujetoExcluido' ? 'Crear sujeto excluido' : 'Crear receptor'}
+              renderCreateModal={({ onCreated, onClose }) => (
+                <ReceptorFormModal
+                  policy={p.strategy.receptorPolicy === 'sujetoExcluido' ? 'sujetoExcluido' : 'contribuyente'}
+                  onCreated={onCreated}
+                  onClose={onClose}
+                />
+              )}
+            />
+          )}
         </FormField>
       )}
       {p.strategy.usaAgenteRetencion && (
