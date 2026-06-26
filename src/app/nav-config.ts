@@ -8,6 +8,10 @@ export const navSections: NavSection[] = [
     { label: 'Emitir DTE', to: '/facturacion/emitir', icon: 'factura' },
     { label: 'Historial', to: '/facturacion/historial', icon: 'historial' },
   ] },
+  { title: 'Compras', items: [
+    { label: 'Compras externas', to: '/compras', icon: 'compras' },
+    { label: 'Proveedores', to: '/proveedores', icon: 'proveedores' },
+  ] },
   { title: 'Inventario', items: [
     { label: 'Productos', to: '/inventario/productos', icon: 'productos' },
     { label: 'Stock', to: '/inventario/stock', icon: 'stock' },
