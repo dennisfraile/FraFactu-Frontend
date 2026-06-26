@@ -56,5 +56,9 @@ export function buildCreateFacturaDto(
     vendedorId: values.vendedorId ?? null,
     cuerpoDocumento,
     resumen: strategy.buildResumenDto(resumenNum, values),
+    documentosRelacionados:
+      strategy.requiereDocumentoRelacionado && values.documentoRelacionado
+        ? [values.documentoRelacionado]
+        : undefined,
   }
 }
