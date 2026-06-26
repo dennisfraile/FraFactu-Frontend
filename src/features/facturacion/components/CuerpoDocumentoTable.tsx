@@ -10,9 +10,10 @@ interface Props {
   items: FormItem[]
   onChange: (items: FormItem[]) => void
   sucursalId: number
+  descuentaStock: boolean
 }
 
-export function CuerpoDocumentoTable({ items, onChange, sucursalId }: Props) {
+export function CuerpoDocumentoTable({ items, onChange, sucursalId, descuentaStock }: Props) {
   const unidades = useCatalogo('unidadesMedida')
   const bodegas = useBodegas(sucursalId)
 
@@ -27,7 +28,7 @@ export function CuerpoDocumentoTable({ items, onChange, sucursalId }: Props) {
   const agregar = () =>
     onChange([
       ...items,
-      { descripcion: '', cantidad: 1, precioUni: 0, uniMedida: unidadPorDefecto, tipoItem: TIPO_ITEM.BIEN, tipoImpuesto: 1, bodegaId: bodegaPorDefecto },
+      { descripcion: '', cantidad: 1, precioUni: 0, uniMedida: unidadPorDefecto, tipoItem: TIPO_ITEM.BIEN, tipoImpuesto: 1, bodegaId: descuentaStock ? bodegaPorDefecto : undefined },
     ])
   const quitar = (idx: number) => onChange(items.filter((_, i) => i !== idx))
   const fromProducto = (idx: number, p: ProductoListItem) => {
@@ -40,8 +41,8 @@ export function CuerpoDocumentoTable({ items, onChange, sucursalId }: Props) {
       uniMedida: unidadIdPorCodigo(p.unidadMedida) ?? unidadPorDefecto,
       tipoItem,
       tipoImpuesto: (p.tipoImpuesto as 1 | 2 | 3) || 1,
-      // Solo los Bienes (físicos) descargan inventario y requieren bodega.
-      bodegaId: tipoItem === TIPO_ITEM.BIEN ? bodegaPorDefecto : undefined,
+      // Solo los Bienes (físicos) descargan inventario y requieren bodega, y solo si el DTE descuenta stock.
+      bodegaId: tipoItem === TIPO_ITEM.BIEN && descuentaStock ? bodegaPorDefecto : undefined,
     })
   }
 
@@ -65,7 +66,7 @@ export function CuerpoDocumentoTable({ items, onChange, sucursalId }: Props) {
               <Input id={`desc2-${idx}`} type="number" value={it.montoDescuento ?? 0} onChange={(e) => set(idx, { montoDescuento: Number(e.target.value) })} />
             </FormField>
           </div>
-          {it.tipoItem === TIPO_ITEM.BIEN && (
+          {it.tipoItem === TIPO_ITEM.BIEN && descuentaStock && (
             <div className="mt-2">
               <FormField label="Bodega" htmlFor={`bodega-${idx}`}>
                 <select

@@ -70,6 +70,7 @@ export interface ItemDocumentoDto {
   ventaExenta: number
   ventaNoSuj: number
   ivaItem: number
+  compra?: number // FSE (14): monto de compra al sujeto excluido.
   tributos?: string[] | null
   productoId?: number
   bodegaId?: number
@@ -84,6 +85,12 @@ export interface PagoDto {
   periodo?: number
 }
 
+export interface ResumenTributoDto {
+  codigo: string
+  descripcion: string
+  valor: number
+}
+
 export interface ResumenDto {
   totalNoSuj: number
   totalExenta: number
@@ -92,11 +99,15 @@ export interface ResumenDto {
   totalIva: number
   ivaRete1?: number
   reteRenta?: number
+  totalCompras?: number // FSE (14)
+  descu?: number // FSE (14): descuento global
+  montoTotalOperacion?: number // CCF (03)
   totalDescu?: number
   totalPagar: number
   totalLetras: string
   condicionOperacion: number
   pagos: PagoDto[]
+  tributos?: ResumenTributoDto[]
 }
 
 export interface CreateFacturaDto {
@@ -205,4 +216,34 @@ export interface BodegaItem {
   sucursalId: number
   esPrincipal: boolean
   activa: boolean
+}
+
+// ---- Creación de receptor (quick-create) ----
+export interface CrearReceptorDto {
+  catTipoDocumentoId?: number | null // Id de catálogo (NO el código MH).
+  numeroDocumento?: string
+  nombreRazonSocial: string
+  nrc?: string
+  codigoActividad?: string
+  descripcionActividad?: string
+  catDepartamentoId?: number | null
+  catMunicipioId?: number | null
+  catDistritoId?: number | null
+  direccion?: string
+  correoElectronico?: string
+  telefono?: string
+}
+
+export interface ReceptorDto {
+  id: number
+  nombreRazonSocial: string
+  numeroDocumento: string | null
+  nrc: string | null
+  correoElectronico: string | null
+}
+
+// Catálogo de actividad económica (jerárquico).
+export interface ActividadEconomicaItem extends CatalogoItem {
+  esSeleccionable: boolean
+  padreId: number | null
 }

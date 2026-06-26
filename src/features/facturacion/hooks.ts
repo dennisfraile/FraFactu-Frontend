@@ -1,8 +1,8 @@
 // src/features/facturacion/hooks.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { facturacionApi, type ListarFacturasParams } from './api'
-import { catalogosApi, vendedoresApi, sucursalesApi, cajasApi, bodegasApi, type NombreCatalogo } from './catalogos-api'
-import type { CreateFacturaDto, AnularFacturaDto } from './types'
+import { catalogosApi, vendedoresApi, sucursalesApi, cajasApi, bodegasApi, receptoresApi, type NombreCatalogo } from './catalogos-api'
+import type { CreateFacturaDto, AnularFacturaDto, CrearReceptorDto } from './types'
 
 const HORA_CATALOGO = 1000 * 60 * 60 // catálogos: estáticos durante la sesión
 
@@ -84,5 +84,25 @@ export function usePuedeInvalidar(id: number, enabled: boolean) {
     queryKey: ['puede-invalidar', id],
     queryFn: () => facturacionApi.puedeInvalidar(id),
     enabled,
+  })
+}
+
+export function useActividadesEconomicas() {
+  return useQuery({ queryKey: ['catalogo', 'actividades-economicas'], queryFn: () => catalogosApi.actividadesEconomicas(), staleTime: HORA_CATALOGO })
+}
+
+export function useTiposDocumentoReceptor() {
+  return useCatalogo('tiposDocIdentificacion')
+}
+
+export function useDepartamentos() {
+  return useCatalogo('departamentos')
+}
+
+export function useCrearReceptor() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (dto: CrearReceptorDto) => receptoresApi.crear(dto),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['receptores'] }),
   })
 }

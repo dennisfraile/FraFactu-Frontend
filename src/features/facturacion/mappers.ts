@@ -1,107 +1,60 @@
-import type { CreateFacturaDto, ItemDocumentoDto, ReceptorDteDto } from './types'
-import type { TipoImpuesto } from './calc/types'
-import { calcularItemFactura01, calcularResumenFactura01 } from './calc/factura01'
-import { numeroALetras } from './calc/numero-letras'
-import {
-  IDENTIFICACION_FACTURA_DEFAULT,
-  NUMERO_CONTROL_PLACEHOLDER,
-  CODIGO_GENERACION_PLACEHOLDER,
-} from './catalogos'
+import type { CreateFacturaDto, ReceptorDteDto, TipoDte } from './types'
+import { getStrategy } from './dte/registry'
+import { CODIGO_GENERACION_PLACEHOLDER } from './catalogos'
+import type { FacturaFormValues } from './dte/strategy'
+
+// Re-export para compatibilidad con los componentes que importan estos tipos desde mappers.
+export type { FormItem, FormPago, FacturaFormValues } from './dte/strategy'
 
 // Nombre del receptor genérico para ventas a Consumidor Final (sin receptor registrado).
 const RECEPTOR_CONSUMIDOR_FINAL: ReceptorDteDto = { nombre: 'Consumidor Final' }
 
-export interface FormItem {
-  productoId?: number
-  bodegaId?: number // Id de bodega; requerido para ítems de tipo Bien (físico).
-  codigo?: string
-  descripcion: string
-  cantidad: number
-  precioUni: number
-  montoDescuento?: number
-  uniMedida: number // Id de catálogo cat_uni_medida (NO el código MH).
-  tipoItem: number
-  tipoImpuesto: TipoImpuesto
-}
-
-export interface FormPago {
-  catFormaPagoId: number
-  monto: number
-}
-
-export interface FacturaFormValues {
-  sucursalId: number
-  cajaId: number | null // Caja (POS); obligatoria para emitir Factura 01.
-  esConsumidorFinal: boolean
-  receptorId?: number | null
-  vendedorId?: number | null
-  condicionOperacion: number
-  items: FormItem[]
-  pagos: FormPago[]
-}
-
 export function buildCreateFacturaDto(
   values: FacturaFormValues,
   ahora: { fecha: string; hora: string },
+  tipoDte: TipoDte = '01',
 ): CreateFacturaDto {
+  const strategy = getStrategy(tipoDte)
+  const opts = { esAgenteRetencion: values.esAgenteRetencion }
+
   const calculados = values.items.map((it) =>
-    calcularItemFactura01({
+    strategy.calcItem({
       cantidad: it.cantidad,
       precioUni: it.precioUni,
       montoDescuento: it.montoDescuento,
       tipoImpuesto: it.tipoImpuesto,
     }),
   )
-  const resumen = calcularResumenFactura01(calculados)
+  const resumenNum = strategy.calcResumen(calculados, opts)
+  const cuerpoDocumento = values.items.map((it, idx) => strategy.buildItemDto(it, calculados[idx], idx + 1))
 
-  const cuerpoDocumento: ItemDocumentoDto[] = values.items.map((it, idx) => ({
-    numItem: idx + 1,
-    tipoItem: it.tipoItem,
-    cantidad: it.cantidad,
-    codigo: it.codigo,
-    uniMedida: it.uniMedida,
-    descripcion: it.descripcion,
-    precioUni: it.precioUni,
-    montoDescuento: it.montoDescuento ?? 0,
-    ventaGravada: calculados[idx].ventaGravada,
-    ventaExenta: calculados[idx].ventaExenta,
-    ventaNoSuj: calculados[idx].ventaNoSuj,
-    ivaItem: calculados[idx].ivaItem,
-    tributos: null,
-    productoId: it.productoId,
-    bodegaId: it.bodegaId,
-    precioIncluyeIva: true,
-  }))
+  // Consumidor Final solo aplica a tipos con receptor opcional (01). En CCF/FSE el receptor
+  // (por receptorId) es obligatorio y se manda como receptorId XOR receptor inline.
+  const esConsumidorFinal = strategy.receptorPolicy === 'opcional' && values.esConsumidorFinal
 
-  // Consumidor Final → receptor inline (el backend rechaza receptorId y receptor ambos nulos).
-  // Receptor registrado → receptorId (el backend exige receptorId XOR receptor, no ambos).
-  // El schema garantiza receptorId presente cuando no es Consumidor Final.
-  const esConsumidorFinal = values.esConsumidorFinal
+  // Placeholder derivado del tipoDte para que cumpla la regex del backend:
+  // DTE-{tipoDte}-(M|B|S|P)###P###-{15 dígitos}
+  const numeroControlPlaceholder = `DTE-${strategy.tipoDte}-M001P001-000000000000000`
 
   return {
     identificacion: {
-      ...IDENTIFICACION_FACTURA_DEFAULT,
-      numeroControl: NUMERO_CONTROL_PLACEHOLDER,
+      version: strategy.version,
+      tipoDte: strategy.tipoDte,
+      numeroControl: numeroControlPlaceholder,
       codigoGeneracion: CODIGO_GENERACION_PLACEHOLDER,
+      tipoModelo: 1,
+      tipoOperacion: 1,
+      crearEventoAutomatico: false,
+      tipoMoneda: 'USD',
       fechaEmision: ahora.fecha,
       horaEmision: ahora.hora,
     },
-    cajaId: values.cajaId,
+    cajaId: strategy.requiereCaja ? values.cajaId : null,
     sucursalId: values.sucursalId,
     receptorId: esConsumidorFinal ? null : values.receptorId ?? null,
     receptor: esConsumidorFinal ? RECEPTOR_CONSUMIDOR_FINAL : null,
     vendedorId: values.vendedorId ?? null,
     cuerpoDocumento,
-    resumen: {
-      totalNoSuj: resumen.totalNoSuj,
-      totalExenta: resumen.totalExenta,
-      totalGravada: resumen.totalGravada,
-      subTotal: resumen.subTotal,
-      totalIva: resumen.totalIva,
-      totalPagar: resumen.totalPagar,
-      totalLetras: numeroALetras(resumen.totalPagar),
-      condicionOperacion: values.condicionOperacion,
-      pagos: values.pagos.map((p) => ({ catFormaPagoId: p.catFormaPagoId, monto: p.monto })),
-    },
+    resumen: strategy.buildResumenDto(resumenNum, values),
   }
 }

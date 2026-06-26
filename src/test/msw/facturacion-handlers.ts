@@ -33,6 +33,15 @@ export const facturacionHandlers = [
   http.get(`${base}/productosservicios/search`, () => HttpResponse.json([{ id: 3, codigo: 'P001', nombre: 'Producto A', precioVenta: 56.5, unidadMedida: '59', tipoItem: 'Bien', tipoImpuesto: 1, precioIncluyeIva: true }])),
   http.get(`${base}/cajas`, () => HttpResponse.json([{ id: 1, sucursalId: 1, codigo: 'P001', nombre: 'Caja Principal', activo: true, codPuntoVenta: 'P001', codPuntoVentaMH: '01' }])),
   http.get(`${base}/bodegas/sucursal/:sucursalId`, () => HttpResponse.json([{ id: 1, codigo: 'BOD-01', nombre: 'Bodega Principal', sucursalId: 1, esPrincipal: true, activa: true }])),
+  http.get(`${base}/catalogos/departamentos`, () => HttpResponse.json([{ id: 1, codigo: '06', valor: 'San Salvador' }])),
+  http.get(`${base}/catalogos/municipios`, () => HttpResponse.json([{ id: 10, codigo: '14', valor: 'San Salvador Centro', codigoDepartamento: '06' }])),
+  http.get(`${base}/catalogos/distritos`, () => HttpResponse.json([{ id: 100, codigo: '01', valor: 'San Salvador', codigoDepartamento: '06', codigoMunicipio: '14' }])),
+  http.get(`${base}/catalogos/tipos-documento-identificacion-receptor`, () => HttpResponse.json([{ id: 1, codigo: '36', valor: 'NIT' }, { id: 2, codigo: '13', valor: 'DUI' }, { id: 4, codigo: '03', valor: 'Pasaporte' }])),
+  http.get(`${base}/catalogos/actividades-economicas`, () => HttpResponse.json([{ id: 5, codigo: '01111', valor: 'Cultivo de cereales', esSeleccionable: true, padreId: null }])),
+  http.post(`${base}/receptores`, async ({ request }) => {
+    const b = (await request.json()) as { nombreRazonSocial: string; numeroDocumento?: string; nrc?: string; correoElectronico?: string }
+    return HttpResponse.json({ id: 99, nombreRazonSocial: b.nombreRazonSocial, numeroDocumento: b.numeroDocumento ?? null, nrc: b.nrc ?? null, correoElectronico: b.correoElectronico ?? null }, { status: 201 })
+  }),
   http.post(`${base}/facturas/guardar-pendiente`, () => HttpResponse.json(facturaResponse, { status: 201 })),
   http.post(`${base}/facturas`, () => HttpResponse.json(facturaResponse, { status: 201 })),
   http.get(`${base}/facturas/:id`, () => HttpResponse.json(facturaResponse)),
