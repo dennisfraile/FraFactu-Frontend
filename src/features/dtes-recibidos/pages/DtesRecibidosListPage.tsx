@@ -6,13 +6,14 @@ import { useDtesRecibidos, useEstadisticasDtes } from '../hooks'
 import { tonoDteRecibido } from '../estado'
 import type { DteRecibidoResumenDto } from '../types'
 import { CargarJsonModal } from '../components/CargarJsonModal'
+import { LeerCorreoModal } from '../components/LeerCorreoModal'
 
 export function DtesRecibidosListPage() {
   const navigate = useNavigate()
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [estado, setEstado] = useState('')
-  const [modal, setModal] = useState<'cargar' | null>(null)
+  const [modal, setModal] = useState<'cargar' | 'leer' | null>(null)
   const params = { pagina: page, tamanoPagina: 20, search: search || undefined, estado: estado || undefined }
   const { data, isLoading, isError } = useDtesRecibidos(params)
   const stats = useEstadisticasDtes({ search: search || undefined, estado: estado || undefined })
@@ -31,7 +32,10 @@ export function DtesRecibidosListPage() {
     <div className="space-y-4 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-ink">DTEs recibidos</h1>
-        <Button onClick={() => setModal('cargar')}>Cargar JSON</Button>
+        <div className="flex gap-2">
+          <Button variant="ghost" onClick={() => setModal('leer')}>Leer correo</Button>
+          <Button onClick={() => setModal('cargar')}>Cargar JSON</Button>
+        </div>
       </div>
 
       {stats.data && (
@@ -60,6 +64,7 @@ export function DtesRecibidosListPage() {
         <Table columns={columns} rows={data.items} getRowKey={(d) => d.id} serverPagination={{ page: data.pagina, totalPages: data.totalPaginas, onPageChange: setPage }} />
       )}
       {modal === 'cargar' && <CargarJsonModal onClose={() => setModal(null)} />}
+      {modal === 'leer' && <LeerCorreoModal onClose={() => setModal(null)} />}
     </div>
   )
 }
