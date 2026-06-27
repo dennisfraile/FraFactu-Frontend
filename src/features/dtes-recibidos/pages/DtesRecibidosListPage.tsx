@@ -1,16 +1,18 @@
 // src/features/dtes-recibidos/pages/DtesRecibidosListPage.tsx
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Table, Input, Badge, Spinner, EmptyState, Card } from '@/design-system'
+import { Table, Input, Badge, Spinner, EmptyState, Card, Button } from '@/design-system'
 import { useDtesRecibidos, useEstadisticasDtes } from '../hooks'
 import { tonoDteRecibido } from '../estado'
 import type { DteRecibidoResumenDto } from '../types'
+import { CargarJsonModal } from '../components/CargarJsonModal'
 
 export function DtesRecibidosListPage() {
   const navigate = useNavigate()
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [estado, setEstado] = useState('')
+  const [modal, setModal] = useState<'cargar' | null>(null)
   const params = { pagina: page, tamanoPagina: 20, search: search || undefined, estado: estado || undefined }
   const { data, isLoading, isError } = useDtesRecibidos(params)
   const stats = useEstadisticasDtes({ search: search || undefined, estado: estado || undefined })
@@ -29,6 +31,7 @@ export function DtesRecibidosListPage() {
     <div className="space-y-4 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-ink">DTEs recibidos</h1>
+        <Button onClick={() => setModal('cargar')}>Cargar JSON</Button>
       </div>
 
       {stats.data && (
@@ -56,6 +59,7 @@ export function DtesRecibidosListPage() {
       {data && data.items.length > 0 && (
         <Table columns={columns} rows={data.items} getRowKey={(d) => d.id} serverPagination={{ page: data.pagina, totalPages: data.totalPaginas, onPageChange: setPage }} />
       )}
+      {modal === 'cargar' && <CargarJsonModal onClose={() => setModal(null)} />}
     </div>
   )
 }

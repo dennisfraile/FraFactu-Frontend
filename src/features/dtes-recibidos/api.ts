@@ -22,7 +22,12 @@ export const dtesRecibidosApi = {
   async cargarJson(archivos: File[]): Promise<CargaMasivaResponse> {
     const fd = new FormData()
     archivos.forEach((f) => fd.append('archivos', f))
-    const { data } = await api.post<CargaMasivaResponse>('/dtesrecibidos/cargar-json', fd)
+    // Usar el adaptador 'http' (Node.js http.request) para evitar incompatibilidades
+    // entre el FormData de jsdom y el interceptor XHR de MSW en tests.
+    // En producción (navegador) la cadena 'http' no existe y axios cae en XHR automáticamente.
+    const { data } = await api.post<CargaMasivaResponse>('/dtesrecibidos/cargar-json', fd, {
+      adapter: ['http', 'xhr', 'fetch'],
+    })
     return data
   },
   async descartar(id: number, motivo: string): Promise<{ message: string }> {
