@@ -1,14 +1,29 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Badge, Spinner, EmptyState } from '@/design-system'
-import { useDteRecibido } from '../hooks'
+import { Button, Badge, Spinner, EmptyState, useToast } from '@/design-system'
+import { useDteRecibido, useDescartarDte } from '../hooks'
 import { parseDteLineas } from '../parse'
 import { tonoDteRecibido } from '../estado'
+import { DescartarDteModal } from '../components/DescartarDteModal'
 
 export function DteRecibidoDetallePage() {
   const { id } = useParams()
   const dteId = Number(id)
   const navigate = useNavigate()
   const { data, isLoading, isError } = useDteRecibido(dteId)
+  const toast = useToast()
+  const descartar = useDescartarDte()
+  const [modal, setModal] = useState(false)
+
+  const onDescartar = async (motivo: string) => {
+    try { await descartar.mutateAsync({ id: dteId, motivo }); toast.show('DTE descartado'); setModal(false); navigate('/dtes-recibidos') }
+    catch (e) {
+      const msg = (e as { response?: { data?: { error?: string; message?: string } } })?.response?.data?.error
+        ?? (e as { response?: { data?: { message?: string } } })?.response?.data?.message
+        ?? 'No se pudo descartar'
+      toast.show(msg, { tone: 'rojo' })
+    }
+  }
 
   if (isLoading) return <div className="p-6"><Spinner /></div>
   if (isError || !data) return <div className="p-6"><EmptyState title="No se pudo cargar el DTE" hint="Intenta de nuevo." /></div>
@@ -60,8 +75,10 @@ export function DteRecibidoDetallePage() {
       {esPendiente && (
         <div className="flex gap-2">
           <Button onClick={() => navigate(`/dtes-recibidos/${dteId}/mapear`)}>Mapear y crear compra</Button>
+          <Button variant="danger" onClick={() => setModal(true)}>Descartar</Button>
         </div>
       )}
+      {modal && <DescartarDteModal onConfirmar={onDescartar} onClose={() => setModal(false)} cargando={descartar.isPending} />}
     </div>
   )
 }

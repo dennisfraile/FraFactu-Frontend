@@ -15,6 +15,7 @@ function setup() {
           <Routes>
             <Route path="/dtes-recibidos/:id" element={<DteRecibidoDetallePage />} />
             <Route path="/dtes-recibidos/:id/mapear" element={<div>Mapear</div>} />
+            <Route path="/dtes-recibidos" element={<div>DTEs recibidos</div>} />
           </Routes>
         </MemoryRouter>
       </ToastProvider>
@@ -33,4 +34,14 @@ describe('DteRecibidoDetallePage', () => {
     expect(screen.getByText('Resma de papel bond carta')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /mapear y crear compra/i })).toBeInTheDocument()
   })
+
+  it('descarta el DTE pidiendo motivo', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event')
+    const user = userEvent.setup()
+    setup()
+    await user.click(await screen.findByRole('button', { name: /^descartar$/i }))
+    await user.type(await screen.findByLabelText(/motivo/i), 'Duplicado')
+    await user.click(screen.getByRole('button', { name: /descartar dte/i }))
+    expect(await screen.findByText('DTEs recibidos', { exact: false })).toBeInTheDocument()
+  }, 15000)
 })
