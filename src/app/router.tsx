@@ -15,6 +15,11 @@ import { ProveedoresPage } from '@/features/compras/pages/ProveedoresPage'
 import { ComprasListPage } from '@/features/compras/pages/ComprasListPage'
 import { CompraFormPage } from '@/features/compras/pages/CompraFormPage'
 import { CompraDetallePage } from '@/features/compras/pages/CompraDetallePage'
+import { DtesRecibidosListPage } from '@/features/dtes-recibidos/pages/DtesRecibidosListPage'
+import { DteRecibidoDetallePage } from '@/features/dtes-recibidos/pages/DteRecibidoDetallePage'
+import { MapearDtePage } from '@/features/dtes-recibidos/pages/MapearDtePage'
+import { ConfiguracionCorreoPage } from '@/features/dtes-recibidos/pages/ConfiguracionCorreoPage'
+import { GmailCallbackPage } from '@/features/dtes-recibidos/pages/GmailCallbackPage'
 
 export function AppRoutes() {
   return (
@@ -36,6 +41,11 @@ export function AppRoutes() {
           <Route path="/compras/nueva" element={<CompraFormPage />} />
           <Route path="/compras/:id" element={<CompraDetallePage />} />
           <Route path="/compras/:id/editar" element={<CompraFormPage />} />
+          <Route path="/dtes-recibidos" element={<DtesRecibidosListPage />} />
+          <Route path="/dtes-recibidos/configuracion" element={<ConfiguracionCorreoPage />} />
+          <Route path="/dtes-recibidos/gmail/callback" element={<GmailCallbackPage />} />
+          <Route path="/dtes-recibidos/:id" element={<DteRecibidoDetallePage />} />
+          <Route path="/dtes-recibidos/:id/mapear" element={<MapearDtePage />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
