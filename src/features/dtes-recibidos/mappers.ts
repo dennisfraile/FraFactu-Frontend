@@ -51,7 +51,7 @@ export function lineaDesdeParsed(item: DteLineaParsed): MapeoLineaForm {
     productoLabel: '',
     cantidad,
     bodegaId: null,
-    costoUnitario: round2(item.montoConIva / cantidad),
+    costoUnitario: round2(item.montoNeto / cantidad),
     nuevo: nuevoProductoVacio(),
     catTipoGastoId: null,
   }

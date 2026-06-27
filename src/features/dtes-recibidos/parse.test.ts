@@ -13,6 +13,8 @@ describe('parseDteLineas', () => {
     const lineas = parseDteLineas(json)
     expect(lineas).toHaveLength(2)
     expect(lineas[0]).toMatchObject({ numItem: 1, codigo: 'P-1', descripcion: 'Papel bond', cantidad: 50, precioUnitario: 4.5, ventaGravada: 225, unidadMedida: 59 })
+    // montoNeto = ventaGravada = 225 (sin IVA)
+    expect(lineas[0].montoNeto).toBe(225)
     // montoConIva = round2(225*1.13) = 254.25
     expect(lineas[0].montoConIva).toBe(254.25)
   })

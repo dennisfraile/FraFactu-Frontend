@@ -25,7 +25,8 @@ function MapearForm({ dte, initialValues }: { dte: DteRecibidoDto; initialValues
   const [values, setValues] = useState<MapeoFormValues>(initialValues)
   const [error, setError] = useState<string | null>(null)
 
-  const cuadre = calcCuadre(values.lineas.map((l) => ({ accion: l.accion, cantidad: l.cantidad, costoUnitario: l.costoUnitario, montoDte: l.montoDte })), dte.total)
+  const dteCtx = { iva: dte.iva, subTotal: dte.subTotal }
+  const cuadre = calcCuadre(values.lineas.map((l) => ({ accion: l.accion, cantidad: l.cantidad, costoUnitario: l.costoUnitario, montoDte: l.montoDte })), dte.total, dteCtx)
 
   const crear = async () => {
     const res = mapeoSchema.safeParse(values)
@@ -60,7 +61,7 @@ function MapearForm({ dte, initialValues }: { dte: DteRecibidoDto; initialValues
         </select>
       </FormField>
 
-      <MapeoLineasTable lineas={values.lineas} onLineas={(lineas) => setValues((v) => ({ ...v, lineas }))} sucursalId={values.sucursalId} totalDte={dte.total} />
+      <MapeoLineasTable lineas={values.lineas} onLineas={(lineas) => setValues((v) => ({ ...v, lineas }))} sucursalId={values.sucursalId} totalDte={dte.total} ivaDte={dte.iva} subTotalDte={dte.subTotal} />
 
       <Button onClick={crear} disabled={mapear.isPending || !cuadre.cuadra}>{mapear.isPending ? 'Creando…' : 'Crear compra (BORRADOR)'}</Button>
     </div>

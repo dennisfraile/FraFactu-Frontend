@@ -10,12 +10,17 @@ import { useAuthStore } from '@/app/auth-store'
 
 const parsed: DteLineaParsed = {
   numItem: 1, codigo: 'P-1', descripcion: 'Papel', cantidad: 50, precioUnitario: 4.5,
-  montoDescuento: 0, ventaGravada: 225, ventaExenta: 0, ventaNoSujeta: 0, unidadMedida: 59, montoConIva: 254.25,
+  montoDescuento: 0, ventaGravada: 225, ventaExenta: 0, ventaNoSujeta: 0, unidadMedida: 59,
+  montoNeto: 225, montoConIva: 254.25,
 }
 
 function renderTabla(lineas: MapeoLineaForm[], onLineas = vi.fn()) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  render(<QueryClientProvider client={qc}><MapeoLineasTable lineas={lineas} onLineas={onLineas} sucursalId={2} totalDte={254.25} /></QueryClientProvider>)
+  render(
+    <QueryClientProvider client={qc}>
+      <MapeoLineasTable lineas={lineas} onLineas={onLineas} sucursalId={2} totalDte={254.25} ivaDte={29.25} subTotalDte={225} />
+    </QueryClientProvider>,
+  )
   return onLineas
 }
 

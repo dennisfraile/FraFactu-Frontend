@@ -11,6 +11,8 @@ export interface DteLineaParsed {
   ventaExenta: number
   ventaNoSujeta: number
   unidadMedida: number | null
+  // Monto neto por línea (sin IVA): ventaGravada + ventaExenta + ventaNoSujeta - montoDescuento.
+  montoNeto: number
   // Monto sembrado con IVA por línea (gravada*1.13 + exenta + noSujeta - descuento).
   // Es un valor por defecto editable; el cuadre final lo valida el usuario.
   montoConIva: number
@@ -53,6 +55,7 @@ export function parseDteLineas(jsonDte: string): DteLineaParsed[] {
       ventaExenta,
       ventaNoSujeta,
       unidadMedida: it.uniMedida != null ? Number(it.uniMedida) : null,
+      montoNeto: round2(ventaGravada + ventaExenta + ventaNoSujeta - montoDescuento),
       montoConIva: round2(ventaGravada * 1.13 + ventaExenta + ventaNoSujeta - montoDescuento),
     }
   })

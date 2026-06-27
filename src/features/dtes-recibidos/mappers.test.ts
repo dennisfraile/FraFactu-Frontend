@@ -4,7 +4,8 @@ import type { DteLineaParsed } from './parse'
 
 const linea: DteLineaParsed = {
   numItem: 1, codigo: 'P-1', descripcion: 'Papel', cantidad: 50, precioUnitario: 4.5,
-  montoDescuento: 0, ventaGravada: 225, ventaExenta: 0, ventaNoSujeta: 0, unidadMedida: 59, montoConIva: 254.25,
+  montoDescuento: 0, ventaGravada: 225, ventaExenta: 0, ventaNoSujeta: 0, unidadMedida: 59,
+  montoNeto: 225, montoConIva: 254.25,
 }
 
 describe('lineaDesdeParsed', () => {
@@ -14,7 +15,7 @@ describe('lineaDesdeParsed', () => {
     expect(l.descripcionDte).toBe('Papel')
     expect(l.montoDte).toBe(254.25)
     expect(l.cantidad).toBe(50)
-    expect(l.costoUnitario).toBe(5.09) // round2(254.25/50)
+    expect(l.costoUnitario).toBe(4.50) // round2(225/50) — costo NETO (sin IVA)
   })
 })
 

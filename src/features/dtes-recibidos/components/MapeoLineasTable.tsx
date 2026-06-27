@@ -15,6 +15,8 @@ interface Props {
   onLineas: (l: MapeoLineaForm[]) => void
   sucursalId: number | null
   totalDte: number
+  ivaDte: number
+  subTotalDte: number
 }
 
 const ACCIONES: { id: AccionMapeo; label: string }[] = [
@@ -23,7 +25,7 @@ const ACCIONES: { id: AccionMapeo; label: string }[] = [
   { id: 'GASTO', label: 'Gasto' },
 ]
 
-export function MapeoLineasTable({ lineas, onLineas, sucursalId, totalDte }: Props) {
+export function MapeoLineasTable({ lineas, onLineas, sucursalId, totalDte, ivaDte, subTotalDte }: Props) {
   const tiposGasto = useTiposGasto()
   const tiposItem = useCatalogo('tiposItems')
   const unidades = useCatalogo('unidadesMedida')
@@ -38,12 +40,13 @@ export function MapeoLineasTable({ lineas, onLineas, sucursalId, totalDte }: Pro
   const setNuevo = (idx: number, patch: Partial<MapeoLineaForm['nuevo']>) =>
     onLineas(lineas.map((l, i) => (i === idx ? { ...l, nuevo: { ...l.nuevo, ...patch } } : l)))
 
-  const cuadre = calcCuadre(lineas.map((l) => ({ accion: l.accion, cantidad: l.cantidad, costoUnitario: l.costoUnitario, montoDte: l.montoDte })), totalDte)
+  const dteCtx = { iva: ivaDte, subTotal: subTotalDte }
+  const cuadre = calcCuadre(lineas.map((l) => ({ accion: l.accion, cantidad: l.cantidad, costoUnitario: l.costoUnitario, montoDte: l.montoDte })), totalDte, dteCtx)
 
   return (
     <section className="space-y-3">
       {lineas.map((l, idx) => {
-        const total = totalLineaMapeo({ accion: l.accion, cantidad: l.cantidad, costoUnitario: l.costoUnitario, montoDte: l.montoDte })
+        const total = totalLineaMapeo({ accion: l.accion, cantidad: l.cantidad, costoUnitario: l.costoUnitario, montoDte: l.montoDte }, dteCtx)
         return (
           <div key={l.uid} className="rounded-lg border border-hairline p-3">
             <div className="flex items-center justify-between">

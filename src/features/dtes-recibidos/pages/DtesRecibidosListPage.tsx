@@ -33,6 +33,7 @@ export function DtesRecibidosListPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-ink">DTEs recibidos</h1>
         <div className="flex gap-2">
+          <Button variant="ghost" onClick={() => navigate('/dtes-recibidos/configuracion')}>Configurar correo</Button>
           <Button variant="ghost" onClick={() => setModal('leer')}>Leer correo</Button>
           <Button onClick={() => setModal('cargar')}>Cargar JSON</Button>
         </div>
