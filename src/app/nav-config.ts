@@ -11,6 +11,7 @@ export const navSections: NavSection[] = [
   { title: 'Compras', items: [
     { label: 'Compras externas', to: '/compras', icon: 'compras' },
     { label: 'Proveedores', to: '/proveedores', icon: 'proveedores' },
+    { label: 'DTEs recibidos', to: '/dtes-recibidos', icon: 'recibidos' },
   ] },
   { title: 'Inventario', items: [
     { label: 'Productos', to: '/inventario/productos', icon: 'productos' },
