@@ -32,6 +32,7 @@ export function CrearVentaCreditoPage() {
   const formas = useCatalogo('formasPago')
 
   const [sucursalId, setSucursalId] = useState<number>(user?.sucursalIds?.[0] ?? 1)
+  const [cajaId, setCajaId] = useState<number | null>(null)
   const [receptor, setReceptor] = useState<ReceptorListItem | null>(null)
   const [vendedorId, setVendedorId] = useState<number | null>(null)
   const [condicionOperacion, setCondicionOperacion] = useState(2)
@@ -58,6 +59,18 @@ export function CrearVentaCreditoPage() {
       toast.show('La condición debe ser Crédito o Mixto', { tone: 'rojo' })
       return
     }
+    // La venta a crédito necesita un deudor identificado: el backend exige un receptor
+    // registrado para emitir la factura de la cuota (no se admite Consumidor Final).
+    if (!receptor) {
+      toast.show('Seleccioná un receptor para la venta a crédito', { tone: 'rojo' })
+      return
+    }
+    // Factura 01 exige caja; DatosGeneralesSection autoselecciona la primera, pero si la
+    // sucursal no tiene cajas activas avisamos en vez de dejar fallar el backend.
+    if (strategy.requiereCaja && cajaId == null) {
+      toast.show('Seleccioná una caja para emitir la cuota', { tone: 'rojo' })
+      return
+    }
     const errCuotas = validarCuotas(drafts, modo, total)
     if (errCuotas) {
       toast.show(errCuotas, { tone: 'rojo' })
@@ -66,7 +79,7 @@ export function CrearVentaCreditoPage() {
 
     const values: FacturaFormValues = {
       sucursalId,
-      cajaId: null,
+      cajaId,
       esConsumidorFinal: false,
       receptorId: receptor?.id ?? null,
       vendedorId,
@@ -98,8 +111,8 @@ export function CrearVentaCreditoPage() {
           strategy={strategy}
           sucursalId={sucursalId}
           onSucursalId={setSucursalId}
-          cajaId={null}
-          onCajaId={() => {}}
+          cajaId={cajaId}
+          onCajaId={setCajaId}
           esConsumidorFinal={false}
           onEsConsumidorFinal={() => {}}
           receptor={receptor}
