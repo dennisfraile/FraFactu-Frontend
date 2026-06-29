@@ -24,6 +24,10 @@ import { PlanesListPage } from '@/features/cuentas-por-cobrar/pages/PlanesListPa
 import { PlanDetallePage } from '@/features/cuentas-por-cobrar/pages/PlanDetallePage'
 import { CrearVentaCreditoPage } from '@/features/cuentas-por-cobrar/pages/CrearVentaCreditoPage'
 import { ConfiguracionMoraPage } from '@/features/cuentas-por-cobrar/pages/ConfiguracionMoraPage'
+import { ProductosPage } from '@/features/inventario/pages/ProductosPage'
+import { ProductoFormPage } from '@/features/inventario/pages/ProductoFormPage'
+import { StockPage } from '@/features/inventario/pages/StockPage'
+import { ReportesInventarioPage } from '@/features/inventario/pages/ReportesInventarioPage'
 
 export function AppRoutes() {
   return (
@@ -54,6 +58,11 @@ export function AppRoutes() {
           <Route path="/cuentas-por-cobrar/nueva" element={<CrearVentaCreditoPage />} />
           <Route path="/cuentas-por-cobrar/configuracion-mora" element={<ConfiguracionMoraPage />} />
           <Route path="/cuentas-por-cobrar/:planId" element={<PlanDetallePage />} />
+          <Route path="/inventario/productos" element={<ProductosPage />} />
+          <Route path="/inventario/productos/nuevo" element={<ProductoFormPage />} />
+          <Route path="/inventario/productos/:id/editar" element={<ProductoFormPage />} />
+          <Route path="/inventario/stock" element={<StockPage />} />
+          <Route path="/inventario/reportes" element={<ReportesInventarioPage />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
