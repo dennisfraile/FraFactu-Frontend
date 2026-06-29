@@ -20,6 +20,10 @@ import { DteRecibidoDetallePage } from '@/features/dtes-recibidos/pages/DteRecib
 import { MapearDtePage } from '@/features/dtes-recibidos/pages/MapearDtePage'
 import { ConfiguracionCorreoPage } from '@/features/dtes-recibidos/pages/ConfiguracionCorreoPage'
 import { GmailCallbackPage } from '@/features/dtes-recibidos/pages/GmailCallbackPage'
+import { PlanesListPage } from '@/features/cuentas-por-cobrar/pages/PlanesListPage'
+import { PlanDetallePage } from '@/features/cuentas-por-cobrar/pages/PlanDetallePage'
+import { CrearVentaCreditoPage } from '@/features/cuentas-por-cobrar/pages/CrearVentaCreditoPage'
+import { ConfiguracionMoraPage } from '@/features/cuentas-por-cobrar/pages/ConfiguracionMoraPage'
 
 export function AppRoutes() {
   return (
@@ -46,6 +50,10 @@ export function AppRoutes() {
           <Route path="/dtes-recibidos/gmail/callback" element={<GmailCallbackPage />} />
           <Route path="/dtes-recibidos/:id" element={<DteRecibidoDetallePage />} />
           <Route path="/dtes-recibidos/:id/mapear" element={<MapearDtePage />} />
+          <Route path="/cuentas-por-cobrar" element={<PlanesListPage />} />
+          <Route path="/cuentas-por-cobrar/nueva" element={<CrearVentaCreditoPage />} />
+          <Route path="/cuentas-por-cobrar/configuracion-mora" element={<ConfiguracionMoraPage />} />
+          <Route path="/cuentas-por-cobrar/:planId" element={<PlanDetallePage />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>

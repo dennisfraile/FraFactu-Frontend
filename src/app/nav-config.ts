@@ -13,6 +13,11 @@ export const navSections: NavSection[] = [
     { label: 'Proveedores', to: '/proveedores', icon: 'proveedores' },
     { label: 'DTEs recibidos', to: '/dtes-recibidos', icon: 'recibidos' },
   ] },
+  { title: 'Cuentas por cobrar', items: [
+    { label: 'Planes', to: '/cuentas-por-cobrar', icon: 'cobros' },
+    { label: 'Nueva venta a crédito', to: '/cuentas-por-cobrar/nueva', icon: 'factura' },
+    { label: 'Configuración de mora', to: '/cuentas-por-cobrar/configuracion-mora', icon: 'historial' },
+  ] },
   { title: 'Inventario', items: [
     { label: 'Productos', to: '/inventario/productos', icon: 'productos' },
     { label: 'Stock', to: '/inventario/stock', icon: 'stock' },
