@@ -21,6 +21,7 @@ export const navSections: NavSection[] = [
   { title: 'Inventario', items: [
     { label: 'Productos', to: '/inventario/productos', icon: 'productos' },
     { label: 'Stock', to: '/inventario/stock', icon: 'stock' },
+    { label: 'Reportes', to: '/inventario/reportes', icon: 'historial' },
   ] },
   { title: 'Configuración', items: [{ label: 'Usuarios', to: '/config/usuarios', icon: 'usuarios' }] },
 ]
