@@ -1,7 +1,7 @@
 // src/features/cuentas-por-cobrar/pages/PlanesListPage.tsx
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Spinner, EmptyState } from '@/design-system'
+import { Spinner, EmptyState, useToast } from '@/design-system'
 import { usePlanes } from '../hooks'
 import { cuentasPorCobrarApi, type FormatoReporte } from '../api'
 import { EstadoCobroBadge } from '../components/EstadoCobroBadge'
@@ -12,12 +12,13 @@ const fmt = (n: number) => `$${n.toFixed(2)}`
 export function PlanesListPage() {
   const [soloConSaldo, setSoloConSaldo] = useState(true)
   const planes = usePlanes(soloConSaldo)
+  const toast = useToast()
 
   const descargar = async (formato: FormatoReporte) => {
     try {
       await cuentasPorCobrarApi.descargarAntiguedad(formato)
-    } catch (err) {
-      console.error('No se pudo descargar el reporte', err)
+    } catch {
+      toast.show('No se pudo descargar el reporte', { tone: 'rojo' })
     }
   }
 

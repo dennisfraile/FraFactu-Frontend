@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { setupServer } from 'msw/node'
 import type { ReactNode } from 'react'
+import { ToastProvider } from '@/design-system'
 import { cuentasPorCobrarHandlers } from '@/test/msw/cuentas-por-cobrar-handlers'
 import { PlanesListPage } from './PlanesListPage'
 
@@ -15,7 +16,13 @@ afterAll(() => server.close())
 
 function wrapper({ children }: { children: ReactNode }) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  return <QueryClientProvider client={qc}><MemoryRouter>{children}</MemoryRouter></QueryClientProvider>
+  return (
+    <QueryClientProvider client={qc}>
+      <ToastProvider>
+        <MemoryRouter>{children}</MemoryRouter>
+      </ToastProvider>
+    </QueryClientProvider>
+  )
 }
 
 describe('PlanesListPage', () => {
