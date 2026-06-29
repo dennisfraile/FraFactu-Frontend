@@ -57,8 +57,8 @@ export const trasladoSchema = z.object({
   observaciones: z.string().optional().nullable(),
 }).refine((v) => v.bodegaOrigenId !== v.bodegaDestinoId, { message: 'Origen y destino deben ser distintos', path: ['bodegaDestinoId'] })
 
-export type Producto = z.infer<typeof productoSchema>
-export type Categoria = z.infer<typeof categoriaSchema>
-export type Marca = z.infer<typeof marcaSchema>
-export type Ajuste = z.infer<typeof ajusteSchema>
-export type Traslado = z.infer<typeof trasladoSchema>
+export type ProductoForm = z.infer<typeof productoSchema>
+export type CategoriaForm = z.infer<typeof categoriaSchema>
+export type MarcaForm = z.infer<typeof marcaSchema>
+export type AjusteForm = z.infer<typeof ajusteSchema>
+export type TrasladoForm = z.infer<typeof trasladoSchema>
