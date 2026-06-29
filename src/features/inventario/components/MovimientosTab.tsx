@@ -9,12 +9,15 @@ function hace(dias: number) {
 }
 function hoy() { return new Date().toISOString().slice(0, 10) }
 
+const toUtcStart = (d: string) => d ? `${d}T00:00:00Z` : d
+const toUtcEnd = (d: string) => d ? `${d}T23:59:59Z` : d
+
 export function MovimientosTab() {
   const [desde, setDesde] = useState(hace(30))
   const [hasta, setHasta] = useState(hoy())
   const [kardexProd, setKardexProd] = useState<number | null>(null)
-  const movs = useMovimientos({ desde, hasta, page: 1, pageSize: 50 })
-  const kardex = useKardex(kardexProd ?? 0, { desde, hasta, page: 1, pageSize: 50 })
+  const movs = useMovimientos({ desde: toUtcStart(desde), hasta: toUtcEnd(hasta), page: 1, pageSize: 50 })
+  const kardex = useKardex(kardexProd ?? 0, { desde: toUtcStart(desde), hasta: toUtcEnd(hasta), page: 1, pageSize: 50 })
 
   return (
     <div className="space-y-4">
