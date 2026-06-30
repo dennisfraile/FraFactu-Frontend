@@ -32,7 +32,6 @@ function UsuarioFormInner({ inicial, onGuardarCrear, onGuardarEditar, onClose, c
   const esEdicion = !!inicial
   const roles = useRoles()
   const sucursales = useSucursales()
-  const cajas = useCajasUsuarios()
 
   const [nombreCompleto, setNombre] = useState(inicial?.nombreCompleto ?? '')
   const [email, setEmail] = useState(inicial?.email ?? '')
@@ -50,6 +49,8 @@ function UsuarioFormInner({ inicial, onGuardarCrear, onGuardarEditar, onClose, c
 
   const rolSeleccionado = roles.data?.find((r) => r.id === rolId)
   const esCajero = rolSeleccionado?.nombre === 'Cajero'
+
+  const cajas = useCajasUsuarios(esCajero)
 
   const toggleEn = (arr: number[], id: number) => (arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id])
 

@@ -13,8 +13,8 @@ export function useUsuario(id: number) {
 export function useRoles() {
   return useQuery({ queryKey: ['roles'], queryFn: () => rolesApi.listar(), staleTime: HORA })
 }
-export function useCajasUsuarios() {
-  return useQuery({ queryKey: ['cajas-todas'], queryFn: () => cajasApi.listarTodas(), staleTime: HORA })
+export function useCajasUsuarios(enabled = true) {
+  return useQuery({ queryKey: ['cajas-todas'], queryFn: () => cajasApi.listarTodas(), staleTime: HORA, enabled })
 }
 export function useCrearUsuario() {
   const qc = useQueryClient()
