@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { ProtectedRoute } from './ProtectedRoute'
 import { AppLayout } from './AppLayout'
+import { RoleRoute } from './RoleRoute'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { ForgotPasswordPage } from '@/features/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/features/auth/ResetPasswordPage'
@@ -40,29 +41,50 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPlaceholder />} />
-          <Route path="/facturacion/emitir" element={<EmitirLandingPage />} />
-          <Route path="/facturacion/emitir/:tipo" element={<EmitirDtePage />} />
-          <Route path="/facturacion/historial" element={<HistorialPage />} />
-          <Route path="/facturacion/:id" element={<DteDetallePage />} />
-          <Route path="/proveedores" element={<ProveedoresPage />} />
-          <Route path="/compras" element={<ComprasListPage />} />
-          <Route path="/compras/nueva" element={<CompraFormPage />} />
-          <Route path="/compras/:id" element={<CompraDetallePage />} />
-          <Route path="/compras/:id/editar" element={<CompraFormPage />} />
-          <Route path="/dtes-recibidos" element={<DtesRecibidosListPage />} />
-          <Route path="/dtes-recibidos/configuracion" element={<ConfiguracionCorreoPage />} />
-          <Route path="/dtes-recibidos/gmail/callback" element={<GmailCallbackPage />} />
-          <Route path="/dtes-recibidos/:id" element={<DteRecibidoDetallePage />} />
-          <Route path="/dtes-recibidos/:id/mapear" element={<MapearDtePage />} />
-          <Route path="/cuentas-por-cobrar" element={<PlanesListPage />} />
-          <Route path="/cuentas-por-cobrar/nueva" element={<CrearVentaCreditoPage />} />
-          <Route path="/cuentas-por-cobrar/configuracion-mora" element={<ConfiguracionMoraPage />} />
-          <Route path="/cuentas-por-cobrar/:planId" element={<PlanDetallePage />} />
-          <Route path="/inventario/productos" element={<ProductosPage />} />
-          <Route path="/inventario/productos/nuevo" element={<ProductoFormPage />} />
-          <Route path="/inventario/productos/:id/editar" element={<ProductoFormPage />} />
-          <Route path="/inventario/stock" element={<StockPage />} />
-          <Route path="/inventario/reportes" element={<ReportesInventarioPage />} />
+
+          <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Cajero']} />}>
+            <Route path="/facturacion/emitir" element={<EmitirLandingPage />} />
+            <Route path="/facturacion/emitir/:tipo" element={<EmitirDtePage />} />
+          </Route>
+          <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Cajero', 'Contador', 'Auditor']} />}>
+            <Route path="/facturacion/historial" element={<HistorialPage />} />
+            <Route path="/facturacion/:id" element={<DteDetallePage />} />
+          </Route>
+
+          <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Contador']} />}>
+            <Route path="/compras" element={<ComprasListPage />} />
+            <Route path="/compras/nueva" element={<CompraFormPage />} />
+            <Route path="/compras/:id" element={<CompraDetallePage />} />
+            <Route path="/compras/:id/editar" element={<CompraFormPage />} />
+          </Route>
+          <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Contador', 'Auditor']} />}>
+            <Route path="/proveedores" element={<ProveedoresPage />} />
+            <Route path="/dtes-recibidos" element={<DtesRecibidosListPage />} />
+            <Route path="/dtes-recibidos/configuracion" element={<ConfiguracionCorreoPage />} />
+            <Route path="/dtes-recibidos/gmail/callback" element={<GmailCallbackPage />} />
+            <Route path="/dtes-recibidos/:id" element={<DteRecibidoDetallePage />} />
+            <Route path="/dtes-recibidos/:id/mapear" element={<MapearDtePage />} />
+          </Route>
+
+          <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Cajero']} />}>
+            <Route path="/cuentas-por-cobrar" element={<PlanesListPage />} />
+            <Route path="/cuentas-por-cobrar/nueva" element={<CrearVentaCreditoPage />} />
+            <Route path="/cuentas-por-cobrar/:planId" element={<PlanDetallePage />} />
+          </Route>
+          <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal']} />}>
+            <Route path="/cuentas-por-cobrar/configuracion-mora" element={<ConfiguracionMoraPage />} />
+          </Route>
+
+          <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Cajero', 'Contador', 'Auditor']} />}>
+            <Route path="/inventario/productos" element={<ProductosPage />} />
+            <Route path="/inventario/productos/nuevo" element={<ProductoFormPage />} />
+            <Route path="/inventario/productos/:id/editar" element={<ProductoFormPage />} />
+            <Route path="/inventario/stock" element={<StockPage />} />
+          </Route>
+          <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Contador', 'Auditor']} />}>
+            <Route path="/inventario/reportes" element={<ReportesInventarioPage />} />
+          </Route>
+
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
