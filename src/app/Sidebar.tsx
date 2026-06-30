@@ -1,8 +1,14 @@
 import { NavLink } from 'react-router-dom'
 import { Icon } from '@/design-system'
 import { navSections } from './nav-config'
+import { useAuthz } from '@/lib/authz/useAuthz'
+import { puede } from '@/lib/authz/roles'
 
 export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+  const { rol } = useAuthz()
+  const secciones = navSections
+    .map((sec) => ({ ...sec, items: sec.items.filter((it) => !it.roles || puede(rol, it.roles)) }))
+    .filter((sec) => sec.items.length > 0)
   return (
     <nav
       className={`flex shrink-0 flex-col border-r border-hairline bg-surface p-3 transition-[width] duration-300 ease-in-out dark:border-white/10 dark:bg-surface-dark ${collapsed ? 'w-16' : 'w-56'}`}
@@ -17,7 +23,7 @@ export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle:
         <Icon name="menu" size={20} />
       </button>
 
-      {navSections.map((sec, i) => (
+      {secciones.map((sec, i) => (
         <div key={i} className="mb-2">
           {sec.title &&
             (collapsed ? (
