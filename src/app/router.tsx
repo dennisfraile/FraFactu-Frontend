@@ -29,6 +29,7 @@ import { ProductosPage } from '@/features/inventario/pages/ProductosPage'
 import { ProductoFormPage } from '@/features/inventario/pages/ProductoFormPage'
 import { StockPage } from '@/features/inventario/pages/StockPage'
 import { ReportesInventarioPage } from '@/features/inventario/pages/ReportesInventarioPage'
+import { UsuariosPage } from '@/features/usuarios/pages/UsuariosPage'
 
 export function AppRoutes() {
   return (
@@ -83,6 +84,10 @@ export function AppRoutes() {
           </Route>
           <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Contador', 'Auditor']} />}>
             <Route path="/inventario/reportes" element={<ReportesInventarioPage />} />
+          </Route>
+
+          <Route element={<RoleRoute allow={['SuperAdmin', 'EmisorAdmin', 'GerenteSucursal', 'Auditor']} />}>
+            <Route path="/config/usuarios" element={<UsuariosPage />} />
           </Route>
 
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
