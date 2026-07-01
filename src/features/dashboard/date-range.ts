@@ -1,17 +1,17 @@
 export type Preset = 'hoy' | '7d' | '30d' | 'mes'
 export interface Rango { fechaInicio: string; fechaFin: string }
 
-function inicioDelDia(d: Date): Date { const x = new Date(d); x.setUTCHours(0, 0, 0, 0); return x }
-function finDelDia(d: Date): Date { const x = new Date(d); x.setUTCHours(23, 59, 59, 999); return x }
+function inicioDelDia(d: Date): Date { const x = new Date(d); x.setHours(0, 0, 0, 0); return x }
+function finDelDia(d: Date): Date { const x = new Date(d); x.setHours(23, 59, 59, 999); return x }
 
 export function rangoDePreset(preset: Preset, ahora: Date = new Date()): Rango {
   const fin = finDelDia(ahora)
   let inicio: Date
   switch (preset) {
     case 'hoy': inicio = inicioDelDia(ahora); break
-    case '7d': { const d = new Date(ahora); d.setUTCDate(d.getUTCDate() - 6); inicio = inicioDelDia(d); break }
-    case '30d': { const d = new Date(ahora); d.setUTCDate(d.getUTCDate() - 29); inicio = inicioDelDia(d); break }
-    case 'mes': { const d = new Date(Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), 1)); inicio = inicioDelDia(d); break }
+    case '7d': { const d = new Date(ahora); d.setDate(d.getDate() - 6); inicio = inicioDelDia(d); break }
+    case '30d': { const d = new Date(ahora); d.setDate(d.getDate() - 29); inicio = inicioDelDia(d); break }
+    case 'mes': { const d = new Date(ahora.getFullYear(), ahora.getMonth(), 1); inicio = inicioDelDia(d); break }
   }
   return { fechaInicio: inicio.toISOString(), fechaFin: fin.toISOString() }
 }

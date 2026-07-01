@@ -11,9 +11,11 @@ describe('rangoDePreset', () => {
     expect(dias).toBeGreaterThan(29)
     expect(dias).toBeLessThan(31)
   })
-  it('hoy: inicio y fin caen el mismo día', () => {
+  it('hoy: el rango cubre ~24h (un día local)', () => {
     const r = rangoDePreset('hoy', ahora)
-    expect(r.fechaInicio.slice(0, 10)).toBe(r.fechaFin.slice(0, 10))
+    const horas = (new Date(r.fechaFin).getTime() - new Date(r.fechaInicio).getTime()) / 3_600_000
+    expect(horas).toBeGreaterThan(23)
+    expect(horas).toBeLessThan(25)
   })
 })
 
