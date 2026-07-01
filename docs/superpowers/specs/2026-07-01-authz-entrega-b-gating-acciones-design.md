@@ -73,8 +73,9 @@ export const PRODUCTO_ESCRIBIR:    RolNombre[] = ['EmisorAdmin', 'GerenteSucursa
 export const CATALOGO_ESCRIBIR:    RolNombre[] = ['EmisorAdmin', 'GerenteSucursal']
 export const CATALOGO_ELIMINAR:    RolNombre[] = ['EmisorAdmin']
 export const INVENTARIO_AJUSTAR:   RolNombre[] = ['EmisorAdmin', 'GerenteSucursal', 'EncargadoInventario']
-export const DTE_RECIBIDO_GESTIONAR: RolNombre[] = ['EmisorAdmin', 'GerenteSucursal', 'Contador']
+export const DTE_RECIBIDO_GESTIONAR: RolNombre[] = ['EmisorAdmin', 'GerenteSucursal']
 export const DTE_RECIBIDO_CONFIG:  RolNombre[] = ['EmisorAdmin']
+export const USUARIOS_ESCRIBIR:    RolNombre[] = ['SuperAdmin', 'EmisorAdmin', 'GerenteSucursal']
 ```
 
 ### Origen de cada constante (matriz backend)
@@ -91,8 +92,9 @@ export const DTE_RECIBIDO_CONFIG:  RolNombre[] = ['EmisorAdmin']
 | `CATALOGO_ESCRIBIR` | `POST/PUT /categorias`, `/marcas`, `/toggle-active` | EmisorAdmin, GerenteSucursal |
 | `CATALOGO_ELIMINAR` | `DELETE /categorias/{id}`, `DELETE /marcas/{id}` | EmisorAdmin |
 | `INVENTARIO_AJUSTAR` | `POST /inventario/ajustes`, `POST /inventario/traslado` | EmisorAdmin, GerenteSucursal, EncargadoInventario |
-| `DTE_RECIBIDO_GESTIONAR` | ingesta/mapeo→compra/descartar (verificar controller exacto) | EmisorAdmin, GerenteSucursal, Contador |
-| `DTE_RECIBIDO_CONFIG` | Gmail connect/exchange/disconnect (`EmisoresController`) | EmisorAdmin |
+| `DTE_RECIBIDO_GESTIONAR` | `leer-correo`, `cargar-json`, `{id}/descartar`, `{id}/mapear-y-crear-compra` (`DtesRecibidosController`) | EmisorAdmin, GerenteSucursal |
+| `DTE_RECIBIDO_CONFIG` | `PUT /configuracion`, `probar-conexion` (`DtesRecibidosController`) | EmisorAdmin |
+| `USUARIOS_ESCRIBIR` | `POST/PUT/DELETE/toggle /usuarios` (Entrega A) | SuperAdmin, EmisorAdmin, GerenteSucursal |
 
 **Decisión fiel al backend:** `SuperAdmin` **no** se incluye en los gates de features operativos
 (compras/facturación/inventario/cxc). El backend no lo autoriza ahí y la nav ya lo excluye; es
@@ -106,10 +108,11 @@ Entrega A).
 - `pages/CompraDetallePage.tsx` → "Editar"/"Confirmar"/"Anular" → `COMPRA_ESCRIBIR`
 - `pages/ProveedoresPage.tsx` → "Nuevo proveedor" + acciones de fila "Editar"/"Desactivar" → `PROVEEDOR_ESCRIBIR`
 
-**Facturación (3)**
-- `pages/EmitirLandingPage.tsx` → cards de emisión de DTE → `FACTURA_CREAR`
-  (defensa en profundidad; la ruta ya está gateada)
+**Facturación (1)**
 - `pages/DteDetallePage.tsx` → "Anular" → `FACTURA_ANULAR`
+  (Se omite `EmitirLandingPage`: su ruta ya está gateada exactamente a `FACTURA_CREAR`, así que
+  envolver las cards no cambia comportamiento — sería ruido, igual que los botones internos de
+  forms.)
 
 **Inventario (10)**
 - `components/ProductosTab.tsx` → "Nuevo producto" + fila "Editar"/"Desactivar" → `PRODUCTO_ESCRIBIR`
@@ -133,17 +136,23 @@ alcanza si el trigger fue visible, así que **no** se gatea dentro del modal.
 - `src/lib/authz/acciones.test.ts`: verifica la membresía de cada constante (previene drift
   respecto al backend). Incluye `EncargadoInventario` en `INVENTARIO_AJUSTAR` y su ausencia en
   el resto.
-- Un test por **sitio de trigger**, con un helper `renderConRol(rol)`: asserta que el botón se
-  **oculta** para un rol de solo lectura representativo y se **muestra** para uno de escritura.
+- Un test por **sitio de trigger**: asserta que el botón se **oculta** para un rol de solo
+  lectura representativo y se **muestra** para uno de escritura, autenticando vía
+  `useAuthStore.setState({ ..., user: { rolNombre } })` (patrón de Entrega A).
+- **Ojo (integración):** varios tests existentes renderizan el componente sin autenticar (o con
+  el rol placeholder `'Admin'`). Al añadir `<Can>`, esos triggers se ocultan y sus tests de
+  comportamiento (p.ej. "abre el modal de ajuste") romperían. Cada tarea debe autenticar el test
+  existente con un rol de escritura antes/además de envolver.
 - Un test de ruta: `/inventario/productos/nuevo` redirige a `AccesoDenegado` para `Cajero`/
   `Contador`/`Auditor` y renderiza el form para `EmisorAdmin`.
 - Suite completa verde + lint + build antes de PR.
 
 ## Riesgos / a verificar en el plan
 
-1. **Roles exactos de DTEs recibidos:** el mapeo backend no expuso un controller dedicado de
-   ingesta. Confirmar contra el controller real; default fiel = `[EmisorAdmin, GerenteSucursal,
-   Contador]` (alineado con "mapear→crear compra"). Ajustar si difiere.
+1. **Roles exactos de DTEs recibidos:** RESUELTO. Verificado en `DtesRecibidosController`:
+   escritura (leer-correo, cargar-json, descartar, mapear-y-crear-compra) = `[EmisorAdmin,
+   GerenteSucursal]` (sin Contador); configuración = `[EmisorAdmin]`. La lista es visible además
+   para Contador/Auditor (solo lectura), por eso el gating de acción sí aporta.
 2. **`EncargadoInventario` emitido:** añadirlo al type es barato y fiel; si el login nunca puebla
    ese rol, no rompe nada (nadie lo tiene). No requiere backend.
 3. **Estructura de acciones de fila:** confirmar cómo se renderizan los botones inline en tablas
