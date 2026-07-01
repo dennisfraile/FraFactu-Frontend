@@ -5,9 +5,10 @@ export type RolNombre =
   | 'Cajero'
   | 'Auditor'
   | 'Contador'
+  | 'EncargadoInventario'
 
 export const ROLES: RolNombre[] = [
-  'SuperAdmin', 'EmisorAdmin', 'GerenteSucursal', 'Cajero', 'Auditor', 'Contador',
+  'SuperAdmin', 'EmisorAdmin', 'GerenteSucursal', 'Cajero', 'Auditor', 'Contador', 'EncargadoInventario',
 ]
 
 /** True si `rol` está dentro de `allow`. Gating por nombre de rol (espeja [Authorize(Roles=...)] del backend). */

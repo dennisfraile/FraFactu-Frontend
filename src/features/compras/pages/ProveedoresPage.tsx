@@ -4,6 +4,8 @@ import { Table, Input, Button, Badge, Spinner, EmptyState, useToast } from '@/de
 import { useProveedores, useCambiarEstadoProveedor } from '../hooks'
 import { ProveedorFormModal } from '../components/ProveedorFormModal'
 import type { ProveedorDto } from '../types'
+import { Can } from '@/lib/authz/Can'
+import { PROVEEDOR_ESCRIBIR } from '@/lib/authz/acciones'
 
 export function ProveedoresPage() {
   const toast = useToast()
@@ -31,10 +33,12 @@ export function ProveedoresPage() {
     { key: 'totalCompras', header: 'Compras', render: (p: ProveedorDto) => <span className="cifra">{p.totalCompras}</span> },
     { key: 'activo', header: 'Estado', render: (p: ProveedorDto) => <Badge estado={p.activo ? 'recibido' : 'borrador'}>{p.activo ? 'Activo' : 'Inactivo'}</Badge> },
     { key: 'acciones', header: '', render: (p: ProveedorDto) => (
-      <div className="flex justify-end gap-3">
-        <button className="text-xs font-medium text-sello hover:text-sello-bright" onClick={() => setEditar(p)}>Editar</button>
-        <button className="text-xs font-medium text-slate hover:text-ink" onClick={() => toggle(p)}>{p.activo ? 'Desactivar' : 'Activar'}</button>
-      </div>
+      <Can roles={PROVEEDOR_ESCRIBIR}>
+        <div className="flex justify-end gap-3">
+          <button className="text-xs font-medium text-sello hover:text-sello-bright" onClick={() => setEditar(p)}>Editar</button>
+          <button className="text-xs font-medium text-slate hover:text-ink" onClick={() => toggle(p)}>{p.activo ? 'Desactivar' : 'Activar'}</button>
+        </div>
+      </Can>
     ) },
   ]
 
@@ -42,7 +46,9 @@ export function ProveedoresPage() {
     <div className="space-y-4 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-ink">Proveedores</h1>
-        <Button onClick={() => setEditar(null)}>Nuevo proveedor</Button>
+        <Can roles={PROVEEDOR_ESCRIBIR}>
+          <Button onClick={() => setEditar(null)}>Nuevo proveedor</Button>
+        </Can>
       </div>
       <div className="flex items-center gap-3">
         <Input placeholder="Buscar por nombre o NIT" value={filtro} onChange={(e) => { setFiltro(e.target.value); setPage(1) }} />

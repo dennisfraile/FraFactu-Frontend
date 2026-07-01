@@ -1,4 +1,6 @@
 import { Button } from '@/design-system'
+import { Can } from '@/lib/authz/Can'
+import { CXC_PAGAR } from '@/lib/authz/acciones'
 import type { CuotaDto } from '../types'
 
 const fmt = (n: number) => `$${n.toFixed(2)}`
@@ -28,7 +30,9 @@ export function PlanCuotasTable({ cuotas, onPagar }: { cuotas: CuotaDto[]; onPag
             <td className="font-mono text-xs">{c.codigoGeneracion ?? '—'}</td>
             <td className="text-right">
               {c.estado !== 'Pagada' && (
-                <Button variant="ghost" onClick={() => onPagar(c.numero)}>Pagar</Button>
+                <Can roles={CXC_PAGAR}>
+                  <Button variant="ghost" onClick={() => onPagar(c.numero)}>Pagar</Button>
+                </Can>
               )}
             </td>
           </tr>

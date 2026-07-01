@@ -44,4 +44,12 @@ describe('DteRecibidoDetallePage', () => {
     await user.click(screen.getByRole('button', { name: /descartar dte/i }))
     expect(await screen.findByText('DTEs recibidos', { exact: false })).toBeInTheDocument()
   }, 15000)
+
+  it('Contador no ve Mapear/Descartar', async () => {
+    useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'Contador', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    setup() // DTE en estado PENDIENTE vía MSW
+    await screen.findByText('DISTRIBUIDORA EL BUEN PRECIO')
+    expect(screen.queryByRole('button', { name: /mapear y crear compra/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /descartar/i })).toBeNull()
+  })
 })

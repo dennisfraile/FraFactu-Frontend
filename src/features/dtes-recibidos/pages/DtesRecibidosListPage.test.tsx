@@ -22,4 +22,19 @@ describe('DtesRecibidosListPage', () => {
     expect(screen.getByText('DISTRIBUIDORA EL BUEN PRECIO')).toBeInTheDocument()
     expect(await screen.findByText(/pendientes/i)).toBeInTheDocument()
   })
+
+  it('EmisorAdmin ve las acciones de ingesta', async () => {
+    setup()
+    expect(await screen.findByRole('button', { name: /cargar json/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /leer correo/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /configurar correo/i })).toBeInTheDocument()
+  })
+
+  it('Auditor no ve ingesta ni configuración', async () => {
+    useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'Auditor', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    setup()
+    expect(await screen.findByText('DTE-03-0001')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /cargar json/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /configurar correo/i })).toBeNull()
+  })
 })

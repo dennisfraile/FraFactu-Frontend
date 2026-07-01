@@ -1,6 +1,8 @@
 // src/features/inventario/components/CategoriasTab.tsx
 import { useState } from 'react'
 import { Button, Spinner, EmptyState, useToast } from '@/design-system'
+import { Can } from '@/lib/authz/Can'
+import { CATALOGO_ESCRIBIR, CATALOGO_ELIMINAR } from '@/lib/authz/acciones'
 import { useCategorias, useCrearCategoria, useActualizarCategoria, useToggleCategoria, useEliminarCategoria } from '../hooks'
 import { CategoriaFormModal } from './CategoriaFormModal'
 import type { Categoria, CrearCategoriaDto } from '../types'
@@ -33,7 +35,7 @@ export function CategoriasTab() {
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button onClick={() => setEditando(null)}>Nueva categoría</Button>
+        <Can roles={CATALOGO_ESCRIBIR}><Button onClick={() => setEditando(null)}>Nueva categoría</Button></Can>
       </div>
       {lista.isLoading ? <Spinner /> : !lista.data?.length ? (
         <EmptyState title="Sin categorías" hint="Crea la primera categoría." />
@@ -48,9 +50,13 @@ export function CategoriasTab() {
                 <td className="text-right">{c.totalProductos}</td>
                 <td>{c.activo ? 'Activa' : 'Inactiva'}</td>
                 <td className="space-x-2 text-right">
-                  <button type="button" className="text-xs text-sello" onClick={() => setEditando(c)}>Editar</button>
-                  <button type="button" className="text-xs text-slate" onClick={() => toggle.mutate(c.id)}>{c.activo ? 'Desactivar' : 'Activar'}</button>
-                  <button type="button" className="text-xs text-rojo" onClick={() => onEliminar(c)}>Eliminar</button>
+                  <Can roles={CATALOGO_ESCRIBIR}>
+                    <button type="button" className="text-xs text-sello" onClick={() => setEditando(c)}>Editar</button>
+                    <button type="button" className="text-xs text-slate" onClick={() => toggle.mutate(c.id)}>{c.activo ? 'Desactivar' : 'Activar'}</button>
+                  </Can>
+                  <Can roles={CATALOGO_ELIMINAR}>
+                    <button type="button" className="text-xs text-rojo" onClick={() => onEliminar(c)}>Eliminar</button>
+                  </Can>
                 </td>
               </tr>
             ))}

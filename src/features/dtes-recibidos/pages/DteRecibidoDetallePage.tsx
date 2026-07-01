@@ -5,6 +5,8 @@ import { useDteRecibido, useDescartarDte } from '../hooks'
 import { parseDteLineas } from '../parse'
 import { tonoDteRecibido } from '../estado'
 import { DescartarDteModal } from '../components/DescartarDteModal'
+import { Can } from '@/lib/authz/Can'
+import { DTE_RECIBIDO_GESTIONAR } from '@/lib/authz/acciones'
 
 export function DteRecibidoDetallePage() {
   const { id } = useParams()
@@ -73,10 +75,12 @@ export function DteRecibidoDetallePage() {
       {data.estado === 'DESCARTADO' && <p className="rounded-md bg-rojo/10 px-3 py-2 text-sm text-rojo">Descartado: {data.motivoDescarte}</p>}
 
       {esPendiente && (
-        <div className="flex gap-2">
-          <Button onClick={() => navigate(`/dtes-recibidos/${dteId}/mapear`)}>Mapear y crear compra</Button>
-          <Button variant="danger" onClick={() => setModal(true)}>Descartar</Button>
-        </div>
+        <Can roles={DTE_RECIBIDO_GESTIONAR}>
+          <div className="flex gap-2">
+            <Button onClick={() => navigate(`/dtes-recibidos/${dteId}/mapear`)}>Mapear y crear compra</Button>
+            <Button variant="danger" onClick={() => setModal(true)}>Descartar</Button>
+          </div>
+        </Can>
       )}
       {modal && <DescartarDteModal onConfirmar={onDescartar} onClose={() => setModal(false)} cargando={descartar.isPending} />}
     </div>

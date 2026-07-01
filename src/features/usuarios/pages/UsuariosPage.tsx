@@ -2,14 +2,13 @@
 import { useState } from 'react'
 import { Button, Input, Spinner, useToast } from '@/design-system'
 import { Can } from '@/lib/authz/Can'
+import { USUARIOS_ESCRIBIR } from '@/lib/authz/acciones'
 import { UsuariosTable } from '../components/UsuariosTable'
 import { UsuarioFormModal } from '../components/UsuarioFormModal'
 import {
   useUsuarios, useUsuario, useCrearUsuario, useActualizarUsuario, useToggleUsuario, useEliminarUsuario,
 } from '../hooks'
 import type { CrearUsuarioDto, ActualizarUsuarioDto, UsuarioListDto } from '../types'
-
-const ROLES_ESCRITURA = ['SuperAdmin', 'EmisorAdmin', 'GerenteSucursal'] as const
 
 export function UsuariosPage() {
   const toast = useToast()
@@ -61,7 +60,7 @@ export function UsuariosPage() {
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-ink">Usuarios</h1>
-        <Can roles={[...ROLES_ESCRITURA]}>
+        <Can roles={USUARIOS_ESCRIBIR}>
           <Button onClick={abrirNuevo}>Nuevo usuario</Button>
         </Can>
       </div>

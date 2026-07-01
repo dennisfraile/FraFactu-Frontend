@@ -6,6 +6,8 @@ import { useFactura, useAnularFactura } from '../hooks'
 import { VistaPreviaDte } from '../components/VistaPreviaDte'
 import { AnularInvalidarModal } from '../components/AnularInvalidarModal'
 import type { CreateFacturaDto } from '../types'
+import { Can } from '@/lib/authz/Can'
+import { FACTURA_ANULAR } from '@/lib/authz/acciones'
 
 export function DteDetallePage() {
   const { id } = useParams()
@@ -41,7 +43,9 @@ export function DteDetallePage() {
     <div className="mx-auto max-w-3xl space-y-4 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-ink">{data.numeroControl}</h1>
-        <Button variant="ghost" onClick={() => setModal(true)}>Anular</Button>
+        <Can roles={FACTURA_ANULAR}>
+          <Button variant="ghost" onClick={() => setModal(true)}>Anular</Button>
+        </Can>
       </div>
       <VistaPreviaDte dto={dto} codigoGeneracion={data.codigoGeneracion} ambiente="00" />
       <AnularInvalidarModal abierto={modal} onCerrar={() => setModal(false)} onConfirmar={onConfirmar} cargando={anular.isPending} />

@@ -12,9 +12,13 @@ describe('puede', () => {
     expect(puede(undefined, ['EmisorAdmin'])).toBe(false)
     expect(puede(null, ['EmisorAdmin'])).toBe(false)
   })
-  it('ROLES contiene los 6 roles del sistema', () => {
-    expect(ROLES).toHaveLength(6)
+  it('ROLES contiene los 7 roles del sistema', () => {
+    expect(ROLES).toHaveLength(7)
     expect(ROLES).toContain('SuperAdmin')
     expect(ROLES).toContain('Contador')
+  })
+  it('incluye EncargadoInventario como rol válido', () => {
+    expect(ROLES).toContain('EncargadoInventario')
+    expect(puede('EncargadoInventario', ['EncargadoInventario'])).toBe(true)
   })
 })

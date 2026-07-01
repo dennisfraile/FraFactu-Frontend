@@ -26,7 +26,7 @@ function setup() {
 
 describe('CompraDetallePage', () => {
   beforeEach(() => {
-    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'Admin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'EmisorAdmin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
   })
 
   it('muestra la compra BORRADOR con acciones Confirmar y Anular', async () => {
@@ -44,4 +44,11 @@ describe('CompraDetallePage', () => {
     await user.click(screen.getByRole('button', { name: /confirmar anulación/i }))
     expect(await screen.findByText(/motivo.*obligatorio/i)).toBeInTheDocument()
   }, 15000)
+
+  it('Auditor no ve acciones de compra', async () => {
+    useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'Auditor', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    setup()
+    await screen.findByText('F-001')
+    expect(screen.queryByRole('button', { name: /^anular$/i })).toBeNull()
+  })
 })

@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Spinner, EmptyState, useToast } from '@/design-system'
+import { Can } from '@/lib/authz/Can'
+import { CXC_PAGAR, CXC_REFINANCIAR } from '@/lib/authz/acciones'
 import { usePlan, usePagarCuota, useRefinanciar } from '../hooks'
 import { cuentasPorCobrarApi, type FormatoReporte } from '../api'
 import { PlanCuotasTable } from '../components/PlanCuotasTable'
@@ -74,8 +76,14 @@ export function PlanDetallePage() {
       <PlanCuotasTable cuotas={p.cuotas} onPagar={setCuotaAPagar} />
 
       <div className="flex items-center justify-between">
-        <ReporteDescargaButtons label="Estado de cuenta" onDescargar={descargar} />
-        {p.saldoAdeudado > 0 && <Button variant="ghost" onClick={() => setRefinanciando(true)}>Refinanciar</Button>}
+        <Can roles={CXC_PAGAR}>
+          <ReporteDescargaButtons label="Estado de cuenta" onDescargar={descargar} />
+        </Can>
+        {p.saldoAdeudado > 0 && (
+          <Can roles={CXC_REFINANCIAR}>
+            <Button variant="ghost" onClick={() => setRefinanciando(true)}>Refinanciar</Button>
+          </Can>
+        )}
       </div>
 
       {cuotaAPagar != null && (

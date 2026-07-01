@@ -6,6 +6,8 @@ import { useCompra, useConfirmarCompra, useAnularCompra } from '../hooks'
 import { ConfirmarCompraModal } from '../components/ConfirmarCompraModal'
 import { AnularCompraModal } from '../components/AnularCompraModal'
 import { tonoCompra } from '../estado'
+import { Can } from '@/lib/authz/Can'
+import { COMPRA_ESCRIBIR } from '@/lib/authz/acciones'
 
 export function CompraDetallePage() {
   const { id } = useParams()
@@ -71,11 +73,13 @@ export function CompraDetallePage() {
         </div>
       </div>
 
-      <div className="flex gap-2">
-        {(esBorrador || esConfirmada) && <Button variant="ghost" onClick={() => navigate(`/compras/${compraId}/editar`)}>Editar</Button>}
-        {esBorrador && <Button onClick={() => setModal('confirmar')}>Confirmar</Button>}
-        {(esBorrador || esConfirmada) && <Button variant="danger" onClick={() => setModal('anular')}>Anular</Button>}
-      </div>
+      <Can roles={COMPRA_ESCRIBIR}>
+        <div className="flex gap-2">
+          {(esBorrador || esConfirmada) && <Button variant="ghost" onClick={() => navigate(`/compras/${compraId}/editar`)}>Editar</Button>}
+          {esBorrador && <Button onClick={() => setModal('confirmar')}>Confirmar</Button>}
+          {(esBorrador || esConfirmada) && <Button variant="danger" onClick={() => setModal('anular')}>Anular</Button>}
+        </div>
+      </Can>
 
       {modal === 'confirmar' && <ConfirmarCompraModal onConfirmar={onConfirmar} onClose={() => setModal(null)} cargando={confirmar.isPending} />}
       {modal === 'anular' && <AnularCompraModal onConfirmar={onAnular} onClose={() => setModal(null)} cargando={anular.isPending} />}

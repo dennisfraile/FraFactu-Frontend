@@ -78,9 +78,11 @@ export function AppRoutes() {
 
           <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Cajero', 'Contador', 'Auditor']} />}>
             <Route path="/inventario/productos" element={<ProductosPage />} />
+            <Route path="/inventario/stock" element={<StockPage />} />
+          </Route>
+          <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal']} />}>
             <Route path="/inventario/productos/nuevo" element={<ProductoFormPage />} />
             <Route path="/inventario/productos/:id/editar" element={<ProductoFormPage />} />
-            <Route path="/inventario/stock" element={<StockPage />} />
           </Route>
           <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Contador', 'Auditor']} />}>
             <Route path="/inventario/reportes" element={<ReportesInventarioPage />} />

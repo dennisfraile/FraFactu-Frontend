@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button, Input, Spinner, EmptyState, Badge, useToast } from '@/design-system'
+import { Can } from '@/lib/authz/Can'
+import { PRODUCTO_ESCRIBIR } from '@/lib/authz/acciones'
 import { useProductos, useToggleProducto, useCategorias } from '../hooks'
 
 const fmt = (n: number) => `$${n.toFixed(2)}`
@@ -30,7 +32,9 @@ export function ProductosTab() {
           </select>
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={incluirInactivos} onChange={(e) => setIncluirInactivos(e.target.checked)} />Incluir inactivos</label>
         </div>
-        <Button onClick={() => navigate('/inventario/productos/nuevo')}>Nuevo producto</Button>
+        <Can roles={PRODUCTO_ESCRIBIR}>
+          <Button onClick={() => navigate('/inventario/productos/nuevo')}>Nuevo producto</Button>
+        </Can>
       </div>
 
       {productos.isLoading ? <Spinner /> : !productos.data?.items.length ? (
@@ -47,8 +51,10 @@ export function ProductosTab() {
                 <td className="cifra text-right">{fmt(p.precioVenta)}</td>
                 <td><Badge estado={p.activo ? 'recibido' : 'borrador'}>{p.activo ? 'Activo' : 'Inactivo'}</Badge></td>
                 <td className="space-x-2 text-right">
-                  <Link className="text-xs text-sello" to={`/inventario/productos/${p.id}/editar`}>Editar</Link>
-                  <button type="button" className="text-xs text-slate" onClick={() => onToggle(p.id)}>{p.activo ? 'Desactivar' : 'Activar'}</button>
+                  <Can roles={PRODUCTO_ESCRIBIR}>
+                    <Link className="text-xs text-sello" to={`/inventario/productos/${p.id}/editar`}>Editar</Link>
+                    <button type="button" className="text-xs text-slate" onClick={() => onToggle(p.id)}>{p.activo ? 'Desactivar' : 'Activar'}</button>
+                  </Can>
                 </td>
               </tr>
             ))}
