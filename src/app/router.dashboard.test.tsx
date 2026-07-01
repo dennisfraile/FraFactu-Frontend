@@ -21,6 +21,8 @@ describe('/dashboard', () => {
     useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'EmisorAdmin', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [2], permisos: [] } })
     const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     render(<QueryClientProvider client={qc}><MemoryRouter initialEntries={['/dashboard']}><AppRoutes /></MemoryRouter></QueryClientProvider>)
-    await waitFor(() => expect(screen.getByText('Total ventas')).toBeInTheDocument())
+    // La ruta usa React.lazy: el import dinámico de DashboardPage + recharts + el
+    // fetch de KPIs puede tardar >1s bajo la carga de la suite completa; damos margen.
+    await waitFor(() => expect(screen.getByText('Total ventas')).toBeInTheDocument(), { timeout: 5000 })
   })
 })
