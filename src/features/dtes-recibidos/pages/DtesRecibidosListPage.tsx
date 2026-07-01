@@ -7,6 +7,8 @@ import { tonoDteRecibido } from '../estado'
 import type { DteRecibidoResumenDto } from '../types'
 import { CargarJsonModal } from '../components/CargarJsonModal'
 import { LeerCorreoModal } from '../components/LeerCorreoModal'
+import { Can } from '@/lib/authz/Can'
+import { DTE_RECIBIDO_GESTIONAR, DTE_RECIBIDO_CONFIG } from '@/lib/authz/acciones'
 
 export function DtesRecibidosListPage() {
   const navigate = useNavigate()
@@ -33,9 +35,13 @@ export function DtesRecibidosListPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-ink">DTEs recibidos</h1>
         <div className="flex gap-2">
-          <Button variant="ghost" onClick={() => navigate('/dtes-recibidos/configuracion')}>Configurar correo</Button>
-          <Button variant="ghost" onClick={() => setModal('leer')}>Leer correo</Button>
-          <Button onClick={() => setModal('cargar')}>Cargar JSON</Button>
+          <Can roles={DTE_RECIBIDO_CONFIG}>
+            <Button variant="ghost" onClick={() => navigate('/dtes-recibidos/configuracion')}>Configurar correo</Button>
+          </Can>
+          <Can roles={DTE_RECIBIDO_GESTIONAR}>
+            <Button variant="ghost" onClick={() => setModal('leer')}>Leer correo</Button>
+            <Button onClick={() => setModal('cargar')}>Cargar JSON</Button>
+          </Can>
         </div>
       </div>
 
