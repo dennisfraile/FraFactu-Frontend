@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { Input, Spinner, EmptyState, Badge, Button, useToast } from '@/design-system'
 import { useAuthStore } from '@/app/auth-store'
+import { Can } from '@/lib/authz/Can'
+import { INVENTARIO_AJUSTAR } from '@/lib/authz/acciones'
 import { useStock, useBajoMinimo, useSinMovimiento, useAjustarStock, useTrasladarStock } from '../hooks'
 import { AjusteStockModal } from './AjusteStockModal'
 import { TrasladoStockModal } from './TrasladoStockModal'
@@ -60,8 +62,10 @@ export function ExistenciasTab() {
                     <td className="cifra text-right">{fmt(s.costoPromedio)}</td>
                     <td className="cifra text-right">{fmt(s.valorStock)}</td>
                     <td className="space-x-2 text-right">
-                      <Button variant="ghost" onClick={() => setAjusteProd({ id: s.productoId, nombre: s.productoNombre })}>Ajustar</Button>
-                      <Button variant="ghost" onClick={() => setTrasladoProd({ id: s.productoId, nombre: s.productoNombre })}>Trasladar</Button>
+                      <Can roles={INVENTARIO_AJUSTAR}>
+                        <Button variant="ghost" onClick={() => setAjusteProd({ id: s.productoId, nombre: s.productoNombre })}>Ajustar</Button>
+                        <Button variant="ghost" onClick={() => setTrasladoProd({ id: s.productoId, nombre: s.productoNombre })}>Trasladar</Button>
+                      </Can>
                     </td>
                   </tr>
                 )

@@ -1,6 +1,8 @@
 // src/features/inventario/components/MarcasTab.tsx
 import { useState } from 'react'
 import { Button, Spinner, EmptyState, useToast } from '@/design-system'
+import { Can } from '@/lib/authz/Can'
+import { CATALOGO_ESCRIBIR, CATALOGO_ELIMINAR } from '@/lib/authz/acciones'
 import { useMarcas, useCrearMarca, useActualizarMarca, useToggleMarca, useEliminarMarca } from '../hooks'
 import { MarcaFormModal } from './MarcaFormModal'
 import type { Marca, CrearMarcaDto } from '../types'
@@ -29,7 +31,7 @@ export function MarcasTab() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end"><Button onClick={() => setEditando(null)}>Nueva marca</Button></div>
+      <div className="flex justify-end"><Can roles={CATALOGO_ESCRIBIR}><Button onClick={() => setEditando(null)}>Nueva marca</Button></Can></div>
       {lista.isLoading ? <Spinner /> : !lista.data?.length ? (
         <EmptyState title="Sin marcas" hint="Crea la primera marca." />
       ) : (
@@ -42,9 +44,13 @@ export function MarcasTab() {
                 <td className="text-right">{m.totalProductos}</td>
                 <td>{m.activa ? 'Activa' : 'Inactiva'}</td>
                 <td className="space-x-2 text-right">
-                  <button type="button" className="text-xs text-sello" onClick={() => setEditando(m)}>Editar</button>
-                  <button type="button" className="text-xs text-slate" onClick={() => toggle.mutate(m.id)}>{m.activa ? 'Desactivar' : 'Activar'}</button>
-                  <button type="button" className="text-xs text-rojo" onClick={() => onEliminar(m)}>Eliminar</button>
+                  <Can roles={CATALOGO_ESCRIBIR}>
+                    <button type="button" className="text-xs text-sello" onClick={() => setEditando(m)}>Editar</button>
+                    <button type="button" className="text-xs text-slate" onClick={() => toggle.mutate(m.id)}>{m.activa ? 'Desactivar' : 'Activar'}</button>
+                  </Can>
+                  <Can roles={CATALOGO_ELIMINAR}>
+                    <button type="button" className="text-xs text-rojo" onClick={() => onEliminar(m)}>Eliminar</button>
+                  </Can>
                 </td>
               </tr>
             ))}
