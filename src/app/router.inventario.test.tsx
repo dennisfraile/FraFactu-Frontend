@@ -37,4 +37,16 @@ describe('rutas inventario', () => {
     setup('/inventario/reportes')
     expect(await screen.findByRole('heading', { name: 'Reportes de inventario' })).toBeInTheDocument()
   })
+
+  it('Contador no puede abrir el form de nuevo producto (AccesoDenegado)', async () => {
+    useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'Contador', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    setup('/inventario/productos/nuevo')
+    expect(await screen.findByText(/acceso denegado/i)).toBeInTheDocument()
+  })
+
+  it('EmisorAdmin sí abre el form de nuevo producto', async () => {
+    useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'EmisorAdmin', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    setup('/inventario/productos/nuevo')
+    expect(screen.queryByText(/acceso denegado/i)).toBeNull()
+  })
 })
