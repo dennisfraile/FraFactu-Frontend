@@ -1,4 +1,6 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { Spinner } from '@/design-system'
 import { ProtectedRoute } from './ProtectedRoute'
 import { AppLayout } from './AppLayout'
 import { RoleRoute } from './RoleRoute'
@@ -6,7 +8,6 @@ import { LoginPage } from '@/features/auth/LoginPage'
 import { ForgotPasswordPage } from '@/features/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/features/auth/ResetPasswordPage'
 import { FirstLoginPage } from '@/features/auth/FirstLoginPage'
-import { DashboardPlaceholder } from '@/features/dashboard/DashboardPlaceholder'
 import { UiKitPage } from '@/features/ui-kit/UiKitPage'
 import { EmitirDtePage } from '@/features/facturacion/pages/EmitirDtePage'
 import { EmitirLandingPage } from '@/features/facturacion/pages/EmitirLandingPage'
@@ -31,6 +32,8 @@ import { StockPage } from '@/features/inventario/pages/StockPage'
 import { ReportesInventarioPage } from '@/features/inventario/pages/ReportesInventarioPage'
 import { UsuariosPage } from '@/features/usuarios/pages/UsuariosPage'
 
+const DashboardPage = lazy(() => import('@/features/dashboard/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })))
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -41,7 +44,14 @@ export function AppRoutes() {
       <Route path="/ui-kit" element={<UiKitPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<DashboardPlaceholder />} />
+          <Route
+            path="/dashboard"
+            element={
+              <Suspense fallback={<div className="flex justify-center p-10"><Spinner /></div>}>
+                <DashboardPage />
+              </Suspense>
+            }
+          />
 
           <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Cajero']} />}>
             <Route path="/facturacion/emitir" element={<EmitirLandingPage />} />

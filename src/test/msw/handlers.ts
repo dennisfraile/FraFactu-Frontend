@@ -5,6 +5,7 @@ import { dtesRecibidosHandlers } from './dtes-recibidos-handlers'
 import { cuentasPorCobrarHandlers } from './cuentas-por-cobrar-handlers'
 import { inventarioHandlers } from './inventario-handlers'
 import { usuariosHandlers } from './usuarios-handlers'
+import { dashboardHandlers } from './dashboard-handlers'
 
 const base = 'http://localhost:8080/api'
 const loginOk = {
@@ -35,4 +36,5 @@ export const handlers = [
   ...cuentasPorCobrarHandlers,
   ...inventarioHandlers,
   ...usuariosHandlers,
+  ...dashboardHandlers,
 ]
