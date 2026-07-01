@@ -1,5 +1,6 @@
 import { Badge, Button, EmptyState } from '@/design-system'
 import { Can } from '@/lib/authz/Can'
+import { USUARIOS_ESCRIBIR } from '@/lib/authz/acciones'
 import type { UsuarioListDto } from '../types'
 
 interface Props {
@@ -8,8 +9,6 @@ interface Props {
   onToggle: (u: UsuarioListDto) => void
   onEliminar: (u: UsuarioListDto) => void
 }
-
-const ROLES_ESCRITURA = ['SuperAdmin', 'EmisorAdmin', 'GerenteSucursal'] as const
 
 export function UsuariosTable({ usuarios, onEditar, onToggle, onEliminar }: Props) {
   if (usuarios.length === 0) return <EmptyState title="Sin usuarios" hint="No hay usuarios que coincidan con el filtro." />
@@ -38,7 +37,7 @@ export function UsuariosTable({ usuarios, onEditar, onToggle, onEliminar }: Prop
                 <Badge estado={u.activo ? 'recibido' : 'rechazado'}>{u.activo ? 'Activo' : 'Inactivo'}</Badge>
               </td>
               <td className="px-3 py-2">
-                <Can roles={[...ROLES_ESCRITURA]}>
+                <Can roles={USUARIOS_ESCRIBIR}>
                   <div className="flex justify-end gap-2">
                     <Button variant="ghost" onClick={() => onEditar(u)}>Editar</Button>
                     <Button variant="ghost" onClick={() => onToggle(u)}>{u.activo ? 'Desactivar' : 'Activar'}</Button>
