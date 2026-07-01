@@ -20,12 +20,19 @@ function setup() {
 
 describe('ProveedoresPage', () => {
   beforeEach(() => {
-    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'Admin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'EmisorAdmin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
   })
 
   it('lista los proveedores del backend', async () => {
     setup()
     expect(await screen.findByText('Distribuidora El Sol')).toBeInTheDocument()
     expect(screen.getByText('06140101011011')).toBeInTheDocument()
+  })
+
+  it('Auditor no ve "Nuevo proveedor"', async () => {
+    useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'Auditor', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    setup()
+    await screen.findByText(/proveedor/i)
+    expect(screen.queryByRole('button', { name: /nuevo proveedor/i })).toBeNull()
   })
 })

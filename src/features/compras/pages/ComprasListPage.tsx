@@ -5,6 +5,8 @@ import { Table, Input, Button, Badge, Spinner, EmptyState } from '@/design-syste
 import { useCompras } from '../hooks'
 import { tonoCompra } from '../estado'
 import type { CompraExternaDto } from '../types'
+import { Can } from '@/lib/authz/Can'
+import { COMPRA_ESCRIBIR } from '@/lib/authz/acciones'
 
 export function ComprasListPage() {
   const navigate = useNavigate()
@@ -26,7 +28,9 @@ export function ComprasListPage() {
     <div className="space-y-4 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-ink">Compras externas</h1>
-        <Button onClick={() => navigate('/compras/nueva')}>Nueva compra</Button>
+        <Can roles={COMPRA_ESCRIBIR}>
+          <Button onClick={() => navigate('/compras/nueva')}>Nueva compra</Button>
+        </Can>
       </div>
       <div className="flex items-center gap-3">
         <Input placeholder="Buscar por nº de factura o proveedor" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} />
