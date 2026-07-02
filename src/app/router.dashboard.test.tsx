@@ -22,7 +22,10 @@ describe('/dashboard', () => {
     const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     render(<QueryClientProvider client={qc}><MemoryRouter initialEntries={['/dashboard']}><AppRoutes /></MemoryRouter></QueryClientProvider>)
     // La ruta usa React.lazy: el import dinámico de DashboardPage + recharts + el
-    // fetch de KPIs puede tardar >1s bajo la carga de la suite completa; damos margen.
-    await waitFor(() => expect(screen.getByText('Total ventas')).toBeInTheDocument(), { timeout: 5000 })
-  })
+    // fetch de KPIs. En una caché de transform FRÍA (CI, o el primer run tras editar
+    // un archivo del chunk) esto supera los 5s por defecto de Vitest; ampliamos el
+    // timeout del test y del waitFor. No ralentiza el caso que pasa: waitFor resuelve
+    // en cuanto aparece el texto.
+    await waitFor(() => expect(screen.getByText('Total ventas')).toBeInTheDocument(), { timeout: 15000 })
+  }, 20000)
 })

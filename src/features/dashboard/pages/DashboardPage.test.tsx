@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { setupServer } from 'msw/node'
 import type { ReactNode } from 'react'
 import { dashboardHandlers } from '@/test/msw/dashboard-handlers'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import { DashboardPage } from './DashboardPage'
 
 vi.mock('recharts', async (importOriginal) => {
@@ -19,7 +19,7 @@ function setup() {
   return render(<QueryClientProvider client={qc}><DashboardPage /></QueryClientProvider>)
 }
 function auth(rolNombre: string, accesoTodasSucursales = false) {
-  useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre, emisorId: 3, emisorNombre: 'E', accesoTodasSucursales, sucursalIds: [2], permisos: [] } })
+  authAs(rolNombre, { accesoTodasSucursales, sucursalIds: [2] })
 }
 
 describe('DashboardPage — curación por rol', () => {

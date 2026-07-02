@@ -8,7 +8,7 @@ import { http, HttpResponse } from 'msw'
 import type { ReactNode } from 'react'
 import { ToastProvider } from '@/design-system'
 import { cuentasPorCobrarHandlers } from '@/test/msw/cuentas-por-cobrar-handlers'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import { PlanDetallePage } from './PlanDetallePage'
 
 const base = 'http://localhost:8080/api'
@@ -21,7 +21,7 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 function auth(rolNombre: string) {
-  useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre, emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+  authAs(rolNombre, { accesoTodasSucursales: true })
 }
 
 function renderEn(ruta: string, children: ReactNode) {
