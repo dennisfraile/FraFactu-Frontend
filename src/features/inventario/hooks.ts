@@ -39,8 +39,14 @@ export function useActualizarMarca() { const qc = useQueryClient(); return useMu
 export function useToggleMarca() { const qc = useQueryClient(); return useMutation({ mutationFn: (id: number) => marcasApi.toggleActivo(id), onSuccess: () => qc.invalidateQueries({ queryKey: ['inv-marcas'] }) }) }
 export function useEliminarMarca() { const qc = useQueryClient(); return useMutation({ mutationFn: (id: number) => marcasApi.eliminar(id), onSuccess: () => qc.invalidateQueries({ queryKey: ['inv-marcas'] }) }) }
 
-export function useAjustarStock() { const qc = useQueryClient(); return useMutation({ mutationFn: (dto: AjusteInventarioDto) => inventarioApi.ajustar(dto), onSuccess: () => { qc.invalidateQueries({ queryKey: ['inv-stock'] }); qc.invalidateQueries({ queryKey: ['inv-movimientos'] }) } }) }
-export function useTrasladarStock() { const qc = useQueryClient(); return useMutation({ mutationFn: (dto: TrasladoInventarioDto) => inventarioApi.trasladar(dto), onSuccess: () => { qc.invalidateQueries({ queryKey: ['inv-stock'] }); qc.invalidateQueries({ queryKey: ['inv-movimientos'] }) } }) }
+// Un ajuste/traslado cambia el stock, por lo que invalida no solo existencias y
+// movimientos sino también los reportes derivados (bajo mínimo, valoración, KPIs,
+// kardex). invalidateQueries hace match por prefijo, así cubre las keys con params.
+const KEYS_AFECTADAS_POR_MOVIMIENTO = ['inv-stock', 'inv-movimientos', 'inv-bajo-minimo', 'inv-valoracion', 'inv-kpis', 'inv-kardex']
+function invalidarPorMovimiento(qc: ReturnType<typeof useQueryClient>) { KEYS_AFECTADAS_POR_MOVIMIENTO.forEach((k) => qc.invalidateQueries({ queryKey: [k] })) }
+
+export function useAjustarStock() { const qc = useQueryClient(); return useMutation({ mutationFn: (dto: AjusteInventarioDto) => inventarioApi.ajustar(dto), onSuccess: () => invalidarPorMovimiento(qc) }) }
+export function useTrasladarStock() { const qc = useQueryClient(); return useMutation({ mutationFn: (dto: TrasladoInventarioDto) => inventarioApi.trasladar(dto), onSuccess: () => invalidarPorMovimiento(qc) }) }
 
 export function useStock(params: ListarStockParams) { return useQuery({ queryKey: ['inv-stock', params], queryFn: () => reportesApi.stock(params) }) }
 export function useBajoMinimo(sucursalId?: number) { return useQuery({ queryKey: ['inv-bajo-minimo', sucursalId], queryFn: () => reportesApi.bajoMinimo(sucursalId) }) }
