@@ -72,7 +72,6 @@ export const inventarioHandlers = [
   http.get(`${base}/inventarioreportes/movimientos`, () => HttpResponse.json(page(movimientoEjemplo))),
   http.get(`${base}/inventarioreportes/kardex/:id`, () => HttpResponse.json(kardexEjemplo)),
   http.get(`${base}/inventarioreportes/valoracion`, () => HttpResponse.json({ bodegaId: null, bodegaNombre: null, totalProductos: 1, cantidadTotalUnidades: 8, valorTotal: 240, detalleProductos: [] })),
-  http.get(`${base}/inventarioreportes/cmv`, () => HttpResponse.json({})),
   http.get(`${base}/inventarioreportes/rotacion`, () => HttpResponse.json([])),
   http.get(`${base}/inventarioreportes/rotacion-abc`, () => HttpResponse.json([])),
   http.get(`${base}/inventarioreportes/kpis`, () => HttpResponse.json(kpisEjemplo)),

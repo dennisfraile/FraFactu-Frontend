@@ -27,4 +27,8 @@ export const dashboardHandlers = [
   http.get(`${base}/dashboard/ventas-por-vendedor/detalle`, () => HttpResponse.json(vendDetalle)),
   http.get(`${base}/dashboard/comparativo-sucursales`, () => HttpResponse.json(comparativo)),
   http.get(`${base}/dashboard/cajero`, () => HttpResponse.json(cajero)),
+  // El SucursalSelector (visible para roles con acceso a todas las sucursales) pide
+  // este endpoint al montar el dashboard; sin handler MSW emite un warning en los
+  // tests aislados de dashboard. Devolvemos una lista mínima.
+  http.get(`${base}/sucursales/todas-activas`, () => HttpResponse.json([{ id: 2, codigo: 'S02', nombre: 'Casa Matriz' }])),
 ]
