@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { PlanCuotasTable } from './PlanCuotasTable'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import type { CuotaDto } from '../types'
 
 const cuotas: CuotaDto[] = [
@@ -10,7 +10,7 @@ const cuotas: CuotaDto[] = [
 ]
 
 function auth(rolNombre: string) {
-  useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre, emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+  authAs(rolNombre, { accesoTodasSucursales: true })
 }
 
 function setup(onPagar = () => {}) {

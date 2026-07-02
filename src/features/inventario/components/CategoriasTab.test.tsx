@@ -6,7 +6,7 @@ import { setupServer } from 'msw/node'
 import type { ReactNode } from 'react'
 import { ToastProvider } from '@/design-system'
 import { inventarioHandlers } from '@/test/msw/inventario-handlers'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import { CategoriasTab } from './CategoriasTab'
 
 const server = setupServer(...inventarioHandlers)
@@ -16,7 +16,7 @@ function wrapper({ children }: { children: ReactNode }) {
   return <QueryClientProvider client={qc}><ToastProvider>{children}</ToastProvider></QueryClientProvider>
 }
 function auth(rolNombre: string) {
-  useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre, emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+  authAs(rolNombre, { accesoTodasSucursales: true })
 }
 
 describe('CategoriasTab', () => {

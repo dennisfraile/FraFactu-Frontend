@@ -16,6 +16,17 @@ export function rangoDePreset(preset: Preset, ahora: Date = new Date()): Rango {
   return { fechaInicio: inicio.toISOString(), fechaFin: fin.toISOString() }
 }
 
+// Convierten 'YYYY-MM-DD' (valor de un <input type="date">, interpretado en horario LOCAL)
+// a ISO de inicio/fin de día local — consistente con los presets, que usan fronteras de día local.
+export function inicioDelDiaISO(ymd: string): string {
+  const [y, m, d] = ymd.split('-').map(Number)
+  return inicioDelDia(new Date(y, m - 1, d)).toISOString()
+}
+export function finDelDiaISO(ymd: string): string {
+  const [y, m, d] = ymd.split('-').map(Number)
+  return finDelDia(new Date(y, m - 1, d)).toISOString()
+}
+
 export function periodoAnterior(r: Rango): { fechaAnteriorInicio: string; fechaAnteriorFin: string } {
   const inicio = new Date(r.fechaInicio).getTime()
   const fin = new Date(r.fechaFin).getTime()

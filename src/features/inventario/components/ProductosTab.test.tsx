@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { setupServer } from 'msw/node'
 import { ToastProvider } from '@/design-system'
 import { inventarioHandlers } from '@/test/msw/inventario-handlers'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import { ProductosTab } from './ProductosTab'
 
 const server = setupServer(...inventarioHandlers)
@@ -16,7 +16,7 @@ function setup() {
   return render(<QueryClientProvider client={qc}><ToastProvider><MemoryRouter><ProductosTab /></MemoryRouter></ToastProvider></QueryClientProvider>)
 }
 function auth(rolNombre: string) {
-  useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre, emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+  authAs(rolNombre, { accesoTodasSucursales: true })
 }
 
 describe('ProductosTab gating', () => {

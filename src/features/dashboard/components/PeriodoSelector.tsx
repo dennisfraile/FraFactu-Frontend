@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Input } from '@/design-system'
-import { rangoDePreset, type Preset } from '../date-range'
+import { rangoDePreset, inicioDelDiaISO, finDelDiaISO, type Preset } from '../date-range'
 
 export interface PeriodoValue { preset: Preset | 'custom'; fechaInicio: string; fechaFin: string }
 interface Props { value: PeriodoValue; onChange: (v: PeriodoValue) => void }
@@ -11,10 +11,20 @@ const PRESETS: { key: Preset; label: string }[] = [
 
 export function PeriodoSelector({ value, onChange }: Props) {
   const [custom, setCustom] = useState(value.preset === 'custom')
+  const [error, setError] = useState<string | null>(null)
 
-  const elegirPreset = (p: Preset) => { setCustom(false); onChange({ preset: p, ...rangoDePreset(p) }) }
+  const elegirPreset = (p: Preset) => { setCustom(false); setError(null); onChange({ preset: p, ...rangoDePreset(p) }) }
   const cambiarFecha = (campo: 'fechaInicio' | 'fechaFin', v: string) => {
-    onChange({ ...value, preset: 'custom', [campo]: v ? new Date(v).toISOString() : value[campo] })
+    if (!v) return
+    // 'Desde' → inicio del día local; 'Hasta' → fin del día local (incluye el día completo, consistente con los presets).
+    const iso = campo === 'fechaInicio' ? inicioDelDiaISO(v) : finDelDiaISO(v)
+    const next = { ...value, preset: 'custom' as const, [campo]: iso }
+    if (new Date(next.fechaFin).getTime() < new Date(next.fechaInicio).getTime()) {
+      setError('La fecha final no puede ser anterior a la inicial.')
+      return
+    }
+    setError(null)
+    onChange(next)
   }
 
   return (
@@ -31,6 +41,7 @@ export function PeriodoSelector({ value, onChange }: Props) {
           <Input id="f-hasta" type="date" onChange={(e) => cambiarFecha('fechaFin', e.target.value)} className="w-40" />
         </div>
       )}
+      {error && <p role="alert" className="w-full text-xs text-red-600">{error}</p>}
     </div>
   )
 }
