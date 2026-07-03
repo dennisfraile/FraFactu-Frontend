@@ -1,38 +1,41 @@
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { Spinner } from '@/design-system'
 import { ProtectedRoute } from './ProtectedRoute'
 import { AppLayout } from './AppLayout'
 import { RoleRoute } from './RoleRoute'
+// Páginas de auth: eager (son la puerta de entrada, cargarlas diferidas sólo
+// mostraría un spinner antes del login). Todo lo que vive tras ProtectedRoute se
+// carga con lazy() para partir el bundle por feature; el Suspense compartido está
+// en AppLayout, alrededor del <Outlet/>.
 import { LoginPage } from '@/features/auth/LoginPage'
 import { ForgotPasswordPage } from '@/features/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/features/auth/ResetPasswordPage'
 import { FirstLoginPage } from '@/features/auth/FirstLoginPage'
 import { UiKitPage } from '@/features/ui-kit/UiKitPage'
-import { EmitirDtePage } from '@/features/facturacion/pages/EmitirDtePage'
-import { EmitirLandingPage } from '@/features/facturacion/pages/EmitirLandingPage'
-import { HistorialPage } from '@/features/facturacion/pages/HistorialPage'
-import { DteDetallePage } from '@/features/facturacion/pages/DteDetallePage'
-import { ProveedoresPage } from '@/features/compras/pages/ProveedoresPage'
-import { ComprasListPage } from '@/features/compras/pages/ComprasListPage'
-import { CompraFormPage } from '@/features/compras/pages/CompraFormPage'
-import { CompraDetallePage } from '@/features/compras/pages/CompraDetallePage'
-import { DtesRecibidosListPage } from '@/features/dtes-recibidos/pages/DtesRecibidosListPage'
-import { DteRecibidoDetallePage } from '@/features/dtes-recibidos/pages/DteRecibidoDetallePage'
-import { MapearDtePage } from '@/features/dtes-recibidos/pages/MapearDtePage'
-import { ConfiguracionCorreoPage } from '@/features/dtes-recibidos/pages/ConfiguracionCorreoPage'
-import { GmailCallbackPage } from '@/features/dtes-recibidos/pages/GmailCallbackPage'
-import { PlanesListPage } from '@/features/cuentas-por-cobrar/pages/PlanesListPage'
-import { PlanDetallePage } from '@/features/cuentas-por-cobrar/pages/PlanDetallePage'
-import { CrearVentaCreditoPage } from '@/features/cuentas-por-cobrar/pages/CrearVentaCreditoPage'
-import { ConfiguracionMoraPage } from '@/features/cuentas-por-cobrar/pages/ConfiguracionMoraPage'
-import { ProductosPage } from '@/features/inventario/pages/ProductosPage'
-import { ProductoFormPage } from '@/features/inventario/pages/ProductoFormPage'
-import { StockPage } from '@/features/inventario/pages/StockPage'
-import { ReportesInventarioPage } from '@/features/inventario/pages/ReportesInventarioPage'
-import { UsuariosPage } from '@/features/usuarios/pages/UsuariosPage'
 
 const DashboardPage = lazy(() => import('@/features/dashboard/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })))
+const EmitirDtePage = lazy(() => import('@/features/facturacion/pages/EmitirDtePage').then((m) => ({ default: m.EmitirDtePage })))
+const EmitirLandingPage = lazy(() => import('@/features/facturacion/pages/EmitirLandingPage').then((m) => ({ default: m.EmitirLandingPage })))
+const HistorialPage = lazy(() => import('@/features/facturacion/pages/HistorialPage').then((m) => ({ default: m.HistorialPage })))
+const DteDetallePage = lazy(() => import('@/features/facturacion/pages/DteDetallePage').then((m) => ({ default: m.DteDetallePage })))
+const ProveedoresPage = lazy(() => import('@/features/compras/pages/ProveedoresPage').then((m) => ({ default: m.ProveedoresPage })))
+const ComprasListPage = lazy(() => import('@/features/compras/pages/ComprasListPage').then((m) => ({ default: m.ComprasListPage })))
+const CompraFormPage = lazy(() => import('@/features/compras/pages/CompraFormPage').then((m) => ({ default: m.CompraFormPage })))
+const CompraDetallePage = lazy(() => import('@/features/compras/pages/CompraDetallePage').then((m) => ({ default: m.CompraDetallePage })))
+const DtesRecibidosListPage = lazy(() => import('@/features/dtes-recibidos/pages/DtesRecibidosListPage').then((m) => ({ default: m.DtesRecibidosListPage })))
+const DteRecibidoDetallePage = lazy(() => import('@/features/dtes-recibidos/pages/DteRecibidoDetallePage').then((m) => ({ default: m.DteRecibidoDetallePage })))
+const MapearDtePage = lazy(() => import('@/features/dtes-recibidos/pages/MapearDtePage').then((m) => ({ default: m.MapearDtePage })))
+const ConfiguracionCorreoPage = lazy(() => import('@/features/dtes-recibidos/pages/ConfiguracionCorreoPage').then((m) => ({ default: m.ConfiguracionCorreoPage })))
+const GmailCallbackPage = lazy(() => import('@/features/dtes-recibidos/pages/GmailCallbackPage').then((m) => ({ default: m.GmailCallbackPage })))
+const PlanesListPage = lazy(() => import('@/features/cuentas-por-cobrar/pages/PlanesListPage').then((m) => ({ default: m.PlanesListPage })))
+const PlanDetallePage = lazy(() => import('@/features/cuentas-por-cobrar/pages/PlanDetallePage').then((m) => ({ default: m.PlanDetallePage })))
+const CrearVentaCreditoPage = lazy(() => import('@/features/cuentas-por-cobrar/pages/CrearVentaCreditoPage').then((m) => ({ default: m.CrearVentaCreditoPage })))
+const ConfiguracionMoraPage = lazy(() => import('@/features/cuentas-por-cobrar/pages/ConfiguracionMoraPage').then((m) => ({ default: m.ConfiguracionMoraPage })))
+const ProductosPage = lazy(() => import('@/features/inventario/pages/ProductosPage').then((m) => ({ default: m.ProductosPage })))
+const ProductoFormPage = lazy(() => import('@/features/inventario/pages/ProductoFormPage').then((m) => ({ default: m.ProductoFormPage })))
+const StockPage = lazy(() => import('@/features/inventario/pages/StockPage').then((m) => ({ default: m.StockPage })))
+const ReportesInventarioPage = lazy(() => import('@/features/inventario/pages/ReportesInventarioPage').then((m) => ({ default: m.ReportesInventarioPage })))
+const UsuariosPage = lazy(() => import('@/features/usuarios/pages/UsuariosPage').then((m) => ({ default: m.UsuariosPage })))
 
 export function AppRoutes() {
   return (
@@ -44,14 +47,7 @@ export function AppRoutes() {
       <Route path="/ui-kit" element={<UiKitPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route
-            path="/dashboard"
-            element={
-              <Suspense fallback={<div className="flex justify-center p-10"><Spinner /></div>}>
-                <DashboardPage />
-              </Suspense>
-            }
-          />
+          <Route path="/dashboard" element={<DashboardPage />} />
 
           <Route element={<RoleRoute allow={['EmisorAdmin', 'GerenteSucursal', 'Cajero']} />}>
             <Route path="/facturacion/emitir" element={<EmitirLandingPage />} />

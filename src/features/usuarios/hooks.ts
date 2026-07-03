@@ -1,8 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { usuariosApi, rolesApi, cajasApi } from './api'
 import type { ListarUsuariosParams, CrearUsuarioDto, ActualizarUsuarioDto } from './types'
-
-const HORA = 1000 * 60 * 60
+import { HORA } from '@/lib/query/queryClient'
 
 export function useUsuarios(params: ListarUsuariosParams) {
   return useQuery({ queryKey: ['usuarios', params], queryFn: () => usuariosApi.listar(params) })

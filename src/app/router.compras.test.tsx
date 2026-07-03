@@ -23,13 +23,15 @@ describe('rutas de compras', () => {
     useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'EmisorAdmin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
   })
 
+  // Las páginas se cargan con React.lazy: en caché de transform fría el import
+  // dinámico supera el timeout por defecto; ampliamos findBy y el test. Ver router.dashboard.test.
   it('/proveedores renderiza la página de proveedores', async () => {
     setup('/proveedores')
-    expect(await screen.findByText('Distribuidora El Sol')).toBeInTheDocument()
-  })
+    expect(await screen.findByText('Distribuidora El Sol', undefined, { timeout: 15000 })).toBeInTheDocument()
+  }, 20000)
 
   it('/compras renderiza el listado de compras', async () => {
     setup('/compras')
-    expect(await screen.findByText('F-001')).toBeInTheDocument()
-  })
+    expect(await screen.findByText('F-001', undefined, { timeout: 15000 })).toBeInTheDocument()
+  }, 20000)
 })

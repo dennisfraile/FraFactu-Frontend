@@ -1,8 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { productosApi, categoriasApi, marcasApi, inventarioApi, reportesApi, type ListarProductosParams, type ListarStockParams, type ListarMovimientosParams } from './api'
 import type { CrearProductoDto, ActualizarProductoDto, DesactivarProductoDto, CrearCategoriaDto, CrearMarcaDto, AjusteInventarioDto, TrasladoInventarioDto } from './types'
-
-const HORA = 1000 * 60 * 60
+import { HORA } from '@/lib/query/queryClient'
 
 export function useProductos(params: ListarProductosParams) {
   return useQuery({ queryKey: ['inv-productos', params], queryFn: () => productosApi.listar(params) })

@@ -26,8 +26,9 @@ describe('rutas de DTEs recibidos', () => {
 
   it('renderiza el listado en /dtes-recibidos', async () => {
     setup('/dtes-recibidos')
-    expect(await screen.findByRole('heading', { name: /dtes recibidos/i })).toBeInTheDocument()
-  })
+    // Página cargada con React.lazy: ampliamos timeout por transform fría. Ver router.dashboard.test.
+    expect(await screen.findByRole('heading', { name: /dtes recibidos/i }, { timeout: 15000 })).toBeInTheDocument()
+  }, 20000)
 
   it('incluye el item de nav', () => {
     const items = navSections.flatMap((s) => s.items)

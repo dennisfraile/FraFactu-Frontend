@@ -23,20 +23,21 @@ describe('rutas inventario', () => {
     useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 5, rolNombre: 'EmisorAdmin', emisorId: 3, emisorNombre: 'E', sucursalIds: [2], accesoTodasSucursales: true, permisos: [] } })
   })
 
+  // Páginas cargadas con React.lazy: ampliamos timeout por transform fría. Ver router.dashboard.test.
   it('monta productos', async () => {
     setup('/inventario/productos')
-    expect(await screen.findByRole('heading', { name: 'Productos y servicios' })).toBeInTheDocument()
-  })
+    expect(await screen.findByRole('heading', { name: 'Productos y servicios' }, { timeout: 15000 })).toBeInTheDocument()
+  }, 20000)
 
   it('monta stock', async () => {
     setup('/inventario/stock')
-    expect(await screen.findByRole('heading', { name: 'Stock' })).toBeInTheDocument()
-  })
+    expect(await screen.findByRole('heading', { name: 'Stock' }, { timeout: 15000 })).toBeInTheDocument()
+  }, 20000)
 
   it('monta reportes', async () => {
     setup('/inventario/reportes')
-    expect(await screen.findByRole('heading', { name: 'Reportes de inventario' })).toBeInTheDocument()
-  })
+    expect(await screen.findByRole('heading', { name: 'Reportes de inventario' }, { timeout: 15000 })).toBeInTheDocument()
+  }, 20000)
 
   it('Contador no puede abrir el form de nuevo producto (AccesoDenegado)', async () => {
     useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'Contador', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })

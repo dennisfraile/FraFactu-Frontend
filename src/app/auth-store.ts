@@ -3,6 +3,13 @@ import { isExpired } from '@/lib/auth/jwt'
 import type { AuthUser, LoginResponse } from '@/features/auth/types'
 
 type Status = 'anon' | 'restricted' | 'authenticated'
+
+// DEUDA DE SEGURIDAD CONSCIENTE: el JWT se persiste en localStorage, lo que lo
+// expone a robo vía XSS (a diferencia de una cookie httpOnly). Es una decisión
+// deliberada porque el backend actual autentica por Bearer, no por cookie. Hoy
+// el riesgo es bajo (no hay dangerouslySetInnerHTML ni render de HTML externo en
+// el frontend), pero migrar a cookie httpOnly + CSRF queda como mejora pendiente
+// que requiere cambio de contrato con el backend. Ver auditoría frontend #5.
 const KEY = 'frafactu-session'
 
 interface AuthState {

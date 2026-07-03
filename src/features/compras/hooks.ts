@@ -7,8 +7,7 @@ import type {
   CrearProveedorDto, ActualizarProveedorDto, ListarProveedoresParams,
   CrearCompraExternaDto, ActualizarCompraExternaDto, ConfirmarCompraDto, AnularCompraDto, ListarComprasParams,
 } from './types'
-
-const HORA = 1000 * 60 * 60
+import { HORA } from '@/lib/query/queryClient'
 
 export function useProveedores(params: ListarProveedoresParams) {
   return useQuery({ queryKey: ['proveedores', params], queryFn: () => proveedoresApi.listar(params) })

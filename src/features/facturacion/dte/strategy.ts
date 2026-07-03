@@ -9,6 +9,7 @@ export interface ResumenOpts {
 
 // Tipos del formulario de emisión (compartidos por todos los tipos de DTE).
 export interface FormItem {
+  _key?: string // id de cliente para la key de React; no se envía al backend (los mappers son whitelist).
   productoId?: number
   bodegaId?: number // Id de bodega; requerido para ítems Bien cuando el tipo descuenta stock.
   codigo?: string

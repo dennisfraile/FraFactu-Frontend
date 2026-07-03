@@ -28,7 +28,7 @@ export function CuerpoDocumentoTable({ items, onChange, sucursalId, descuentaSto
   const agregar = () =>
     onChange([
       ...items,
-      { descripcion: '', cantidad: 1, precioUni: 0, uniMedida: unidadPorDefecto, tipoItem: TIPO_ITEM.BIEN, tipoImpuesto: 1, bodegaId: descuentaStock ? bodegaPorDefecto : undefined },
+      { _key: crypto.randomUUID(), descripcion: '', cantidad: 1, precioUni: 0, uniMedida: unidadPorDefecto, tipoItem: TIPO_ITEM.BIEN, tipoImpuesto: 1, bodegaId: descuentaStock ? bodegaPorDefecto : undefined },
     ])
   const quitar = (idx: number) => onChange(items.filter((_, i) => i !== idx))
   const fromProducto = (idx: number, p: ProductoListItem) => {
@@ -50,7 +50,7 @@ export function CuerpoDocumentoTable({ items, onChange, sucursalId, descuentaSto
     <section className="space-y-3">
       <h2 className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-slate/80"><span className="h-1.5 w-1.5 rounded-full bg-oro" />Cuerpo del documento</h2>
       {items.map((it, idx) => (
-        <div key={idx} className="rounded-lg border border-hairline p-3">
+        <div key={it._key ?? idx} className="rounded-lg border border-hairline p-3">
           <div className="mb-2"><ItemPicker sucursalId={sucursalId} onSelect={(p) => fromProducto(idx, p)} /></div>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             <FormField label="Descripción" htmlFor={`desc-${idx}`}>

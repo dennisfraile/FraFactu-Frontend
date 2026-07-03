@@ -1,4 +1,5 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
+import { useFocusTrap } from './useFocusTrap'
 
 interface ModalProps {
   open: boolean
@@ -7,12 +8,11 @@ interface ModalProps {
   children: ReactNode
 }
 export function Modal({ open, onClose, title, children }: ModalProps) {
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useFocusTrap<HTMLDivElement>(open) // enfoca al abrir y atrapa el Tab
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', onKey)
-    ref.current?.focus()
     return () => document.removeEventListener('keydown', onKey)
   }, [open, onClose])
   if (!open) return null
