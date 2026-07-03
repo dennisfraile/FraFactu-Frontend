@@ -15,4 +15,16 @@ describe('Modal', () => {
     await userEvent.keyboard('{Escape}')
     expect(onClose).toHaveBeenCalled()
   })
+  it('atrapa el foco: Shift+Tab desde el primer elemento salta al último', async () => {
+    render(<Modal open onClose={() => {}} title="X"><button>Uno</button><button>Dos</button></Modal>)
+    screen.getByText('Uno').focus()
+    await userEvent.tab({ shift: true })
+    expect(screen.getByText('Dos')).toHaveFocus()
+  })
+  it('atrapa el foco: Tab desde el último elemento vuelve al primero', async () => {
+    render(<Modal open onClose={() => {}} title="X"><button>Uno</button><button>Dos</button></Modal>)
+    screen.getByText('Dos').focus()
+    await userEvent.tab()
+    expect(screen.getByText('Uno')).toHaveFocus()
+  })
 })
