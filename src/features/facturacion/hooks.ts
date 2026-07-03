@@ -3,23 +3,22 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { facturacionApi, type ListarFacturasParams } from './api'
 import { catalogosApi, vendedoresApi, sucursalesApi, cajasApi, bodegasApi, receptoresApi, type NombreCatalogo } from './catalogos-api'
 import type { CreateFacturaDto, AnularFacturaDto, CrearReceptorDto } from './types'
-
-const HORA_CATALOGO = 1000 * 60 * 60 // catálogos: estáticos durante la sesión
+import { HORA } from '@/lib/query/queryClient'
 
 export function useCatalogo(nombre: NombreCatalogo) {
   return useQuery({
     queryKey: ['catalogo', nombre],
     queryFn: () => catalogosApi.get(nombre),
-    staleTime: HORA_CATALOGO,
+    staleTime: HORA,
   })
 }
 
 export function useMunicipios() {
-  return useQuery({ queryKey: ['catalogo', 'municipios'], queryFn: () => catalogosApi.municipios(), staleTime: HORA_CATALOGO })
+  return useQuery({ queryKey: ['catalogo', 'municipios'], queryFn: () => catalogosApi.municipios(), staleTime: HORA })
 }
 
 export function useDistritos() {
-  return useQuery({ queryKey: ['catalogo', 'distritos'], queryFn: () => catalogosApi.distritos(), staleTime: HORA_CATALOGO })
+  return useQuery({ queryKey: ['catalogo', 'distritos'], queryFn: () => catalogosApi.distritos(), staleTime: HORA })
 }
 
 export function useVendedores(sucursalId?: number) {
@@ -27,7 +26,7 @@ export function useVendedores(sucursalId?: number) {
 }
 
 export function useSucursales() {
-  return useQuery({ queryKey: ['sucursales'], queryFn: () => sucursalesApi.todasActivas(), staleTime: HORA_CATALOGO })
+  return useQuery({ queryKey: ['sucursales'], queryFn: () => sucursalesApi.todasActivas(), staleTime: HORA })
 }
 
 export function useCajas(sucursalId?: number) {
@@ -88,7 +87,7 @@ export function usePuedeInvalidar(id: number, enabled: boolean) {
 }
 
 export function useActividadesEconomicas() {
-  return useQuery({ queryKey: ['catalogo', 'actividades-economicas'], queryFn: () => catalogosApi.actividadesEconomicas(), staleTime: HORA_CATALOGO })
+  return useQuery({ queryKey: ['catalogo', 'actividades-economicas'], queryFn: () => catalogosApi.actividadesEconomicas(), staleTime: HORA })
 }
 
 export function useTiposDocumentoReceptor() {
