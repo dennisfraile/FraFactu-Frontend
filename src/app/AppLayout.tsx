@@ -1,5 +1,6 @@
-import { useState, type FocusEvent } from 'react'
+import { Suspense, useState, type FocusEvent } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { Spinner } from '@/design-system'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 
@@ -21,7 +22,9 @@ export function AppLayout() {
         <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
         <main onFocusCapture={onMainFocus} className="flex-1 overflow-auto bg-canvas p-6 dark:bg-canvas-dark">
           <div key={pathname} className="animate-page">
-            <Outlet />
+            <Suspense fallback={<div className="flex justify-center p-10"><Spinner /></div>}>
+              <Outlet />
+            </Suspense>
           </div>
         </main>
       </div>

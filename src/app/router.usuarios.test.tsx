@@ -30,8 +30,10 @@ describe('ruta /config/usuarios', () => {
   beforeEach(() => setRol('EmisorAdmin'))
   it('EmisorAdmin monta la página de usuarios', async () => {
     setup('/config/usuarios')
-    expect(await screen.findByRole('heading', { name: 'Usuarios' })).toBeInTheDocument()
-  })
+    // La página se carga con React.lazy: en caché de transform fría supera el
+    // timeout por defecto de findBy/Vitest; ampliamos ambos. Ver router.dashboard.test.
+    expect(await screen.findByRole('heading', { name: 'Usuarios' }, { timeout: 15000 })).toBeInTheDocument()
+  }, 20000)
   it('Cajero ve AccesoDenegado', async () => {
     setRol('Cajero')
     setup('/config/usuarios')
