@@ -5,13 +5,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { ToastProvider } from '@/design-system'
 import { AppRoutes } from './router'
-import { useAuthStore } from './auth-store'
+import { authAs } from '@/test/auth'
 
 function setRol(rolNombre: string) {
-  useAuthStore.setState({
-    token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated',
-    user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 1, rolNombre, emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [2], permisos: [] },
-  })
+  authAs(rolNombre, { accesoTodasSucursales: true, sucursalIds: [2] })
 }
 function setup(path: string) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })

@@ -5,7 +5,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ProveedorFormModal } from './ProveedorFormModal'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import type { ProveedorDto } from '../types'
 
 function wrap(ui: ReactElement) {
@@ -15,7 +15,7 @@ function wrap(ui: ReactElement) {
 
 describe('ProveedorFormModal', () => {
   beforeEach(() => {
-    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'Admin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    authAs('Admin', { rolId: 2, emisorId: 5, accesoTodasSucursales: true })
   })
 
   it('valida NIT y nombre, y al completar crea el proveedor', async () => {

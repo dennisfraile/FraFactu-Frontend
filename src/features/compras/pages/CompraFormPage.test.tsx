@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { ToastProvider } from '@/design-system'
 import { CompraFormPage } from './CompraFormPage'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 
 function setup(initial = '/compras/nueva') {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -26,7 +26,7 @@ function setup(initial = '/compras/nueva') {
 
 describe('CompraFormPage (alta)', () => {
   beforeEach(() => {
-    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'Admin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    authAs('Admin', { rolId: 2, emisorId: 5, accesoTodasSucursales: true })
   })
 
   it('exige al menos una línea antes de guardar', async () => {

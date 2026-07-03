@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { ToastProvider } from '@/design-system'
 import { ConfiguracionCorreoPage } from './ConfiguracionCorreoPage'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 
 function setup() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -14,7 +14,7 @@ function setup() {
 
 describe('ConfiguracionCorreoPage', () => {
   beforeEach(() => {
-    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'EmisorAdmin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    authAs('EmisorAdmin', { rolId: 2, emisorId: 5, accesoTodasSucursales: true })
   })
 
   it('muestra el estado desconectado y el botón de conectar', async () => {
