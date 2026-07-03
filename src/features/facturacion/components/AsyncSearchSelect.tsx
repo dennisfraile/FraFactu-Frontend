@@ -14,6 +14,11 @@ export function AsyncSearchSelect<T>({ onSearch, getLabel, onSelect, placeholder
   const [open, setOpen] = useState(false)
   const [cargando, setCargando] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Timer aparte del de debounce: difiere el cierre en onBlur. Debe limpiarse al
+  // desmontar para no disparar setOpen sobre un componente muerto (contamina el
+  // jsdom de otros tests en la suite completa).
+  const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => () => { if (blurTimer.current) clearTimeout(blurTimer.current) }, [])
 
   useEffect(() => {
     if (timer.current) clearTimeout(timer.current)
@@ -43,7 +48,7 @@ export function AsyncSearchSelect<T>({ onSearch, getLabel, onSelect, placeholder
         value={term}
         onChange={(e) => setTerm(e.target.value)}
         onFocus={() => visibles.length > 0 && setOpen(true)}
-        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onBlur={() => { blurTimer.current = setTimeout(() => setOpen(false), 150) }}
       />
       {open && (
         <ul role="listbox" className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md border border-hairline bg-surface shadow-lg dark:bg-surface-dark">
