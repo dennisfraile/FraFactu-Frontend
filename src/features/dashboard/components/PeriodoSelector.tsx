@@ -41,7 +41,7 @@ export function PeriodoSelector({ value, onChange }: Props) {
           <Input id="f-hasta" type="date" onChange={(e) => cambiarFecha('fechaFin', e.target.value)} className="w-40" />
         </div>
       )}
-      {error && <p role="alert" className="w-full text-xs text-red-600">{error}</p>}
+      {error && <p role="alert" className="w-full text-xs font-medium text-rojo">{error}</p>}
     </div>
   )
 }
