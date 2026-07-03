@@ -2,14 +2,10 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useAuthz } from './useAuthz'
 import { useAuthStore } from '@/app/auth-store'
-
-const baseUser = {
-  userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 5, rolNombre: 'EmisorAdmin',
-  emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [2], permisos: [],
-}
+import { authAs } from '@/test/auth'
 
 describe('useAuthz', () => {
-  beforeEach(() => { useAuthStore.setState({ token: 't', status: 'authenticated', user: { ...baseUser } }) })
+  beforeEach(() => { authAs('EmisorAdmin') })
 
   it('expone el rol actual', () => {
     const { result } = renderHook(() => useAuthz())

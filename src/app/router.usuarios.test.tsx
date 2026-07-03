@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { setupServer } from 'msw/node'
 import { ToastProvider } from '@/design-system'
 import { AppRoutes } from './router'
-import { useAuthStore } from './auth-store'
+import { authAs } from '@/test/auth'
 import { usuariosHandlers } from '@/test/msw/usuarios-handlers'
 
 const server = setupServer(...usuariosHandlers)
@@ -15,7 +15,7 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 function setRol(rolNombre: string) {
-  useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 5, rolNombre, emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [2], permisos: [] } })
+  authAs(rolNombre, { rolId: 5, accesoTodasSucursales: true, sucursalIds: [2] })
 }
 function setup(path: string) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })

@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { ToastProvider } from '@/design-system'
 import { AppRoutes } from './router'
-import { useAuthStore } from './auth-store'
+import { authAs } from '@/test/auth'
 import { navSections } from './nav-config'
 
 function setup(path: string) {
@@ -21,7 +21,7 @@ function setup(path: string) {
 
 describe('rutas de cuentas por cobrar', () => {
   beforeEach(() => {
-    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'EmisorAdmin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    authAs('EmisorAdmin', { rolId: 2, emisorId: 5, accesoTodasSucursales: true })
   })
 
   // Páginas cargadas con React.lazy: ampliamos timeout por transform fría. Ver router.dashboard.test.

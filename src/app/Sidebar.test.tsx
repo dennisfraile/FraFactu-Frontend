@@ -2,13 +2,10 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
-import { useAuthStore } from './auth-store'
+import { authAs } from '@/test/auth'
 
 function setRol(rolNombre: string) {
-  useAuthStore.setState({
-    token: 't', status: 'authenticated',
-    user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 1, rolNombre, emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [2], permisos: [] },
-  })
+  authAs(rolNombre, { accesoTodasSucursales: true, sucursalIds: [2] })
 }
 const renderSidebar = () =>
   render(<MemoryRouter><Sidebar collapsed={false} onToggle={() => {}} /></MemoryRouter>)

@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { ComprasListPage } from './ComprasListPage'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 
 function setup() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -13,7 +13,7 @@ function setup() {
 
 describe('ComprasListPage', () => {
   beforeEach(() => {
-    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'EmisorAdmin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    authAs('EmisorAdmin', { rolId: 2, emisorId: 5, accesoTodasSucursales: true })
   })
 
   it('lista las compras del backend', async () => {
@@ -30,7 +30,7 @@ describe('ComprasListPage', () => {
   })
 
   it('Auditor no ve "Nueva compra"', async () => {
-    useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'Auditor', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    authAs('Auditor', { accesoTodasSucursales: true })
     setup()
     expect(await screen.findByText('F-001')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /nueva compra/i })).toBeNull()

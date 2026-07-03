@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { setupServer } from 'msw/node'
 import type { ReactNode } from 'react'
 import { dashboardHandlers } from '@/test/msw/dashboard-handlers'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import { AppRoutes } from './router'
 
 vi.mock('recharts', async (importOriginal) => {
@@ -18,7 +18,7 @@ beforeAll(() => server.listen()); afterEach(() => server.resetHandlers()); after
 
 describe('/dashboard', () => {
   it('renderiza el dashboard real (lazy) para un usuario autenticado', async () => {
-    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre: 'EmisorAdmin', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [2], permisos: [] } })
+    authAs('EmisorAdmin', { accesoTodasSucursales: true, sucursalIds: [2] })
     const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     render(<QueryClientProvider client={qc}><MemoryRouter initialEntries={['/dashboard']}><AppRoutes /></MemoryRouter></QueryClientProvider>)
     // La ruta usa React.lazy: el import dinámico de DashboardPage + recharts + el

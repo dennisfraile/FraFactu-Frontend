@@ -5,12 +5,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { setupServer } from 'msw/node'
 import { ToastProvider } from '@/design-system'
 import { UsuariosPage } from './UsuariosPage'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import { usuariosHandlers } from '@/test/msw/usuarios-handlers'
 
 const server = setupServer(...usuariosHandlers)
 beforeEach(() => {
-  useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 5, rolNombre: 'EmisorAdmin', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [2], permisos: [] } })
+  authAs('EmisorAdmin', { rolId: 5, accesoTodasSucursales: true, sucursalIds: [2] })
 })
 beforeAll(() => server.listen())
 afterEach(() => server.resetHandlers())
@@ -32,7 +32,7 @@ describe('UsuariosPage', () => {
     expect(screen.getByRole('button', { name: /nuevo usuario/i })).toBeInTheDocument()
   })
   it('Auditor no ve el botón Nuevo', async () => {
-    useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 8, rolNombre: 'Auditor', emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [2], permisos: [] } })
+    authAs('Auditor', { rolId: 8, accesoTodasSucursales: true, sucursalIds: [2] })
     setup()
     expect(await screen.findByText('Ana Pérez')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /nuevo usuario/i })).toBeNull()

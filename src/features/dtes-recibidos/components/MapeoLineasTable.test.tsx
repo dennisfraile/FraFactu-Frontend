@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MapeoLineasTable } from './MapeoLineasTable'
 import { lineaDesdeParsed, type MapeoLineaForm } from '../mappers'
 import type { DteLineaParsed } from '../parse'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 
 const parsed: DteLineaParsed = {
   numItem: 1, codigo: 'P-1', descripcion: 'Papel', cantidad: 50, precioUnitario: 4.5,
@@ -26,7 +26,7 @@ function renderTabla(lineas: MapeoLineaForm[], onLineas = vi.fn()) {
 
 describe('MapeoLineasTable', () => {
   beforeEach(() => {
-    useAuthStore.setState({ token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated', user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'EmisorAdmin', emisorId: 5, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] } })
+    authAs('EmisorAdmin', { rolId: 2, emisorId: 5, accesoTodasSucursales: true })
   })
 
   it('muestra el cuadre y la línea sembrada como gasto', () => {

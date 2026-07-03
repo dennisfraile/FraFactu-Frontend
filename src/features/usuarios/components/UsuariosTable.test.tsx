@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { UsuariosTable } from './UsuariosTable'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import type { UsuarioListDto } from '../types'
 
 function setRol(rolNombre: string) {
-  useAuthStore.setState({ token: 't', status: 'authenticated', user: { userId: 1, nombreCompleto: 'X', email: 'x@x.com', rolId: 1, rolNombre, emisorId: 3, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [2], permisos: [] } })
+  authAs(rolNombre, { accesoTodasSucursales: true, sucursalIds: [2] })
 }
 const u: UsuarioListDto = {
   id: 1, nombreCompleto: 'Ana Pérez', email: 'ana@x.com', activo: true, rolId: 5, rolNombre: 'EmisorAdmin',

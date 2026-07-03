@@ -7,7 +7,7 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { http, HttpResponse } from 'msw'
 import { ToastProvider } from '@/design-system'
 import { EmitirDtePage } from './EmitirDtePage'
-import { useAuthStore } from '@/app/auth-store'
+import { authAs } from '@/test/auth'
 import { server } from '@/test/msw/server'
 
 const API = 'http://localhost:8080/api'
@@ -30,10 +30,7 @@ function setup(tipo = '01') {
 
 describe('EmitirDtePage (01)', () => {
   beforeEach(() => {
-    useAuthStore.setState({
-      token: 'header.eyJleHAiOjk5OTk5OTk5OTl9.sig', status: 'authenticated',
-      user: { userId: 1, nombreCompleto: 'Ana', email: 'a@x.com', rolId: 2, rolNombre: 'Admin', emisorId: 5, emisorNombre: 'Mi Empresa', accesoTodasSucursales: true, sucursalIds: [1], permisos: [] },
-    })
+    authAs('Admin', { rolId: 2, emisorId: 5, accesoTodasSucursales: true })
   })
 
   it('captura un ítem, revisa la vista previa y emite navegando al detalle', async () => {

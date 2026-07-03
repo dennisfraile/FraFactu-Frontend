@@ -4,12 +4,13 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { UserMenu } from './UserMenu'
 import { useAuthStore } from './auth-store'
+import { authAs } from '@/test/auth'
 import { authApi } from '@/features/auth/api'
 
 describe('UserMenu', () => {
-  beforeEach(() => useAuthStore.setState({
-    status: 'authenticated', token: 't',
-    user: { userId: 1, nombreCompleto: 'Ana', email: 'ana@x.com', rolId: 1, rolNombre: 'Admin', emisorId: 1, emisorNombre: 'E', accesoTodasSucursales: true, sucursalIds: [], permisos: [] },
+  beforeEach(() => authAs('Admin', {
+    emisorId: 1, accesoTodasSucursales: true, sucursalIds: [],
+    user: { nombreCompleto: 'Ana', email: 'ana@x.com' },
   }))
   it('cerrar sesión llama a authApi.logout y limpia el store', async () => {
     const apiSpy = vi.spyOn(authApi, 'logout').mockResolvedValue()
